@@ -13,7 +13,13 @@ public class TripDetail {
 	public long tripId;
 
 	/** The time the trip was started, in seconds since epoch. */
-	public long startTime;
+	public long createTime;
 
-	// TODO add more things here as required.
+	/** Text description for the trip. */
+	public String tripDescription;
+
+	/** If true, trace route is enabled for this trip. */
+	public boolean traceRouteEnabled;
+
+	// TODO add more details as needed.
 }
