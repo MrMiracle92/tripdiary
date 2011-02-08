@@ -16,7 +16,19 @@ public interface TripStorageManager {
 	 * @param name the name of the trip
 	 * @return the trip's id which can be used to further reference the trip.
 	 */
-	long createNewTrip(String name);
+	long createNewTrip(String name, String tripDescription, boolean traceRouteEnabled);
+
+	/**
+	 * Updates the metadata for a given trip
+	 * 
+	 * @param tripId the trip to update
+	 * @param name
+	 * @param tripDescription
+	 * @param traceRouteEnabled
+	 * @throws IllegalArgumentException if the trip does not exist.
+	 */
+	void updateTrip(long tripId, String name, String tripDescription, boolean traceRouteEnabled)
+	throws IllegalArgumentException;
 
 	/**
 	 * Adds an entry to the given trip.

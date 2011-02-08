@@ -6,6 +6,14 @@ package com.google.code.p.tripdiary;
  * @author Arunabha Ghosh
  */
 public class TripEntry {
+	public enum MediaType {
+		PHOTO,
+		AUDIO,
+		VIDEO,
+		TEXT,
+		NONE,
+	}
+
 	/** Internally used id. */
 	public long tripEntryId;
 
@@ -15,14 +23,11 @@ public class TripEntry {
 	/** The longitude where this entry was made. */
 	public double lon;
 
-	/** location (on phone), of the photo associated with this entry (if any). */
-	public String photoLocation;
+	/** The location of the media associated with this entry. */
+	public String mediaLocation;
 
-	/** location (on phone), of the audio associated with this entry (if any). */
-	public String audioLocation;
-
-	/** location (on phone), of the video associated with this entry (if any). */
-	public String videoLocation;
+	/** The type of media stored at the mediaLocation. */
+	public MediaType mediaType;
 
 	// TODO (Arunabha) add an appropriate ctor and extra fields if necessary.
 }
