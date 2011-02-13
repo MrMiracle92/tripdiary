@@ -12,6 +12,12 @@
 	<item android:id="@+id/add_text" 
 		android:icon="@drawable/text"
 		android:title="@string/menu_add_text" />
+	<item android:id="@+id/edit_trip_settings" 
+		android:icon="@drawable/settings"
+		android:title="@string/menu_trip_settings" />
+	<item android:id="@+id/share_trip" 
+		android:icon="@drawable/share"
+		android:title="@string/menu_share_trip" />
 	<item android:id="@+id/delete_trip" 
 		android:icon="@drawable/delete"
 		android:title="@string/menu_delete_trip" />

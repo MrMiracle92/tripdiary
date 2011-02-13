@@ -22,8 +22,10 @@ public final class R {
         public static final int map_grayed=0x7f020008;
         public static final int map_res=0x7f020009;
         public static final int picture=0x7f02000a;
-        public static final int text=0x7f02000b;
-        public static final int video=0x7f02000c;
+        public static final int settings=0x7f02000b;
+        public static final int share=0x7f02000c;
+        public static final int text=0x7f02000d;
+        public static final int video=0x7f02000e;
     }
     public static final class id {
         public static final int add_audio=0x7f06000b;
@@ -31,10 +33,12 @@ public final class R {
         public static final int add_text=0x7f06000c;
         public static final int add_video=0x7f06000a;
         public static final int btnOk=0x7f060008;
-        public static final int delete_trip=0x7f06000d;
+        public static final int delete_trip=0x7f06000f;
         public static final int edDescription=0x7f060007;
         public static final int edName=0x7f060006;
+        public static final int edit_trip_settings=0x7f06000d;
         public static final int settingsTripImage=0x7f060005;
+        public static final int share_trip=0x7f06000e;
         public static final int tripDetailImage=0x7f060001;
         public static final int tripDetailText=0x7f060002;
         public static final int tvCreated=0x7f060003;
@@ -57,6 +61,8 @@ public final class R {
         public static final int menu_add_text=0x7f04000b;
         public static final int menu_add_video=0x7f040009;
         public static final int menu_delete_trip=0x7f04000c;
+        public static final int menu_share_trip=0x7f04000e;
+        public static final int menu_trip_settings=0x7f04000d;
         public static final int settings_created_label=0x7f040003;
         public static final int settings_description_label=0x7f040006;
         public static final int settings_last_updated_label=0x7f040004;
