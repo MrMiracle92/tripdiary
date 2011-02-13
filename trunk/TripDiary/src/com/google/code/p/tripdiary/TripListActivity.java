@@ -120,7 +120,7 @@ public class TripListActivity extends ListActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Intent intent = new Intent(TripListActivity.this, TripViewActivity.class);
-			Log.d(TAG, "About to start activity");
+			Log.d(TAG, "About to start trip view activity for id " + id);
 			startActivity(intent);
 			// TODO: need to implement
 		}

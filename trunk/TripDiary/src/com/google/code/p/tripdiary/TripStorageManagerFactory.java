@@ -14,23 +14,24 @@ import android.util.Log;
 
 /**
  * This is the Factory class for TripStorageManager.
+ * 
  * @author Ankan Mukherjee
- *
+ * 
  */
 public class TripStorageManagerFactory {
-	
+
 	private static TripStorageManager storageManagerInstance;
-	
+
 	public static TripStorageManager getTripStorageManager() {
-		synchronized(TripStorageManagerFactory.class) {
-			if(storageManagerInstance == null) {
+		synchronized (TripStorageManagerFactory.class) {
+			if (storageManagerInstance == null) {
 				// TODO:need to use actual TripStorageManager impl when ready
 				storageManagerInstance = new TripStorageManagerFake();
 			}
 		}
 		return storageManagerInstance;
 	}
-	
+
 	/*
 	 * TODO:Fake classes.. to be removed later
 	 */
@@ -41,9 +42,11 @@ public class TripStorageManagerFactory {
 		private File[] photos = null;
 		// list of trips
 		List<TripDetail> trips = new ArrayList<TripDetail>();
+		// current trip
+		long currentTrip = 0;
 
 		TripStorageManagerFake() {
-			
+
 			// get photos thumbnails
 			File dcimDir = Environment
 					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
@@ -61,9 +64,10 @@ public class TripStorageManagerFactory {
 					}
 				});
 			}
-			
+
+			// init id with some non-zero random long
+			long id = ((long) Math.random()) + 1;
 			// create a list of trips
-			
 			for (int i = 0; i < 20; i++) {
 				TripDetail detail = new TripDetail();
 				detail.setName("Fake Trip " + i);
@@ -71,14 +75,18 @@ public class TripStorageManagerFactory {
 					detail.setImageLocation(photos[i].getAbsolutePath());
 					Log.d(TAG, detail.getImageLocation());
 				}
-				detail.setTripDescription("Fake Description [" + detail.getImageLocation() + "]");
-				detail.setTripId(i);
+				detail.setTripDescription("Fake Description ["
+						+ detail.getImageLocation() + "]");
+				detail.setTripId(id++);
 				Time t = new Time();
 				t.setToNow();
 				detail.setCreateTime(t.toMillis(false));
 
 				trips.add(detail);
 			}
+
+			// make the last trip current
+			currentTrip = id - 1;
 		}
 
 		public void updateTrip(long tripId, String name,
@@ -116,6 +124,16 @@ public class TripStorageManagerFactory {
 				throws IllegalArgumentException {
 			// TODO Auto-generated method stub
 			return false;
+		}
+
+		public long getCurrentTripId() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public void setTripIsCurrent(long tripId, boolean isCurrent) {
+			// TODO Auto-generated method stub
+
 		}
 	}
 }
