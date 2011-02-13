@@ -7,11 +7,11 @@ package com.google.code.p.tripdiary;
  */
 public class TripEntry {
 	public enum MediaType {
+		NONE,
 		PHOTO,
 		AUDIO,
 		VIDEO,
 		TEXT,
-		NONE,
 	}
 
 	/** Internally used id. */

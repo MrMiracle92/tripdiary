@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">Trip Diary</string>
     <string name="start_new_trip">+  Start New Trip</string>
+    <string name="settings_created_label">Created:</string>
+    <string name="settings_last_updated_label">Last Updated:</string>
+    <string name="settings_name_label">Name</string>
+    <string name="settings_description_label">Description</string>
+    <string name="trip_settings_ok">OK</string>
 </resources>

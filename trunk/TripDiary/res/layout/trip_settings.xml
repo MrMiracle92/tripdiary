@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<ScrollView android:layout_width="fill_parent" 
+			android:layout_height="fill_parent">
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="vertical">
+			<TextView android:text="@string/settings_created_label" 
+				android:id="@+id/tvCreated"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"></TextView>
+			<TextView android:text="@string/settings_last_updated_label" 
+				android:id="@+id/tvLastUpdated"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"></TextView>
+			<ImageView android:id="@+id/tripImage" 
+				android:layout_width="fill_parent" 
+				android:layout_height="160dip"
+				android:padding="4dip"
+				android:scaleType="fitCenter"></ImageView>
+			<TextView android:text="@string/settings_name_label" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"></TextView>
+			<EditText android:id="@+id/edName" 
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"></EditText>
+			<TextView android:text="@string/settings_description_label" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"></TextView>
+			<EditText android:id="@+id/edDescription" 
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:lines="5"
+				android:gravity="top"></EditText>
+			<Button android:text="@string/trip_settings_ok" 
+				android:id="@+id/btnOk" 
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"></Button>
+		</LinearLayout>
+	</ScrollView>
+</LinearLayout>
