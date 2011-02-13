@@ -22,6 +22,8 @@ public class TripDetail {
 	private boolean traceRouteEnabled;
 	
 	private String imageLocation;
+
+	private boolean isCurrent;
 	
 	public String getName() {
 		return name;
@@ -65,6 +67,14 @@ public class TripDetail {
 
 	public void setCreateTime(long createTime) {
 		this.createTime = createTime;
+	}
+
+	public boolean isCurrent() {
+		return isCurrent;
+	}
+
+	public void setCurrent(boolean isCurrent) {
+		this.isCurrent = isCurrent;
 	}
 	
 	// TODO add more details as needed.
