@@ -7,51 +7,66 @@ package com.google.code.p.tripdiary;
  */
 public class TripDetail {
 	/** The name of the trip. */
-	public String name;
+	private String name;
 
 	/** The trip's ID. */
-	public long tripId;
+	private long tripId;
 
 	/** The time the trip was started, in seconds since epoch. */
-	public long createTime;
+	private long createTime;
 
 	/** Text description for the trip. */
-	public String tripDescription;
+	private String tripDescription;
 
 	/** If true, trace route is enabled for this trip. */
-	public boolean traceRouteEnabled;
-
-	// TODO add more details as needed.
+	private boolean traceRouteEnabled;
 	
-	public String imageLocation;
-	
-	
+	private String imageLocation;
 	
 	public String getName() {
 		return name;
 	}
-
-
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
+	
+	public String getTripDescription() {
+		return tripDescription;
+	}
+	
+	public void setTripDescription(String description) {
+		this.tripDescription = description;
+	}
 
 	public String getImageLocation() {
 		return imageLocation;
 	}
 
-
-
-	public void setLocation(String location) {
+	public void setImageLocation(String location) {
 		this.imageLocation = location;
 	}
 
-
-
 	public String toString() {
-		return name;
+		return name + "-" + tripDescription;
 	}
+
+	public long getTripId() {
+		return tripId;
+	}
+
+	public void setTripId(long tripId) {
+		this.tripId = tripId;
+	}
+
+	public long getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(long createTime) {
+		this.createTime = createTime;
+	}
+	
+	// TODO add more details as needed.
+
 }

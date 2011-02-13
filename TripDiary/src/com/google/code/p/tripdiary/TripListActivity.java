@@ -1,16 +1,13 @@
 package com.google.code.p.tripdiary;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +18,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * This is where the application starts. This activity lists out the trip, and
@@ -34,16 +30,15 @@ public class TripListActivity extends ListActivity {
 
 	private TripStorageManager storageMgr;
 	private final int SETTINGS_CREATE_NEW_TRIP = 1;
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		// TODO:need to use actual TripStorageManager impl
-		storageMgr = new TripStorageManagerFake();
-
+		storageMgr = TripStorageManagerFactory.getTripStorageManager();
+		
 		fillDataUsingList();
 	}
 	
@@ -97,7 +92,7 @@ public class TripListActivity extends ListActivity {
 				TextView tt = (TextView) v.findViewById(R.id.tripDetailText);
 				ImageView it = (ImageView) v.findViewById(R.id.tripDetailImage);
 				if (tt != null) {
-					tt.setText(t.getName() + " [" + t.getImageLocation() + "]");
+					tt.setText(t.getName() + " - " + t.getTripDescription() + ".");
 				}
 				if (it != null) {
 					if (t.getImageLocation() != null) {
@@ -128,85 +123,6 @@ public class TripListActivity extends ListActivity {
 			Log.d(TAG, "About to start activity");
 			startActivity(intent);
 			// TODO: need to implement
-		}
-	}
-
-	/*
-	 * TODO:Fake classes.. to be removed later
-	 */
-	private class TripStorageManagerFake implements TripStorageManager {
-		private final String TAG = "TripStorageManagerFake";
-
-		// list of photos
-		private File[] photos = null;
-
-		TripStorageManagerFake() {
-			File dcimDir = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-			File photosDir = new File(dcimDir.getAbsolutePath()
-					+ "/.thumbnails");
-			if (photosDir.exists() && photosDir.isDirectory()) {
-				photos = photosDir.listFiles(new FilenameFilter() {
-
-					public boolean accept(File dir, String filename) {
-						Log.d(TAG, filename);
-						if (filename.endsWith("jpg")) {
-							return true;
-						}
-						return false;
-					}
-				});
-			}
-		}
-
-		public void updateTrip(long tripId, String name,
-				String tripDescription, boolean traceRouteEnabled)
-				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-
-		}
-
-		public TripDetail getTripDetail(long tripId)
-				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public List<TripEntry> getEntriesForTrip(long tripId)
-				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		// just a dummy method to create trips, pointing to a few camera
-		// picture thumbnails (if any)
-		public List<TripDetail> getAllTrips() {
-			List<TripDetail> trips = new ArrayList<TripDetail>();
-
-			for (int i = 0; i < 20; i++) {
-				TripDetail detail = new TripDetail();
-				detail.name = "Fake Trip " + i;
-				if (photos != null && photos.length > i) {
-					detail.imageLocation = photos[i].getAbsolutePath();
-					Log.d(TAG, detail.imageLocation);
-				}
-
-				trips.add(detail);
-			}
-
-			return trips;
-		}
-
-		public long createNewTrip(String name, String tripDescription,
-				boolean traceRouteEnabled) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		public boolean addTripEntry(long tripId, TripEntry tripEntry)
-				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return false;
 		}
 	}
 }

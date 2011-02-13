@@ -13,4 +13,6 @@
     <string name="menu_add_audio">Add Audio</string>
     <string name="menu_add_text">Add Text</string>
     <string name="menu_delete_trip">Delete Trip</string>
+    <string name="menu_trip_settings">Trip Settings</string>
+    <string name="menu_share_trip">Share Trip</string>
 </resources>
