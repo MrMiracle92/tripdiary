@@ -22,4 +22,36 @@ public class TripDetail {
 	public boolean traceRouteEnabled;
 
 	// TODO add more details as needed.
+	
+	public String imageLocation;
+	
+	
+	
+	public String getName() {
+		return name;
+	}
+
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+
+	public String getImageLocation() {
+		return imageLocation;
+	}
+
+
+
+	public void setLocation(String location) {
+		this.imageLocation = location;
+	}
+
+
+
+	public String toString() {
+		return name;
+	}
 }
