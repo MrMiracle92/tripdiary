@@ -5,10 +5,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +32,8 @@ import android.widget.Toast;
 public class TripListActivity extends ListActivity {
 	 private static String TAG="TripListActivity";
 
-	TripStorageManager storageMgr;
+	private TripStorageManager storageMgr;
+	private final int SETTINGS_CREATE_NEW_TRIP = 1;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -46,7 +45,19 @@ public class TripListActivity extends ListActivity {
 		storageMgr = new TripStorageManagerFake();
 
 		fillDataUsingList();
-
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == RESULT_CANCELED) {
+			Log.d(TAG, "Sub Activity cancelled.");
+		} else {
+			switch(requestCode) {
+			case SETTINGS_CREATE_NEW_TRIP:
+				//TODO: new trip settings created.. check and proceed to current trip
+			}
+		}
 	}
 
 	private void fillDataUsingList() {
@@ -104,36 +115,19 @@ public class TripListActivity extends ListActivity {
 	private class StartNewTripListener implements OnClickListener {
 		public void onClick(View v) {
 			Intent intent = new Intent(TripListActivity.this, TripSettingsActivity.class);
-			Log.d(TAG, "About to start activity");
-			startActivity(intent);
-			
-			// TODO need to implement
-
-//			AlertDialog alertDialog = new AlertDialog.Builder(v.getContext())
-//					.create();
-//			alertDialog.setTitle("New Trip...");
-//			alertDialog
-//					.setMessage("Have to start a new trip now.. (not implemented yet!)");
-//			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-//				public void onClick(DialogInterface dialog, int which) {
-//					// here you can add functions
-//				}
-//			});
-//			alertDialog.setIcon(R.drawable.icon);
-//			alertDialog.show();
+			Log.d(TAG, "About to start activity for result");
+			startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 		}
 
 	}
 
 	private class TripOnItemClickListener implements OnItemClickListener {
-
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			Intent intent = new Intent(TripListActivity.this, TripViewActivity.class);
+			Log.d(TAG, "About to start activity");
+			startActivity(intent);
 			// TODO: need to implement
-			// When clicked, show a toast with position and id
-			Toast.makeText(getApplicationContext(),
-					"Position: " + position + " Id: " + id, Toast.LENGTH_SHORT)
-					.show();
 		}
 	}
 
