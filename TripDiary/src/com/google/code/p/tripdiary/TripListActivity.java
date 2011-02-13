@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,9 +18,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is where the application starts. This activity lists out the trip, and
@@ -28,7 +32,7 @@ import android.widget.TextView;
  * @author Ankan Mukherjee
  */
 public class TripListActivity extends ListActivity {
-	// private static String TAG="TripListActivity";
+	 private static String TAG="TripListActivity";
 
 	TripStorageManager storageMgr;
 
@@ -49,9 +53,11 @@ public class TripListActivity extends ListActivity {
 		// get list of trips from storage manager
 		ArrayList<TripDetail> tripList = new ArrayList<TripDetail>(
 				storageMgr.getAllTrips());
-		
-		// set the on click listener for new trips
-		findViewById(R.id.tvStartNewTrip).setOnClickListener(new StartNewTripListener());
+
+		// set listeners for new trips and list items
+		findViewById(R.id.tvStartNewTrip).setOnClickListener(
+				new StartNewTripListener());
+		getListView().setOnItemClickListener(new TripOnItemClickListener());
 
 		// set the list adapter
 		setListAdapter(new TripDetailAdapter(this, R.layout.trip_item, tripList));
@@ -94,25 +100,41 @@ public class TripListActivity extends ListActivity {
 			return v;
 		}
 	}
-	
-	private class StartNewTripListener implements OnClickListener {
 
+	private class StartNewTripListener implements OnClickListener {
 		public void onClick(View v) {
+			Intent intent = new Intent(TripListActivity.this, TripSettingsActivity.class);
+			Log.d(TAG, "About to start activity");
+			startActivity(intent);
+			
 			// TODO need to implement
-			
-			
-			AlertDialog alertDialog = new AlertDialog.Builder(v.getContext()).create();
-			alertDialog.setTitle("New Trip...");
-			alertDialog.setMessage("Have to start a new trip now.. (not implemented yet!)");
-			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-			   public void onClick(DialogInterface dialog, int which) {
-			      // here you can add functions
-			   }
-			});
-			alertDialog.setIcon(R.drawable.icon);
-			alertDialog.show();
+
+//			AlertDialog alertDialog = new AlertDialog.Builder(v.getContext())
+//					.create();
+//			alertDialog.setTitle("New Trip...");
+//			alertDialog
+//					.setMessage("Have to start a new trip now.. (not implemented yet!)");
+//			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+//				public void onClick(DialogInterface dialog, int which) {
+//					// here you can add functions
+//				}
+//			});
+//			alertDialog.setIcon(R.drawable.icon);
+//			alertDialog.show();
 		}
-		
+
+	}
+
+	private class TripOnItemClickListener implements OnItemClickListener {
+
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			// TODO: need to implement
+			// When clicked, show a toast with position and id
+			Toast.makeText(getApplicationContext(),
+					"Position: " + position + " Id: " + id, Toast.LENGTH_SHORT)
+					.show();
+		}
 	}
 
 	/*
