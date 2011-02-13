@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/add_photo" 
+		android:icon="@drawable/picture"
+		android:title="@string/menu_add_photo" />
+	<item android:id="@+id/add_video" 
+		android:icon="@drawable/video"
+		android:title="@string/menu_add_video" />
+	<item android:id="@+id/add_audio" 
+		android:icon="@drawable/audio"
+		android:title="@string/menu_add_audio" />
+	<item android:id="@+id/add_text" 
+		android:icon="@drawable/text"
+		android:title="@string/menu_add_text" />
+	<item android:id="@+id/delete_trip" 
+		android:icon="@drawable/delete"
+		android:title="@string/menu_delete_trip" />
+</menu>

@@ -11,32 +11,58 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int defaultpicicon=0x7f020000;
-        public static final int icon=0x7f020001;
+        public static final int audio=0x7f020000;
+        public static final int defaultpicicon=0x7f020001;
+        public static final int delete=0x7f020002;
+        public static final int gallery=0x7f020003;
+        public static final int gallery_grayed=0x7f020004;
+        public static final int gallery_res=0x7f020005;
+        public static final int icon=0x7f020006;
+        public static final int map=0x7f020007;
+        public static final int map_grayed=0x7f020008;
+        public static final int map_res=0x7f020009;
+        public static final int picture=0x7f02000a;
+        public static final int text=0x7f02000b;
+        public static final int video=0x7f02000c;
     }
     public static final class id {
-        public static final int btnOk=0x7f050008;
-        public static final int edDescription=0x7f050007;
-        public static final int edName=0x7f050006;
-        public static final int tripDetailImage=0x7f050001;
-        public static final int tripDetailText=0x7f050002;
-        public static final int tripImage=0x7f050005;
-        public static final int tvCreated=0x7f050003;
-        public static final int tvLastUpdated=0x7f050004;
-        public static final int tvStartNewTrip=0x7f050000;
+        public static final int add_audio=0x7f06000b;
+        public static final int add_photo=0x7f060009;
+        public static final int add_text=0x7f06000c;
+        public static final int add_video=0x7f06000a;
+        public static final int btnOk=0x7f060008;
+        public static final int delete_trip=0x7f06000d;
+        public static final int edDescription=0x7f060007;
+        public static final int edName=0x7f060006;
+        public static final int settingsTripImage=0x7f060005;
+        public static final int tripDetailImage=0x7f060001;
+        public static final int tripDetailText=0x7f060002;
+        public static final int tvCreated=0x7f060003;
+        public static final int tvLastUpdated=0x7f060004;
+        public static final int tvStartNewTrip=0x7f060000;
     }
     public static final class layout {
         public static final int main=0x7f030000;
         public static final int trip_item=0x7f030001;
         public static final int trip_settings=0x7f030002;
+        public static final int trip_view=0x7f030003;
+    }
+    public static final class menu {
+        public static final int trip_view_menu=0x7f050000;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
-        public static final int settings_created_label=0x7f040002;
-        public static final int settings_description_label=0x7f040005;
-        public static final int settings_last_updated_label=0x7f040003;
-        public static final int settings_name_label=0x7f040004;
+        public static final int menu_add_audio=0x7f04000a;
+        public static final int menu_add_photo=0x7f040008;
+        public static final int menu_add_text=0x7f04000b;
+        public static final int menu_add_video=0x7f040009;
+        public static final int menu_delete_trip=0x7f04000c;
+        public static final int settings_created_label=0x7f040003;
+        public static final int settings_description_label=0x7f040006;
+        public static final int settings_last_updated_label=0x7f040004;
+        public static final int settings_name_label=0x7f040005;
+        public static final int settings_title=0x7f040002;
         public static final int start_new_trip=0x7f040001;
-        public static final int trip_settings_ok=0x7f040006;
+        public static final int trip_settings_ok=0x7f040007;
     }
 }
