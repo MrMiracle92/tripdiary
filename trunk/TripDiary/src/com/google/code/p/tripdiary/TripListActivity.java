@@ -26,7 +26,7 @@ import android.widget.TextView;
  * @author Ankan Mukherjee
  */
 public class TripListActivity extends ListActivity {
-	 private static String TAG="TripListActivity";
+	private static String TAG="TripListActivity";
 
 	private TripStorageManager storageMgr;
 	private final int SETTINGS_CREATE_NEW_TRIP = 1;
