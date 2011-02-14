@@ -48,8 +48,9 @@ public class TripStorageManagerFactory {
 		TripStorageManagerFake() {
 
 			// get photos thumbnails
-			File dcimDir = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+//			File dcimDir = Environment
+//					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+			File dcimDir = Environment.getExternalStorageDirectory();
 			File photosDir = new File(dcimDir.getAbsolutePath()
 					+ "/.thumbnails");
 			if (photosDir.exists() && photosDir.isDirectory()) {
