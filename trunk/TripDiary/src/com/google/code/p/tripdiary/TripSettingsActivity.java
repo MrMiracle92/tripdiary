@@ -17,7 +17,7 @@ import android.widget.EditText;
 public class TripSettingsActivity extends Activity {
 //	private final String TAG = "TripSettingsActivity";
 
-	public final String KEY_TRIP_ID = "tripId";
+	public final static String KEY_TRIP_ID = "tripId";
 
 	private final int DIALOG_INVALID_INPUT_NAME_REQUIRED = 0;
 

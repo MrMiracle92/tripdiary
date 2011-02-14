@@ -10,14 +10,21 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 /**
- * This activity takes care of showing the tabbed views of the trips (on the gallery tab and the map tab.)
+ * This activity takes care of showing the tabbed views of the trips (on the
+ * gallery tab and the map tab.)
  * 
  * @author Ankan Mukherjee
  * 
  */
 public class TripViewActivity extends TabActivity {
+
+	public final static String KEY_TRIP_ID = "tripId";
+
+	private TripStorageManager storageMgr;
+	private long thisTripId = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +54,61 @@ public class TripViewActivity extends TabActivity {
 				.setContent(intent);
 		tabHost.addTab(spec);
 
-		tabHost.setCurrentTab(0);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.trip_view_menu, menu);
-	    return true;
+		storageMgr = TripStorageManagerFactory.getTripStorageManager();
+
+		// if the activity is resumed
+		thisTripId = savedInstanceState != null ? savedInstanceState
+				.getLong(KEY_TRIP_ID) : 0;
+
+		// if there is a bundle set tab based on whether trip is current
+		if (thisTripId == 0) {
+			Bundle extras = getIntent().getExtras();
+			thisTripId = extras.getLong(KEY_TRIP_ID);
+		}
+		if (thisTripId != storageMgr.getCurrentTripId()) {
+			tabHost.setCurrentTab(0);
+		} else {
+			tabHost.setCurrentTab(1);
+		}
+
+		// at this point there needs to be a valid thisTripId
+		if (thisTripId == 0) {
+			Toast toast = Toast.makeText(this, "Could not determine trip id!",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			setResult(RESULT_CANCELED);
+			finish();
+		}
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.trip_view_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (thisTripId != storageMgr.getCurrentTripId()) {
+			menu.findItem(R.id.add_photo).setEnabled(false);
+			menu.findItem(R.id.add_photo).setVisible(false);
+
+			menu.findItem(R.id.add_video).setEnabled(false);
+			menu.findItem(R.id.add_video).setVisible(false);
+
+			menu.findItem(R.id.add_audio).setEnabled(false);
+			menu.findItem(R.id.add_audio).setVisible(false);
+
+			menu.findItem(R.id.add_text).setEnabled(false);
+			menu.findItem(R.id.add_text).setVisible(false);
+
+			menu.findItem(R.id.stop_trip).setEnabled(false);
+			menu.findItem(R.id.stop_trip).setVisible(false);
+		} else {
+			menu.findItem(R.id.resume_trip).setEnabled(false);
+			menu.findItem(R.id.resume_trip).setVisible(false);
+		}
+		return super.onPrepareOptionsMenu(menu);
+	}
 }
