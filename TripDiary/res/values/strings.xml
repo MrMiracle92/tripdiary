@@ -15,4 +15,6 @@
     <string name="menu_delete_trip">Delete Trip</string>
     <string name="menu_trip_settings">Trip Settings</string>
     <string name="menu_share_trip">Share Trip</string>
+    <string name="menu_resume_trip">Resume Trip</string>
+    <string name="menu_stop_trip">Stop Trip</string>
 </resources>

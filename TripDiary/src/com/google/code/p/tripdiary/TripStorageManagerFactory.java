@@ -127,13 +127,11 @@ public class TripStorageManagerFactory {
 		}
 
 		public long getCurrentTripId() {
-			// TODO Auto-generated method stub
-			return 0;
+			return currentTrip;
 		}
 
 		public void setTripIsCurrent(long tripId, boolean isCurrent) {
-			// TODO Auto-generated method stub
-
+			currentTrip = tripId;
 		}
 	}
 }

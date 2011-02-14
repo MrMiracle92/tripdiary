@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * This is where the application starts. This activity lists out the trip, and
+ * This is where the application starts. This activity lists the trips, and
  * also provides the user an option to start a new trip.
  * 
  * @author Ankan Mukherjee
@@ -30,6 +30,7 @@ public class TripListActivity extends ListActivity {
 
 	private TripStorageManager storageMgr;
 	private final int SETTINGS_CREATE_NEW_TRIP = 1;
+	private final int VIEW_TRIP = 2;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -91,6 +92,10 @@ public class TripListActivity extends ListActivity {
 			if (t != null) {
 				TextView tt = (TextView) v.findViewById(R.id.tripDetailText);
 				ImageView it = (ImageView) v.findViewById(R.id.tripDetailImage);
+				TextView tid = (TextView) v.findViewById(R.id.tripDetailId);
+				if(tid != null) {
+					tid.setText(Long.toString(t.getTripId()));
+				}
 				if (tt != null) {
 					tt.setText(t.getName() + " - " + t.getTripDescription() + ".");
 				}
@@ -119,10 +124,11 @@ public class TripListActivity extends ListActivity {
 	private class TripOnItemClickListener implements OnItemClickListener {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Intent intent = new Intent(TripListActivity.this, TripViewActivity.class);
-			Log.d(TAG, "About to start trip view activity for id " + id);
-			startActivity(intent);
-			// TODO: need to implement
+			long tripId = Long.parseLong(((TextView)view.findViewById(R.id.tripDetailId)).getText().toString());
+			Intent intent = new Intent(getApplicationContext(), TripViewActivity.class);
+			intent.putExtra("tripId", tripId);
+			Log.d(TAG, "About to start trip view activity for trip id " + tripId);
+			startActivityForResult(intent, VIEW_TRIP);
 		}
 	}
 }
