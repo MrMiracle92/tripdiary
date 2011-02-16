@@ -38,6 +38,7 @@ public class TripViewActivity extends TabActivity {
 	public final int REQUEST_CAMERA_PIC = 0;
 	public final int REQUEST_VIDEO = 1;
 	
+	private final int EDIT_TRIP_SETTINGS = 4;
 
 
 	public final static String KEY_TRIP_ID = "tripId";
@@ -82,7 +83,7 @@ public class TripViewActivity extends TabActivity {
 		// if there is a bundle set tab based on whether trip is current
 		if (thisTripId == 0) {
 			Bundle extras = getIntent().getExtras();
-			thisTripId = extras.getLong(KEY_TRIP_ID);
+			thisTripId = extras != null ? extras.getLong(KEY_TRIP_ID) : 0;
 		}
 		if (thisTripId != storageMgr.getCurrentTripId()) {
 			tabHost.setCurrentTab(0);
@@ -125,7 +126,26 @@ public class TripViewActivity extends TabActivity {
 
 			menu.findItem(R.id.stop_trip).setEnabled(false);
 			menu.findItem(R.id.stop_trip).setVisible(false);
+			
+			menu.findItem(R.id.resume_trip).setEnabled(true);
+			menu.findItem(R.id.resume_trip).setVisible(true);
+
 		} else {
+			menu.findItem(R.id.add_photo).setEnabled(true);
+			menu.findItem(R.id.add_photo).setVisible(true);
+
+			menu.findItem(R.id.add_video).setEnabled(true);
+			menu.findItem(R.id.add_video).setVisible(true);
+
+			menu.findItem(R.id.add_audio).setEnabled(true);
+			menu.findItem(R.id.add_audio).setVisible(true);
+
+			menu.findItem(R.id.add_text).setEnabled(true);
+			menu.findItem(R.id.add_text).setVisible(true);
+
+			menu.findItem(R.id.stop_trip).setEnabled(true);
+			menu.findItem(R.id.stop_trip).setVisible(true);
+			
 			menu.findItem(R.id.resume_trip).setEnabled(false);
 			menu.findItem(R.id.resume_trip).setVisible(false);
 		}
@@ -190,7 +210,22 @@ public class TripViewActivity extends TabActivity {
                     Toast.LENGTH_SHORT).show(); 
     	}
     		
-    		
+    	case R.id.edit_trip_settings:
+    		Intent intent = new Intent(getApplicationContext(), TripSettingsActivity.class);
+			intent.putExtra(TripViewActivity.KEY_TRIP_ID, thisTripId);
+			Log.d(TAG, "About to start edit trip settings activity for trip id " + thisTripId);
+			startActivityForResult(intent, EDIT_TRIP_SETTINGS);
+			break;
+    	
+    	case R.id.resume_trip:
+			storageMgr.setTripIsCurrent(storageMgr.getCurrentTripId(), false);
+			storageMgr.setTripIsCurrent(thisTripId, true);
+			break;
+    	
+    	case R.id.stop_trip:
+    		storageMgr.setTripIsCurrent(thisTripId, false);
+			break;
+    	
     	}	
 		return false;
 	}
@@ -290,6 +325,11 @@ public class TripViewActivity extends TabActivity {
 				}
 				//TODO - add the entry in database
 			}
+			break;
+		}
+		
+		case EDIT_TRIP_SETTINGS: {
+			// nothing to do here
 			break;
 		}
 		
