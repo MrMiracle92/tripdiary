@@ -30,24 +30,26 @@ public final class R {
         public static final int video=0x7f020010;
     }
     public static final class id {
-        public static final int add_audio=0x7f06000c;
-        public static final int add_photo=0x7f06000a;
-        public static final int add_text=0x7f06000d;
-        public static final int add_video=0x7f06000b;
-        public static final int btnOk=0x7f060009;
-        public static final int delete_trip=0x7f060012;
-        public static final int edDescription=0x7f060008;
-        public static final int edName=0x7f060007;
-        public static final int edit_trip_settings=0x7f06000e;
-        public static final int resume_trip=0x7f06000f;
-        public static final int settingsTripImage=0x7f060006;
-        public static final int share_trip=0x7f060011;
-        public static final int stop_trip=0x7f060010;
+        public static final int add_audio=0x7f06000e;
+        public static final int add_photo=0x7f06000c;
+        public static final int add_text=0x7f06000f;
+        public static final int add_video=0x7f06000d;
+        public static final int btnOk=0x7f06000b;
+        public static final int delete_trip=0x7f060014;
+        public static final int edDescription=0x7f06000a;
+        public static final int edName=0x7f060009;
+        public static final int edit_trip_settings=0x7f060010;
+        public static final int resume_trip=0x7f060011;
+        public static final int settingsTripImage=0x7f060008;
+        public static final int share_trip=0x7f060013;
+        public static final int stop_trip=0x7f060012;
         public static final int tripDetailId=0x7f060002;
         public static final int tripDetailImage=0x7f060001;
         public static final int tripDetailText=0x7f060003;
-        public static final int tvCreated=0x7f060004;
-        public static final int tvLastUpdated=0x7f060005;
+        public static final int tvCreated=0x7f060005;
+        public static final int tvCreatedLbl=0x7f060004;
+        public static final int tvLastUpdated=0x7f060007;
+        public static final int tvLastUpdatedLbl=0x7f060006;
         public static final int tvStartNewTrip=0x7f060000;
     }
     public static final class layout {

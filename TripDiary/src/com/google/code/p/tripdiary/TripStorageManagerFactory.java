@@ -6,7 +6,9 @@ package com.google.code.p.tripdiary;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.os.Environment;
 import android.text.format.Time;
@@ -41,7 +43,7 @@ public class TripStorageManagerFactory {
 		// list of photos
 		private File[] photos = null;
 		// list of trips
-		List<TripDetail> trips = new ArrayList<TripDetail>();
+		Map<Long, TripDetail> trips = new HashMap<Long, TripDetail>();
 		// current trip
 		long currentTrip = 0;
 
@@ -52,7 +54,7 @@ public class TripStorageManagerFactory {
 //					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 			File dcimDir = Environment.getExternalStorageDirectory();
 			File photosDir = new File(dcimDir.getAbsolutePath()
-					+ "/.thumbnails");
+					+ "/DCIM/.thumbnails");
 			if (photosDir.exists() && photosDir.isDirectory()) {
 				photos = photosDir.listFiles(new FilenameFilter() {
 
@@ -67,7 +69,7 @@ public class TripStorageManagerFactory {
 			}
 
 			// init id with some non-zero random long
-			long id = ((long) Math.random()) + 1;
+			long id = 3253;
 			// create a list of trips
 			for (int i = 0; i < 20; i++) {
 				TripDetail detail = new TripDetail();
@@ -78,12 +80,13 @@ public class TripStorageManagerFactory {
 				}
 				detail.setTripDescription("Fake Description ["
 						+ detail.getImageLocation() + "]");
-				detail.setTripId(id++);
+				detail.setTripId(id);
 				Time t = new Time();
 				t.setToNow();
 				detail.setCreateTime(t.toMillis(false));
 
-				trips.add(detail);
+				trips.put(id, detail);
+				id++;
 			}
 
 			// make the last trip current
@@ -99,8 +102,7 @@ public class TripStorageManagerFactory {
 
 		public TripDetail getTripDetail(long tripId)
 				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return null;
+			return trips.get(tripId);
 		}
 
 		public List<TripEntry> getEntriesForTrip(long tripId)
@@ -112,7 +114,11 @@ public class TripStorageManagerFactory {
 		// just a dummy method to create trips, pointing to a few camera
 		// picture thumbnails (if any)
 		public List<TripDetail> getAllTrips() {
-			return trips;
+			List<TripDetail> tripList = new ArrayList<TripDetail>();
+			for(long tripId : trips.keySet()) {
+				tripList.add(trips.get(tripId));
+			}
+			return tripList;
 		}
 
 		public long createNewTrip(String name, String tripDescription,
@@ -132,7 +138,13 @@ public class TripStorageManagerFactory {
 		}
 
 		public void setTripIsCurrent(long tripId, boolean isCurrent) {
-			currentTrip = tripId;
+			currentTrip =  isCurrent ? tripId : 0;
+		}
+
+		public long getLastUpdatedTime(long tripId) {
+			Time t = new Time();
+			t.setToNow();
+			return t.toMillis(false);
 		}
 	}
 }

@@ -79,4 +79,13 @@ public interface TripStorageManager {
 	 * @param isCurrent the value to which the isCurrent attribute is to be set.
 	 */
 	void setTripIsCurrent(long tripId, boolean isCurrent);
+	
+	/**
+	 * Gets the last updated time (from the latest trip entry) for the given trip id. 
+	 * If none, then gets the created time for the trip.
+	 * 
+	 * @param tripId the trip whose last updated time is needed
+	 * @return
+	 */
+	long getLastUpdatedTime(long tripId);
 }

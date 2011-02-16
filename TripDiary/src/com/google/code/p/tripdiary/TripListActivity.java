@@ -126,7 +126,7 @@ public class TripListActivity extends ListActivity {
 				long id) {
 			long tripId = Long.parseLong(((TextView)view.findViewById(R.id.tripDetailId)).getText().toString());
 			Intent intent = new Intent(getApplicationContext(), TripViewActivity.class);
-			intent.putExtra("tripId", tripId);
+			intent.putExtra(TripViewActivity.KEY_TRIP_ID, tripId);
 			Log.d(TAG, "About to start trip view activity for trip id " + tripId);
 			startActivityForResult(intent, VIEW_TRIP);
 		}
