@@ -7,50 +7,49 @@ package com.google.code.p.tripdiary;
  */
 public class TripDetail {
 	/** The name of the trip. */
-	private String name;
+	public String name;
 
 	/** The trip's ID. */
-	private long tripId;
+	public long tripId;
 
 	/** The time the trip was started, in seconds since epoch. */
-	private long createTime;
+	public long createTime;
 
 	/** Text description for the trip. */
-	private String tripDescription;
+	public String tripDescription;
 
 	/** If true, trace route is enabled for this trip. */
-	private boolean traceRouteEnabled;
-	
-	private String imageLocation;
+	public boolean traceRouteEnabled;
 
-	private boolean isCurrent;
-	
+	/** The location of the default thumbnail of the trip */
+	public String defaultThumbnail;
+
+	public boolean isCurrent = false;
+
+	public TripDetail(String name, long tripId, long createTime, String tripDescription,
+			boolean traceRouteEnabled, String defaultThumbnail) {
+		this.name = name;
+		this.tripId = tripId;
+		this.createTime = createTime;
+		this.tripDescription = tripDescription;
+		this.traceRouteEnabled = traceRouteEnabled;
+		this.defaultThumbnail = defaultThumbnail;
+	}
+
+	public TripDetail() {}
+
+	@Override
+	public String toString() {
+		return String.format("%s,%d,%d,%s,%s,%s", name, tripId, createTime, tripDescription,
+				traceRouteEnabled, defaultThumbnail);
+	}
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public String getTripDescription() {
-		return tripDescription;
-	}
-	
-	public void setTripDescription(String description) {
-		this.tripDescription = description;
-	}
-
-	public String getImageLocation() {
-		return imageLocation;
-	}
-
-	public void setImageLocation(String location) {
-		this.imageLocation = location;
-	}
-
-	public String toString() {
-		return name + "-" + tripDescription;
 	}
 
 	public long getTripId() {
@@ -69,32 +68,35 @@ public class TripDetail {
 		this.createTime = createTime;
 	}
 
+	public String getTripDescription() {
+		return tripDescription;
+	}
+
+	public void setTripDescription(String tripDescription) {
+		this.tripDescription = tripDescription;
+	}
+
+	public boolean isTraceRouteEnabled() {
+		return traceRouteEnabled;
+	}
+
+	public void setTraceRouteEnabled(boolean traceRouteEnabled) {
+		this.traceRouteEnabled = traceRouteEnabled;
+	}
+
+	public String getDefaultThumbnail() {
+		return defaultThumbnail;
+	}
+
+	public void setDefaultThumbnail(String defaultThumbnail) {
+		this.defaultThumbnail = defaultThumbnail;
+	}
+
 	public boolean isCurrent() {
 		return isCurrent;
 	}
 
 	public void setCurrent(boolean isCurrent) {
 		this.isCurrent = isCurrent;
-	}
-	
-	/** The location of the default thumbnail of the trip */
-	public String defaultThumbnail;
-
-	public TripDetail(String name, long tripId, long createTime, String tripDescription,
-			boolean traceRouteEnabled, String defaultThumbnail) {
-		this.name = name;
-		this.tripId = tripId;
-		this.createTime = createTime;
-		this.tripDescription = tripDescription;
-		this.traceRouteEnabled = traceRouteEnabled;
-		this.defaultThumbnail = defaultThumbnail;
-	}
-
-	public TripDetail() {}
-
-	@Override
-	public String toString() {
-		return String.format("%s,%d,%d,%s,%s,%s", name, tripId, createTime, tripDescription,
-				traceRouteEnabled, defaultThumbnail);
 	}
 }

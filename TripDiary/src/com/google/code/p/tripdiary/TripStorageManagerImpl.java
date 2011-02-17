@@ -163,4 +163,22 @@ public class TripStorageManagerImpl implements TripStorageManager {
 			return tripDetail;
 		}
 	}
+
+	@Override
+	public long getCurrentTripId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setTripIsCurrent(long tripId, boolean isCurrent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public long getLastUpdatedTime(long tripId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
