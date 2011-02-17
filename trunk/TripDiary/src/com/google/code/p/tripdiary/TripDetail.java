@@ -77,6 +77,24 @@ public class TripDetail {
 		this.isCurrent = isCurrent;
 	}
 	
-	// TODO add more details as needed.
+	/** The location of the default thumbnail of the trip */
+	public String defaultThumbnail;
 
+	public TripDetail(String name, long tripId, long createTime, String tripDescription,
+			boolean traceRouteEnabled, String defaultThumbnail) {
+		this.name = name;
+		this.tripId = tripId;
+		this.createTime = createTime;
+		this.tripDescription = tripDescription;
+		this.traceRouteEnabled = traceRouteEnabled;
+		this.defaultThumbnail = defaultThumbnail;
+	}
+
+	public TripDetail() {}
+
+	@Override
+	public String toString() {
+		return String.format("%s,%d,%d,%s,%s,%s", name, tripId, createTime, tripDescription,
+				traceRouteEnabled, defaultThumbnail);
+	}
 }

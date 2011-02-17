@@ -11,6 +11,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+    <activity android:name=".DbTestActivity"></activity>
     <activity android:name="TripSettingsActivity" android:label="@string/settings_title"></activity>
     <activity android:name="TripViewActivity" android:label="@string/app_name"></activity>
     <activity android:name="TripGalleryActivity" android:label="@string/app_name"></activity>
