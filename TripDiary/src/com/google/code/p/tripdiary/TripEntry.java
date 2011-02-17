@@ -29,5 +29,21 @@ public class TripEntry {
 	/** The type of media stored at the mediaLocation. */
 	public MediaType mediaType;
 
-	// TODO (Arunabha) add an appropriate ctor and extra fields if necessary.
+	/** The time this entry was created. */
+	public long creationTime;
+
+	public TripEntry(double lat, double lon, String mediaLocation, MediaType mediaType,
+			long creationTime) {
+		this.lat = lat;
+		this.lon = lon;
+		this.mediaLocation = mediaLocation;
+		this.creationTime = creationTime;
+		this.mediaType = mediaType;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%d,%d,%d,%s,%s,%d", tripEntryId, lat, lon, mediaLocation, mediaType,
+				creationTime);
+	}
 }

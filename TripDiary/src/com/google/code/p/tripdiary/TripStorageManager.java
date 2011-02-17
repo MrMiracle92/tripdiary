@@ -1,6 +1,6 @@
 package com.google.code.p.tripdiary;
 
-import java.util.List;
+import android.database.Cursor;
 
 /**
  * Interface for the storage manager for the Trip Diary. This interface
@@ -13,8 +13,10 @@ public interface TripStorageManager {
 	/**
 	 * Creates a new trip with the given name and returns the trip's id.
 	 * 
-	 * @param name the name of the trip
-	 * @return the trip's id which can be used to further reference the trip.
+	 * @param name
+	 *            the name of the trip
+	 * @return the trip's id which can be used to further reference the trip, or
+	 *         -1 if the trip cannot be created
 	 */
 	long createNewTrip(String name, String tripDescription, boolean traceRouteEnabled);
 
@@ -27,7 +29,8 @@ public interface TripStorageManager {
 	 * @param traceRouteEnabled
 	 * @throws IllegalArgumentException if the trip does not exist.
 	 */
-	void updateTrip(long tripId, String name, String tripDescription, boolean traceRouteEnabled)
+	void updateTrip(long tripId, String name, String tripDescription, boolean traceRouteEnabled,
+			String thumbnailLocation)
 	throws IllegalArgumentException;
 
 	/**
@@ -47,14 +50,14 @@ public interface TripStorageManager {
 	 * @return the list of TripEntry objects
 	 * @throws IllegalArgumentException if the trip does not exist.
 	 */
-	List<TripEntry> getEntriesForTrip(long tripId) throws IllegalArgumentException;
+	Cursor getEntriesForTrip(long tripId) throws IllegalArgumentException;
 
 	/**
 	 * Returns the list of all known trips
 	 * 
 	 * @return
 	 */
-	List<TripDetail> getAllTrips();
+	Cursor getAllTrips();
 
 	/**
 	 * Gets the details for a particular trip.
