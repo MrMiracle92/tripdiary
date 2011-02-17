@@ -31,7 +31,7 @@ public class TripListActivity extends ListActivity {
 	private TripStorageManager storageMgr;
 	private final int SETTINGS_CREATE_NEW_TRIP = 1;
 	private final int VIEW_TRIP = 2;
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,10 +39,10 @@ public class TripListActivity extends ListActivity {
 		setContentView(R.layout.main);
 
 		storageMgr = TripStorageManagerFactory.getTripStorageManager();
-		
+
 		fillDataUsingList();
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -73,7 +73,7 @@ public class TripListActivity extends ListActivity {
 
 	private class TripDetailAdapter extends ArrayAdapter<TripDetail> {
 
-		private ArrayList<TripDetail> items;
+		private final ArrayList<TripDetail> items;
 
 		public TripDetailAdapter(Context context, int textViewResourceId,
 				ArrayList<TripDetail> items) {
@@ -100,9 +100,9 @@ public class TripListActivity extends ListActivity {
 					tt.setText(t.getName() + " - " + t.getTripDescription() + ".");
 				}
 				if (it != null) {
-					if (t.getImageLocation() != null) {
+					if (t.getDefaultThumbnail() != null) {
 						it.setImageURI(Uri.fromFile(new File(t
-								.getImageLocation())));
+								.getDefaultThumbnail())));
 					} else {
 						it.setImageResource(R.drawable.defaultpicicon);
 					}
@@ -113,6 +113,7 @@ public class TripListActivity extends ListActivity {
 	}
 
 	private class StartNewTripListener implements OnClickListener {
+		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(TripListActivity.this, TripSettingsActivity.class);
 			Log.d(TAG, "About to start activity for result");
@@ -122,6 +123,7 @@ public class TripListActivity extends ListActivity {
 	}
 
 	private class TripOnItemClickListener implements OnItemClickListener {
+		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			long tripId = Long.parseLong(((TextView)view.findViewById(R.id.tripDetailId)).getText().toString());
