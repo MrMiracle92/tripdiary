@@ -7,11 +7,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This activity is used to create and edit trip settings.
@@ -20,12 +22,14 @@ import android.widget.TextView;
  */
 public class TripSettingsActivity extends Activity {
 //	private final String TAG = "TripSettingsActivity";
-
 	
 	public final static String KEY_TRIP_ID = "tripId";
+	public final static String KEY_IS_NEW_TRIP = "newTripFlag";
 
 	private TripStorageManager storageMgr;
-	private long thisTripId;
+	private long mThisTripId = 0;
+	private boolean mIsNewTrip = false;
+	
 	private final int DIALOG_INVALID_INPUT_NAME_REQUIRED = 0;
 
 	@Override
@@ -37,20 +41,33 @@ public class TripSettingsActivity extends Activity {
 		DateFormat df = DateFormat.getDateInstance();
 		
 		// if the activity is resumed
-		thisTripId = savedInstanceState != null ? savedInstanceState
-				.getLong(KEY_TRIP_ID) : 0;
-
-		// if there is a bundle get trip id from there
-		if (thisTripId == 0) {
+		if (savedInstanceState != null) {
+			mThisTripId = savedInstanceState.getLong(KEY_TRIP_ID,
+					AppDataDefs.NO_CURRENT_TRIP);
+			mIsNewTrip = savedInstanceState.getBoolean(KEY_IS_NEW_TRIP, false);
+		} else {
+			// if there is a bundle get details from there
 			Bundle extras = getIntent().getExtras();
-			thisTripId = extras != null ? extras.getLong(KEY_TRIP_ID) : 0;
+			if (extras != null) {
+				mThisTripId = extras.getLong(KEY_TRIP_ID,
+						AppDataDefs.NO_CURRENT_TRIP);
+				mIsNewTrip = extras.getBoolean(KEY_IS_NEW_TRIP, false);
+			}
 		}
-		
-		if (thisTripId != 0) {
+
+		if (!mIsNewTrip) {
 			// this is an existing trip to edit
-			TripDetail td = storageMgr.getTripDetail(thisTripId);
+			TripDetail td = storageMgr.getTripDetail(mThisTripId);
+			if(td == null) {
+				// no trip with the given trip id exists
+				Toast toast = Toast.makeText(getApplicationContext(), "Trip with id " + mThisTripId + " not found.", Toast.LENGTH_SHORT);
+				toast.show();
+				setResult(RESULT_CANCELED);
+				finish();
+				return;
+			}
 			((TextView)findViewById(R.id.tvCreated)).setText(df.format(new Date(td.getCreateTime())));
-			((TextView)findViewById(R.id.tvLastUpdated)).setText(df.format(new Date(storageMgr.getLastUpdatedTime(thisTripId))));
+			((TextView)findViewById(R.id.tvLastUpdated)).setText(df.format(new Date(storageMgr.getLastUpdatedTime(mThisTripId))));
 			((TextView)findViewById(R.id.edName)).setText(td.getName());
 			((TextView)findViewById(R.id.edDescription)).setText(td.getTripDescription());
 		} else {
@@ -102,12 +119,13 @@ public class TripSettingsActivity extends Activity {
 		} else {
 			String tripDescription = ((EditText) findViewById(R.id.edDescription)).getText().toString();
 			boolean traceRouteEnabled = false;
-			if(thisTripId == 0) {
-				thisTripId = storageMgr.createNewTrip(name, tripDescription, traceRouteEnabled);
-				storageMgr.setTripIsCurrent(storageMgr.getCurrentTripId(), false);
-				storageMgr.setTripIsCurrent(thisTripId, true);
+			if(mThisTripId == 0) {
+				mThisTripId = storageMgr.createNewTrip(name, tripDescription, traceRouteEnabled);
+				SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.CURRENT_TRIP_ID_KEY, MODE_PRIVATE).edit();
+				editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, mThisTripId);
+				editPref.commit();
 			} else {
-				storageMgr.updateTrip(thisTripId, name, tripDescription, traceRouteEnabled, null);
+				storageMgr.updateTrip(mThisTripId, name, tripDescription, traceRouteEnabled, null);
 			}
 			// finish with result ok
 			finish();
