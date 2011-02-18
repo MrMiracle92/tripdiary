@@ -107,7 +107,7 @@ public class TripSettingsActivity extends Activity {
 				storageMgr.setTripIsCurrent(storageMgr.getCurrentTripId(), false);
 				storageMgr.setTripIsCurrent(thisTripId, true);
 			} else {
-				storageMgr.updateTrip(thisTripId, name, tripDescription, traceRouteEnabled);
+				storageMgr.updateTrip(thisTripId, name, tripDescription, traceRouteEnabled, null);
 			}
 			// finish with result ok
 			finish();

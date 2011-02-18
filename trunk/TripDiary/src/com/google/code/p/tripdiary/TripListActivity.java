@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,7 +43,17 @@ public class TripListActivity extends ListActivity {
 
 		storageMgr = TripStorageManagerFactory.getTripStorageManager();
 
-		fillDataUsingList();
+		// get list of trips from storage manager
+		Cursor tripCursor = storageMgr.getAllTrips();
+
+		// set listeners for new trips and list items
+		findViewById(R.id.tvStartNewTrip).setOnClickListener(
+				new StartNewTripListener());
+		getListView().setOnItemClickListener(new TripOnItemClickListener());
+
+		// set the list adapter
+		setListAdapter(new TripDetailAdapter(getApplicationContext(), 
+				tripCursor, true));
 	}
 
 	@Override
@@ -56,59 +69,53 @@ public class TripListActivity extends ListActivity {
 		}
 	}
 
-	private void fillDataUsingList() {
-		// get list of trips from storage manager
-		ArrayList<TripDetail> tripList = new ArrayList<TripDetail>(
-				storageMgr.getAllTrips());
+	private class TripDetailAdapter extends CursorAdapter {
 
-		// set listeners for new trips and list items
-		findViewById(R.id.tvStartNewTrip).setOnClickListener(
-				new StartNewTripListener());
-		getListView().setOnItemClickListener(new TripOnItemClickListener());
+		private int mTripIdIdx;
+		private int mTripNameIdx;
+		private int mTripDescriptionIdx;
+		private int mTripImageIdx;
 
-		// set the list adapter
-		setListAdapter(new TripDetailAdapter(this, R.layout.trip_item, tripList));
+		public TripDetailAdapter(Context context, Cursor c, boolean autoRequery) {
+			super(context, c, autoRequery);
 
-	}
+			mTripIdIdx = c.getColumnIndex(DbDefs.TripCols._ID);
+			mTripNameIdx = c.getColumnIndex(DbDefs.TripCols.TRIP_NAME);
+			mTripDescriptionIdx = c
+					.getColumnIndex(DbDefs.TripCols.TRIP_DESCRIPTION);
+			mTripImageIdx = c
+					.getColumnIndex(DbDefs.TripCols.THUMBNAIL_LOCATION);
 
-	private class TripDetailAdapter extends ArrayAdapter<TripDetail> {
-
-		private final ArrayList<TripDetail> items;
-
-		public TripDetailAdapter(Context context, int textViewResourceId,
-				ArrayList<TripDetail> items) {
-			super(context, textViewResourceId, items);
-			this.items = items;
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			if (v == null) {
-				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.trip_item, parent, false);
+		public View newView(Context context, Cursor cursor, ViewGroup parent) {
+			LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			return vi.inflate(R.layout.trip_item, parent, false);
+		}
+
+		@Override
+		public void bindView(View view, Context context, Cursor cursor) {
+			TextView tvText = (TextView) view.findViewById(R.id.tripDetailText);
+			ImageView ivImg = (ImageView) view
+					.findViewById(R.id.tripDetailImage);
+			TextView tvId = (TextView) view.findViewById(R.id.tripDetailId);
+			if (tvId != null) {
+				tvId.setText(Long.toString(cursor.getLong(mTripIdIdx)));
 			}
-			TripDetail t = items.get(position);
-			if (t != null) {
-				TextView tt = (TextView) v.findViewById(R.id.tripDetailText);
-				ImageView it = (ImageView) v.findViewById(R.id.tripDetailImage);
-				TextView tid = (TextView) v.findViewById(R.id.tripDetailId);
-				if(tid != null) {
-					tid.setText(Long.toString(t.getTripId()));
-				}
-				if (tt != null) {
-					tt.setText(t.getName() + " - " + t.getTripDescription() + ".");
-				}
-				if (it != null) {
-					if (t.getDefaultThumbnail() != null) {
-						it.setImageURI(Uri.fromFile(new File(t
-								.getDefaultThumbnail())));
-					} else {
-						it.setImageResource(R.drawable.defaultpicicon);
-					}
+			if (tvText != null) {
+				tvText.setText(cursor.getString(mTripNameIdx) + " - "
+						+ cursor.getString(mTripDescriptionIdx) + ".");
+			}
+			if (ivImg != null) {
+				Bitmap bm = BitmapFactory.decodeFile(cursor
+						.getString(mTripImageIdx));
+				if (bm != null) {
+					ivImg.setImageBitmap(bm);
+				} else {
+					ivImg.setImageResource(R.drawable.defaultpicicon);
 				}
 			}
-			return v;
 		}
 	}
 
