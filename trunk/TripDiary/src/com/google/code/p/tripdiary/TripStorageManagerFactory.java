@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.google.code.p.tripdiary.DbDefs.TripCols;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Environment;
@@ -48,8 +49,6 @@ public class TripStorageManagerFactory {
 		private File[] photos = null;
 		// list of trips
 		Map<Long, TripDetail> trips = new HashMap<Long, TripDetail>();
-		// current trip
-		long currentTrip = 0;
 		
 		MatrixCursor mMatrixCursor = null;
 
@@ -88,13 +87,15 @@ public class TripStorageManagerFactory {
 				if(photos != null && i < photos.length) {
 					photo = photos[i].getAbsolutePath();
 				}
-				mMatrixCursor.addRow(new Object[] { id++, "Fake Trip " + i,
-						"Fake Description", Long.toString(t.toMillis(false)),
-						Boolean.toString(false), photo });
+				TripDetail td = new TripDetail();
+				td.setName("Fake Trip " + i);
+				td.setTripDescription("Fake Description");
+				td.setCreateTime(t.toMillis(false));
+				trips.put(id, td);
+				mMatrixCursor.addRow(new Object[] { id++, td.getName(),
+						td.getTripDescription(), td.getCreateTime(),
+						Boolean.toString(td.isTraceRouteEnabled()), photo });
 			}
-
-			// make the last trip current
-			currentTrip = id - 1;
 		}
 
 		public void updateTrip(long tripId, String name,
@@ -114,17 +115,7 @@ public class TripStorageManagerFactory {
 			return null;
 		}
 
-		// just a dummy method to create trips, pointing to a few camera
-		// picture thumbnails (if any)
 		public Cursor getAllTrips() {
-//			String[] columnNames = new String[]{TripCols._ID, TripCols.TRIP_NAME, TripCols.TRIP_DESCRIPTION,
-//					TripCols.CREATE_TIME, TripCols.TRACEROUTE_ENABLED, TripCols.THUMBNAIL_LOCATION};
-//			Cursor c = new MatrixCursor(columnNames);
-//			List<TripDetail> tripList = new ArrayList<TripDetail>();
-//			for(long tripId : trips.keySet()) {
-//				tripList.add(trips.get(tripId));
-//			}
-//			return tripList;
 			return mMatrixCursor;
 		}
 
@@ -138,14 +129,6 @@ public class TripStorageManagerFactory {
 				throws IllegalArgumentException {
 			// TODO Auto-generated method stub
 			return false;
-		}
-
-		public long getCurrentTripId() {
-			return currentTrip;
-		}
-
-		public void setTripIsCurrent(long tripId, boolean isCurrent) {
-			currentTrip =  isCurrent ? tripId : 0;
 		}
 
 		public long getLastUpdatedTime(long tripId) {

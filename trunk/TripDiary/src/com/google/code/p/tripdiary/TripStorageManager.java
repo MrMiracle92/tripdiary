@@ -69,21 +69,6 @@ public interface TripStorageManager {
 	TripDetail getTripDetail(long tripId) throws IllegalArgumentException;
 	
 	/**
-	 * Returns the current trip id.
-	 * 
-	 * @return the trip id that is current, 0 if no trip is current.
-	 */
-	long getCurrentTripId();
-	
-	/**
-	 * Sets the trip's isCurrent attribute to isCurrent.
-	 * 
-	 * @param tripId the trip whose isCurrent attribute needs to be set.
-	 * @param isCurrent the value to which the isCurrent attribute is to be set.
-	 */
-	void setTripIsCurrent(long tripId, boolean isCurrent);
-	
-	/**
 	 * Gets the last updated time (from the latest trip entry) for the given trip id. 
 	 * If none, then gets the created time for the trip.
 	 * 

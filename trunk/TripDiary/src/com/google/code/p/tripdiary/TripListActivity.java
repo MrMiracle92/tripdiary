@@ -1,15 +1,11 @@
 package com.google.code.p.tripdiary;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -123,6 +119,7 @@ public class TripListActivity extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(TripListActivity.this, TripSettingsActivity.class);
+			intent.putExtra(TripSettingsActivity.KEY_IS_NEW_TRIP, true);
 			Log.d(TAG, "About to start activity for result");
 			startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 		}

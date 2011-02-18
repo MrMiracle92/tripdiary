@@ -9,8 +9,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.code.p.tripdiary.AppDataDefs;
+
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -43,7 +46,6 @@ public class TripViewActivity extends TabActivity {
 
 	public final static String KEY_TRIP_ID = "tripId";
 
-	private TripStorageManager storageMgr;
 	private long thisTripId = 0;
 
 	@Override
@@ -74,8 +76,6 @@ public class TripViewActivity extends TabActivity {
 				.setContent(intent);
 		tabHost.addTab(spec);
 
-		storageMgr = TripStorageManagerFactory.getTripStorageManager();
-
 		// if the activity is resumed
 		thisTripId = savedInstanceState != null ? savedInstanceState
 				.getLong(KEY_TRIP_ID) : 0;
@@ -84,11 +84,6 @@ public class TripViewActivity extends TabActivity {
 		if (thisTripId == 0) {
 			Bundle extras = getIntent().getExtras();
 			thisTripId = extras != null ? extras.getLong(KEY_TRIP_ID) : 0;
-		}
-		if (thisTripId != storageMgr.getCurrentTripId()) {
-			tabHost.setCurrentTab(0);
-		} else {
-			tabHost.setCurrentTab(1);
 		}
 
 		// at this point there needs to be a valid thisTripId
@@ -99,6 +94,26 @@ public class TripViewActivity extends TabActivity {
 			setResult(RESULT_CANCELED);
 			finish();
 		}
+		
+		// set the right tab to show
+		if (thisTripId != getCurrentTripId()) {
+			tabHost.setCurrentTab(0);
+		} else {
+			tabHost.setCurrentTab(1);
+		}
+
+	}
+	
+	private long getCurrentTripId() {
+		return getApplicationContext().getSharedPreferences(
+				AppDataDefs.CURRENT_TRIP_ID_KEY, MODE_PRIVATE).getLong(
+				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+	}
+	
+	private void setCurrentTripId(long tripId) {
+		SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.CURRENT_TRIP_ID_KEY, MODE_PRIVATE).edit();
+		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, thisTripId);
+		editPref.commit();
 	}
 
 	@Override
@@ -111,7 +126,7 @@ public class TripViewActivity extends TabActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (thisTripId != storageMgr.getCurrentTripId()) {
+		if (thisTripId != getCurrentTripId()) {
 			menu.findItem(R.id.add_photo).setEnabled(false);
 			menu.findItem(R.id.add_photo).setVisible(false);
 
@@ -218,12 +233,11 @@ public class TripViewActivity extends TabActivity {
 			break;
     	
     	case R.id.resume_trip:
-			storageMgr.setTripIsCurrent(storageMgr.getCurrentTripId(), false);
-			storageMgr.setTripIsCurrent(thisTripId, true);
+    		TripViewActivity.this.setCurrentTripId(thisTripId);
 			break;
     	
     	case R.id.stop_trip:
-    		storageMgr.setTripIsCurrent(thisTripId, false);
+    		TripViewActivity.this.setCurrentTripId(0);
 			break;
     	
     	}	
