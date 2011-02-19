@@ -48,7 +48,7 @@ public class TripListActivity extends ListActivity {
 		getListView().setOnItemClickListener(new TripOnItemClickListener());
 
 		// set the list adapter
-		setListAdapter(new TripDetailAdapter(getApplicationContext(), 
+		setListAdapter(new TripAdapter(getApplicationContext(), 
 				tripCursor, true));
 	}
 
@@ -65,14 +65,14 @@ public class TripListActivity extends ListActivity {
 		}
 	}
 
-	private class TripDetailAdapter extends CursorAdapter {
+	private class TripAdapter extends CursorAdapter {
 
 		private int mTripIdIdx;
 		private int mTripNameIdx;
 		private int mTripDescriptionIdx;
 		private int mTripImageIdx;
 
-		public TripDetailAdapter(Context context, Cursor c, boolean autoRequery) {
+		public TripAdapter(Context context, Cursor c, boolean autoRequery) {
 			super(context, c, autoRequery);
 
 			mTripIdIdx = c.getColumnIndex(DbDefs.TripCols._ID);
@@ -119,7 +119,7 @@ public class TripListActivity extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(TripListActivity.this, TripSettingsActivity.class);
-			intent.putExtra(TripSettingsActivity.KEY_IS_NEW_TRIP, true);
+			intent.putExtra(AppDataDefs.KEY_IS_NEW_TRIP, true);
 			Log.d(TAG, "About to start activity for result");
 			startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 		}
@@ -132,7 +132,7 @@ public class TripListActivity extends ListActivity {
 				long id) {
 			long tripId = Long.parseLong(((TextView)view.findViewById(R.id.tripDetailId)).getText().toString());
 			Intent intent = new Intent(getApplicationContext(), TripViewActivity.class);
-			intent.putExtra(TripViewActivity.KEY_TRIP_ID, tripId);
+			intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
 			Log.d(TAG, "About to start trip view activity for trip id " + tripId);
 			startActivityForResult(intent, VIEW_TRIP);
 		}
