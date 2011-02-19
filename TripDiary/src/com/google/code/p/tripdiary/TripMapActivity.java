@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 /**
@@ -41,8 +40,7 @@ public class TripMapActivity extends MapActivity {
 		}
 
 		// Using locationManager class to obtain GPS locations
-		locationManager = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		LocationListener locationListener = new tripDiaryLocationListener();
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
@@ -63,11 +61,11 @@ public class TripMapActivity extends MapActivity {
 
 		public void onLocationChanged(Location location) {
 			if (location != null) {
-				Toast.makeText(
-						getBaseContext(),
-						"Location changed : Lat: " + location.getLatitude()
-								+ " Lng: " + location.getLongitude(),
-						Toast.LENGTH_SHORT).show(); //TODO to be deleted with actual code
+//				Toast.makeText(
+//						getBaseContext(),
+//						"Location changed : Lat: " + location.getLatitude()
+//								+ " Lng: " + location.getLongitude(),
+//						Toast.LENGTH_SHORT).show(); //TODO to be deleted with actual code
 
 			}
 		}
