@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.code.p.tripdiary.DbDefs.TripCols;
+import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -47,10 +49,11 @@ public class TripStorageManagerFactory {
 
 		// list of photos
 		private File[] photos = null;
-		// list of trips
+		// map of trip id to trips
 		Map<Long, TripDetail> trips = new HashMap<Long, TripDetail>();
 		
-		MatrixCursor mMatrixCursor = null;
+		MatrixCursor mTripCursor = null;
+		Map<Long, MatrixCursor> mEntryCursors = new HashMap<Long, MatrixCursor>();
 
 		TripStorageManagerFake() {
 
@@ -73,18 +76,22 @@ public class TripStorageManagerFactory {
 				});
 			}
 
-			String[] columnNames = new String[]{TripCols._ID, TripCols.TRIP_NAME, TripCols.TRIP_DESCRIPTION,
+			String[] columnNamesTrip = new String[]{TripCols._ID, TripCols.TRIP_NAME, TripCols.TRIP_DESCRIPTION,
 					TripCols.CREATE_TIME, TripCols.TRACEROUTE_ENABLED, TripCols.THUMBNAIL_LOCATION};
-			mMatrixCursor = new MatrixCursor(columnNames);
+			mTripCursor = new MatrixCursor(columnNamesTrip);
+			
+			String[] columnNamesEntry = new String[]{TripDetailCols._ID, TripDetailCols.TRIP_ID, TripDetailCols.CREATE_TIME,
+					TripDetailCols.LAT, TripDetailCols.LON, TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION};
+			
 			// init id with some non-zero random long
 			long id = 3253;
+			long id2 = 879;
 			// create a list of trips
 			for (int i = 0; i < 20; i++) {
-				
 				Time t = new Time();
 				t.setToNow();
 				String photo = null;
-				if(photos != null && i < photos.length) {
+				if (photos != null && i < photos.length) {
 					photo = photos[i].getAbsolutePath();
 				}
 				TripDetail td = new TripDetail();
@@ -92,9 +99,25 @@ public class TripStorageManagerFactory {
 				td.setTripDescription("Fake Description");
 				td.setCreateTime(t.toMillis(false));
 				trips.put(id, td);
-				mMatrixCursor.addRow(new Object[] { id++, td.getName(),
+				mTripCursor.addRow(new Object[] { id, td.getName(),
 						td.getTripDescription(), td.getCreateTime(),
 						Boolean.toString(td.isTraceRouteEnabled()), photo });
+				String entryPhoto = null;
+				MatrixCursor mEntryCursor = new MatrixCursor(columnNamesEntry);
+				for (int j = 0; j < 50; j++) {
+					if (photos != null && j < photos.length) {
+						entryPhoto = photos[j].getAbsolutePath();
+					}
+
+					TripEntry te = new TripEntry(47.465, -122.23, entryPhoto,
+							MediaType.PHOTO, td.getCreateTime());
+
+					mEntryCursor.addRow(new Object[] { id2++, td.getTripId(),
+							te.creationTime, te.lat, te.lon,
+							te.mediaType.name(), te.mediaLocation });
+				}
+				mEntryCursors.put(id, mEntryCursor);
+				id++;
 			}
 		}
 
@@ -111,12 +134,11 @@ public class TripStorageManagerFactory {
 
 		public Cursor getEntriesForTrip(long tripId)
 				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return null;
+			return mEntryCursors.get(tripId);
 		}
 
 		public Cursor getAllTrips() {
-			return mMatrixCursor;
+			return mTripCursor;
 		}
 
 		public long createNewTrip(String name, String tripDescription,

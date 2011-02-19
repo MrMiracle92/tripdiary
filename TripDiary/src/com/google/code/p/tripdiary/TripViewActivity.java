@@ -43,23 +43,31 @@ public class TripViewActivity extends TabActivity {
 	
 	private final int EDIT_TRIP_SETTINGS = 4;
 
-
-	public final static String KEY_TRIP_ID = "tripId";
-
-	private long thisTripId = 0;
+	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trip_view);
+		
+		// if the activity is resumed
+		thisTripId = savedInstanceState != null ? savedInstanceState
+				.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
+
+		// if there is a bundle set tab based on whether trip is current
+		if (thisTripId == 0) {
+			Bundle extras = getIntent().getExtras();
+			thisTripId = extras != null ? extras.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
+		}
 
 		Resources res = getResources(); // Resource object to get Drawables
 		TabHost tabHost = getTabHost(); // The activity TabHost
 		TabHost.TabSpec spec = null; // Resusable TabSpec for each tab
 		Intent intent = null; // Reusable Intent for each tab
-
+		
 		// Create an Intent to launch an Activity for the tab (to be reused)
 		intent = new Intent().setClass(this, TripGalleryActivity.class);
+		intent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
 
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost
@@ -71,20 +79,11 @@ public class TripViewActivity extends TabActivity {
 
 		// Do the same for the other tab
 		intent = new Intent().setClass(this, TripMapActivity.class);
+		intent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
 		spec = tabHost.newTabSpec("map")
 				.setIndicator("Map", res.getDrawable(R.drawable.map_res))
 				.setContent(intent);
 		tabHost.addTab(spec);
-
-		// if the activity is resumed
-		thisTripId = savedInstanceState != null ? savedInstanceState
-				.getLong(KEY_TRIP_ID) : 0;
-
-		// if there is a bundle set tab based on whether trip is current
-		if (thisTripId == 0) {
-			Bundle extras = getIntent().getExtras();
-			thisTripId = extras != null ? extras.getLong(KEY_TRIP_ID) : 0;
-		}
 
 		// at this point there needs to be a valid thisTripId
 		if (thisTripId == 0) {
@@ -227,7 +226,7 @@ public class TripViewActivity extends TabActivity {
     		
     	case R.id.edit_trip_settings:
     		Intent intent = new Intent(getApplicationContext(), TripSettingsActivity.class);
-			intent.putExtra(TripViewActivity.KEY_TRIP_ID, thisTripId);
+			intent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
 			Log.d(TAG, "About to start edit trip settings activity for trip id " + thisTripId);
 			startActivityForResult(intent, EDIT_TRIP_SETTINGS);
 			break;

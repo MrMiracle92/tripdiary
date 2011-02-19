@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.google.code.p.tripdiary.AppDataDefs.KEY_IS_NEW_TRIP;
+import static com.google.code.p.tripdiary.AppDataDefs.KEY_TRIP_ID;;
+
 /**
  * This activity is used to create and edit trip settings.
  * 
@@ -23,9 +26,6 @@ import android.widget.Toast;
 public class TripSettingsActivity extends Activity {
 //	private final String TAG = "TripSettingsActivity";
 	
-	public final static String KEY_TRIP_ID = "tripId";
-	public final static String KEY_IS_NEW_TRIP = "newTripFlag";
-
 	private TripStorageManager storageMgr;
 	private long mThisTripId = 0;
 	private boolean mIsNewTrip = false;

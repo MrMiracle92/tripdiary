@@ -18,5 +18,10 @@ public final class AppDataDefs {
 	
 	/** Trip Id value when no trip is current */
 	public final static long NO_CURRENT_TRIP = 0;
+	
+	
+	/* Keys for Intents */
+	public final static String KEY_TRIP_ID = "com.google.code.p.tripdiary.TripId";
+	public final static String KEY_IS_NEW_TRIP = "com.google.code.p.tripdiary.IsNewTrip";
 
 }
