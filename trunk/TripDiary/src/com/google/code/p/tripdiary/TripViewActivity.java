@@ -280,12 +280,9 @@ public class TripViewActivity extends TabActivity {
 				// save image in /tripDiary
 				try
 				{
-					File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/tripDiary");
-					if (!dir.exists()) // first time
-					{
-						dir.mkdir();
-					}
-					FileOutputStream fos = new FileOutputStream(dir + "/" + getMediaFileName() + ".jpg");
+					String fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/" + getMediaFileName() + ".jpg";
+					File dir = new File(fileName);
+					FileOutputStream fos = new FileOutputStream(dir);
 					capturedPic.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 				}
 				catch (Exception e)
@@ -301,6 +298,7 @@ public class TripViewActivity extends TabActivity {
 						  Toast.LENGTH_SHORT).show();
 
 				//TODO - add the entry in database
+				//TODO - with lat, lon
 			}
 			break;
 		}
