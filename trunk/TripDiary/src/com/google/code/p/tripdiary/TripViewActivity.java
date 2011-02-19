@@ -294,7 +294,7 @@ public class TripViewActivity extends TabActivity {
 				}
 				
 				Toast.makeText(getBaseContext(),
-						  "Photo captured and saved in /tripDiary",
+						  "Photo captured and saved in gallery",
 						  Toast.LENGTH_SHORT).show();
 
 				//TODO - add the entry in database
