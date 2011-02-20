@@ -100,17 +100,34 @@ public class TripViewActivity extends TabActivity {
 		} else {
 			tabHost.setCurrentTab(1);
 		}
+		
+		// listen for changes to current trip
+		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
+				MODE_PRIVATE).registerOnSharedPreferenceChangeListener(
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+					@Override
+					public void onSharedPreferenceChanged(
+							SharedPreferences sharedPreferences, String key) {
+						Log.d(TAG, "onSharedPreferenceChanged - " + key);
+//						mTripAdapter.notifyDataSetInvalidated();
+//						mTripCursor.requery();
+						Toast toast = Toast.makeText(getApplicationContext(),
+								"Key " + key + " was refreshed.", Toast.LENGTH_SHORT);
+						toast.show();
+					}
+				});
 
 	}
 	
 	private long getCurrentTripId() {
 		return getApplicationContext().getSharedPreferences(
-				AppDataDefs.CURRENT_TRIP_ID_KEY, MODE_PRIVATE).getLong(
+				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
 				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
 	}
 	
 	private void setCurrentTripId(long tripId) {
-		SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.CURRENT_TRIP_ID_KEY, MODE_PRIVATE).edit();
+		SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE).edit();
 		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, thisTripId);
 		editPref.commit();
 	}
