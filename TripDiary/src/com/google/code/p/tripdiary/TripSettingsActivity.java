@@ -121,7 +121,7 @@ public class TripSettingsActivity extends Activity {
 			boolean traceRouteEnabled = false;
 			if(mThisTripId == 0) {
 				mThisTripId = storageMgr.createNewTrip(name, tripDescription, traceRouteEnabled);
-				SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.CURRENT_TRIP_ID_KEY, MODE_PRIVATE).edit();
+				SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE).edit();
 				editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, mThisTripId);
 				editPref.commit();
 			} else {
