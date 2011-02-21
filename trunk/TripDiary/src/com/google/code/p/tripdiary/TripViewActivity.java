@@ -13,12 +13,10 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +35,7 @@ import android.widget.Toast;
 public class TripViewActivity extends TabActivity {
 
 	private static String TAG = "TripViewActivity";
-	
+
 	public final int REQUEST_PICTURE = 0;
 	public final int REQUEST_VIDEO = 1;
 	public final int REQUEST_AUDIO = 2;
@@ -58,7 +56,8 @@ public class TripViewActivity extends TabActivity {
 		// if there is a bundle set tab based on whether trip is current
 		if (thisTripId == 0) {
 			Bundle extras = getIntent().getExtras();
-			thisTripId = extras != null ? extras.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
+			thisTripId = extras != null ? extras
+					.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
 		}
 
 		Resources res = getResources(); // Resource object to get Drawables
@@ -102,7 +101,7 @@ public class TripViewActivity extends TabActivity {
 		} else {
 			tabHost.setCurrentTab(1);
 		}
-		
+
 		// listen for changes to current trip
 		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
 				MODE_PRIVATE).registerOnSharedPreferenceChangeListener(
@@ -112,10 +111,11 @@ public class TripViewActivity extends TabActivity {
 					public void onSharedPreferenceChanged(
 							SharedPreferences sharedPreferences, String key) {
 						Log.d(TAG, "onSharedPreferenceChanged - " + key);
-//						mTripAdapter.notifyDataSetInvalidated();
-//						mTripCursor.requery();
+						// mTripAdapter.notifyDataSetInvalidated();
+						// mTripCursor.requery();
 						Toast toast = Toast.makeText(getApplicationContext(),
-								"Key " + key + " was refreshed.", Toast.LENGTH_SHORT);
+								"Key " + key + " was refreshed.",
+								Toast.LENGTH_SHORT);
 						toast.show();
 					}
 				});
@@ -129,7 +129,9 @@ public class TripViewActivity extends TabActivity {
 	}
 
 	private void setCurrentTripId(long tripId) {
-		SharedPreferences.Editor editPref = getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE).edit();
+		SharedPreferences.Editor editPref = getApplicationContext()
+				.getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE)
+				.edit();
 		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, thisTripId);
 		editPref.commit();
 	}
@@ -212,9 +214,8 @@ public class TripViewActivity extends TabActivity {
 					android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
 			// Adding a max duration for video clips
-			// videoIntent.putExtra("android.intent.extra.durationLimit",
-			// 30000);
-			// videoIntent.putExtra("EXTRA_VIDEO_QUALITY", 0);
+			videoIntent.putExtra("android.intent.extra.durationLimit", 30000);
+			videoIntent.putExtra("EXTRA_VIDEO_QUALITY", 0);
 
 			startActivityForResult(videoIntent, REQUEST_VIDEO);
 
@@ -223,12 +224,14 @@ public class TripViewActivity extends TabActivity {
 
 		case R.id.add_audio: {
 			// Prints on the screen. //TODO remove later
-			Toast.makeText(getBaseContext(), "Press the button to start recording",
-					Toast.LENGTH_SHORT).show();
-			
-			Intent audioIntent = new Intent().setClass(this, AudioRecorder.class);
+			Toast.makeText(getBaseContext(),
+					"Press the button to start recording", Toast.LENGTH_SHORT)
+					.show();
+
+			Intent audioIntent = new Intent().setClass(this,
+					AudioRecorder.class);
 			startActivityForResult(audioIntent, REQUEST_AUDIO);
-			
+
 			break;
 		}
 
@@ -359,8 +362,10 @@ public class TripViewActivity extends TabActivity {
 
 			if (resultCode == RESULT_OK) {
 				try {
-					String abc = (String) dataIntent.getExtras().get("returnKey");
-					Toast.makeText(getBaseContext(), "Audio captured and saved in " + abc,
+					String abc = (String) dataIntent.getExtras().get(
+							"returnKey");
+					Toast.makeText(getBaseContext(),
+							"Audio captured and saved in " + abc,
 							Toast.LENGTH_SHORT).show();
 
 				} catch (Exception e) {
@@ -372,7 +377,6 @@ public class TripViewActivity extends TabActivity {
 								"Exception while capturing audio",
 								Toast.LENGTH_SHORT).show();
 				}
-
 			}
 
 			break;
