@@ -302,21 +302,21 @@ public class TripViewActivity extends TabActivity {
 					FileOutputStream fos = new FileOutputStream(dir);
 					capturedPic.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 					
-					// get handle for LocationManager
-			        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-			        // connect to the GPS location service
-			        Location location = lm.getLastKnownLocation("gps");
-
-			        // get lat, lon
-			        double lat = location.getLatitude();
-			        double lon = location.getLongitude();
-
-			        TripEntry tripEntry = new TripEntry(lat, lon, fileName, MediaType.PHOTO);
-			        TripStorageManager storageMgr = TripStorageManagerFactory.getTripStorageManager();
-			        storageMgr.addTripEntry(thisTripId, tripEntry);
-			        
-			        Log.d("ARPITA", "Trip entry created " + lat + " " + lon + " " + fileName);
+//					// get handle for LocationManager
+//			        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//
+//			        // connect to the GPS location service
+//			        Location location = lm.getLastKnownLocation("gps");
+//
+//			        // get lat, lon
+//			        double lat = location.getLatitude();
+//			        double lon = location.getLongitude();
+//
+//			        TripEntry tripEntry = new TripEntry(lat, lon, fileName, MediaType.PHOTO);
+//			        TripStorageManager storageMgr = TripStorageManagerFactory.getTripStorageManager();
+//			        storageMgr.addTripEntry(thisTripId, tripEntry);
+//			        
+//			        Log.d("ARPITA", "Trip entry created " + lat + " " + lon + " " + fileName);
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(),
 							"Exception while saving a captured photo ",
