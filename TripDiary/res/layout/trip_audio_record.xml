@@ -1,25 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/audiorecordview" 
-	android:paddingTop="2dp"
-	android:paddingBottom="2dp" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content" 
-	android:orientation="horizontal">
-	
-    <Button android:text="@string/audio_start" 
-            android:id="@+id/audioStart"
-            android:layout_width="fill_parent" 
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:onClick="startRecord">
-    </Button>
-            
-    <Button android:text="@string/audio_stop" 
-            android:id="@+id/audioStop"
-            android:layout_width="fill_parent" 
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:onClick="stopRecord">
-    </Button>
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/audiorecordview" 
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/audio_bg"
+    android:layout_centerInParent="true">
+    
+    <ImageButton android:id="@+id/audioStart"
+                 android:src="@drawable/audio_play"
+                 android:background="@android:color/transparent" 
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_alignParentBottom="true"
+                 android:layout_alignParentLeft="true"
+                 android:paddingLeft="45dp"
+                 android:onClick="startRecord">
+    </ImageButton>
+    
+    <ImageButton android:id="@+id/audioStartFaded"
+                 android:src="@drawable/audio_play_faded"
+                 android:background="@android:color/transparent" 
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_alignParentBottom="true"
+                 android:layout_alignParentLeft="true"
+                 android:paddingLeft="45dp"
+                 android:onClick="startRecord">
+    </ImageButton>
+    
+    <ImageButton android:id="@+id/audioStopFaded"
+                 android:src="@drawable/audio_stop_faded"
+                 android:background="@android:color/transparent" 
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_alignParentBottom="true"
+                 android:layout_alignParentRight="true"
+                 android:paddingRight="45dp"
+                 >
+    </ImageButton>
+    
+    <ImageButton android:id="@+id/audioStop"
+                 android:src="@drawable/audio_stop"
+                 android:background="@android:color/transparent" 
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_alignParentBottom="true"
+                 android:layout_alignParentRight="true"
+                 android:paddingRight="45dp"
+                 android:onClick="stopRecord">
+    </ImageButton>
+
+</RelativeLayout>

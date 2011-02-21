@@ -9,11 +9,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.android.maps.GeoPoint;
+import com.google.code.p.tripdiary.TripEntry.MediaType;
+
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -223,11 +229,6 @@ public class TripViewActivity extends TabActivity {
 		}
 
 		case R.id.add_audio: {
-			// Prints on the screen. //TODO remove later
-			Toast.makeText(getBaseContext(),
-					"Press the button to start recording", Toast.LENGTH_SHORT)
-					.show();
-
 			Intent audioIntent = new Intent().setClass(this,
 					AudioRecorder.class);
 			startActivityForResult(audioIntent, REQUEST_AUDIO);
@@ -300,6 +301,22 @@ public class TripViewActivity extends TabActivity {
 					File dir = new File(fileName);
 					FileOutputStream fos = new FileOutputStream(dir);
 					capturedPic.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+					
+					// get handle for LocationManager
+			        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+			        // connect to the GPS location service
+			        Location location = lm.getLastKnownLocation("gps");
+
+			        // get lat, lon
+			        double lat = location.getLatitude();
+			        double lon = location.getLongitude();
+
+			        TripEntry tripEntry = new TripEntry(lat, lon, fileName, MediaType.PHOTO);
+			        TripStorageManager storageMgr = TripStorageManagerFactory.getTripStorageManager();
+			        storageMgr.addTripEntry(thisTripId, tripEntry);
+			        
+			        Log.d("ARPITA", "Trip entry created " + lat + " " + lon + " " + fileName);
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(),
 							"Exception while saving a captured photo ",
@@ -307,6 +324,7 @@ public class TripViewActivity extends TabActivity {
 					Log.e(TAG,
 							"Exception while saving a captured photo : "
 									+ e.getMessage());
+					e.printStackTrace();
 				}
 
 				Toast.makeText(getBaseContext(),
