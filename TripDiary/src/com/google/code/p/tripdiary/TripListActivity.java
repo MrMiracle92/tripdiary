@@ -35,9 +35,10 @@ public class TripListActivity extends ListActivity {
 
 	private final int SETTINGS_CREATE_NEW_TRIP = 1;
 	private final int VIEW_TRIP = 2;
-	
+
 	// Note: After much tinkering around, it turns out that we need to create
-	// this member for the preferences to get called. See details in the link here
+	// this member for the preferences to get called. See details in the link
+	// here
 	// http://stackoverflow.com/questions/2542938/sharedpreferences-onsharedpreferencechangelistener-not-being-called-consistently/3104265#3104265
 	SharedPreferences.OnSharedPreferenceChangeListener mPrefListener;
 
@@ -64,7 +65,7 @@ public class TripListActivity extends ListActivity {
 
 		// listen for changes to current trip
 		mPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-			@Override
+
 			public void onSharedPreferenceChanged(
 					SharedPreferences sharedPreferences, String key) {
 				Log.d(TAG, "onSharedPreferenceChanged - " + key);
@@ -158,7 +159,6 @@ public class TripListActivity extends ListActivity {
 	}
 
 	private class StartNewTripListener implements OnClickListener {
-		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(TripListActivity.this,
 					TripSettingsActivity.class);
@@ -170,7 +170,6 @@ public class TripListActivity extends ListActivity {
 	}
 
 	private class TripOnItemClickListener implements OnItemClickListener {
-		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			long tripId = Long.parseLong(((TextView) view

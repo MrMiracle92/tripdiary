@@ -22,6 +22,8 @@ public class TripMapActivity extends MapActivity {
 	private LocationManager locationManager;
 	private MapController mapController;
 	private MapView mapView;
+	
+	private LocationListener locationListener;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -45,16 +47,42 @@ public class TripMapActivity extends MapActivity {
 		// Using locationManager class to obtain GPS locations
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-		LocationListener locationListener = new TripLocationListener();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				0, locationListener);
+		locationListener = new TripLocationListener();
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 10.0f, locationListener);
 	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
+	
+	/**
+	 * Turn off the location updates if we're paused
+	 * @author arpitas
+	 */
+	@Override
+	public void onPause() {
+	    super.onPause();
+	    locationManager.removeUpdates(locationListener);
+	}
 
+	/**
+	 * Resume location updates if we're paused
+	 * @author arpitas
+	 *
+	 */
+	@Override
+	public void onResume() {
+	    super.onResume();
+	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 10.0f, locationListener);
+	}
+	
+	
+	/**
+	 * Location listener class
+	 * @author arpitas
+	 *
+	 */
 	public class TripLocationListener implements LocationListener {
 
 		public TripLocationListener() {
