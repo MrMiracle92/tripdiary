@@ -30,27 +30,7 @@ public class AudioRecorder extends Activity {
 		setContentView(R.layout.trip_audio_record);
 
 		Button recordButton = (Button) findViewById(R.id.audioStart);
-
-		// recordButton.setOnClickListener(new OnClickListener() {
-		// public void onClick(View v) {
-		// startRecord("/sdcard/audiorecordexample.3gpp");
-		// }
-		// });
-
-		// recordbutton.setOnClickListener(new OnClickListener() {
-		// public void onClick(View v) {
-		// startRecord("/sdcard/audiorecordexample.3gpp");
-		// }
-		// }
-		// );
-
 		Button stopbutton = (Button) findViewById(R.id.audioStop);
-
-		// stopbutton.setOnClickListener(new OnClickListener() {
-		// public void onClick(View v) {
-		// stopRecord();
-		// }
-		// });
 	}
 
 	public void startRecord(View view) {
@@ -71,6 +51,7 @@ public class AudioRecorder extends Activity {
 			// record button goes away
 			Button button = (Button) findViewById(R.id.audioStart);
 			button.setVisibility(View.GONE);
+			
 			// stop button shows up
 			Button stopbutton = (Button) findViewById(R.id.audioStop);
 			stopbutton.setVisibility(View.VISIBLE);
@@ -88,6 +69,7 @@ public class AudioRecorder extends Activity {
 
 			// prepare media recorder
 			mediaRecorder.prepare();
+			
 			// start media recorder
 			mediaRecorder.start();
 		} catch (Exception e) { // TODO Change to IllegalStateException ,
@@ -99,11 +81,13 @@ public class AudioRecorder extends Activity {
 
 	public void stopRecord(View view) {
 		try {
-			// stop media recorder
 			if (mediaRecorder != null) {
+				// stop media recorder
 				mediaRecorder.stop();
+				
 				// reset media recorder
 				mediaRecorder.reset();
+				
 				mediaRecorder = null;
 			} else {
 
