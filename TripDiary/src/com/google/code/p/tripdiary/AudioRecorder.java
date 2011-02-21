@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * Activity which records audio Another way of capturing audio is // Using
@@ -23,7 +24,7 @@ import android.widget.Button;
  * activity. We need that to extract the path where the audio is stored.
  * 
  * 
- * Default path for saving audio :
+ * Default path for saved audio clips :
  * /sdcard/Sounds/tripDiaryAudioRecord_<time>.3gpp
  * 
  * @author Arpita Saha
@@ -59,7 +60,9 @@ public class AudioRecorder extends Activity {
 	public void startRecord(View view) {
 		String state = android.os.Environment.getExternalStorageState();
 		if (!state.equals(android.os.Environment.MEDIA_MOUNTED)) {
-
+			Toast.makeText(getBaseContext(),
+					"SD Card is not mounted.  It is " + state + ".",
+					Toast.LENGTH_SHORT).show();
 			Log.d(TAG, "SD Card is not mounted.  It is " + state + ".");
 			return;
 		}
@@ -126,7 +129,6 @@ public class AudioRecorder extends Activity {
 			Button stopbutton = (Button) findViewById(R.id.audioStop);
 			stopbutton.setVisibility(View.GONE);
 
-			// view.invalidate();
 			Intent data = new Intent();
 			data.putExtra("returnKey", filePath);
 			this.setResult(RESULT_OK, data);
