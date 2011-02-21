@@ -3,15 +3,20 @@
  */
 package com.google.code.p.tripdiary;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,7 +35,7 @@ import android.widget.Toast;
 public class TripGalleryActivity extends Activity {
 	private final static String TAG = "TripGalleryActivity";
 
-	private TripStorageManager storageMgr;
+	private TripStorageManager mStorageMgr;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 
@@ -55,35 +60,58 @@ public class TripGalleryActivity extends Activity {
 				finish();
 				return;
 			}
-
-			// get the storage manager and the trip entry cursor for the trip id
-			storageMgr = TripStorageManagerFactory.getTripStorageManager();
-			Cursor tripEntryCursor = storageMgr.getEntriesForTrip(thisTripId);
-			
-			GridView gridview = (GridView) findViewById(R.id.gridview);
-			gridview.setAdapter(new TripEntryAdapter(getApplicationContext(),
-					tripEntryCursor, true));
-
-			gridview.setOnItemClickListener(new OnItemClickListener() {
-				public void onItemClick(AdapterView<?> parent, View v,
-						int position, long id) {
-					Toast.makeText(TripGalleryActivity.this, "" + position + ", " + id,
-							Toast.LENGTH_SHORT).show();
-				}
-			});
 		}
+
+		// get the storage manager
+		mStorageMgr = TripStorageManagerFactory.getTripStorageManager();
+
+		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
+		GridView gridview = (GridView) findViewById(R.id.gridview);
+		gridview.setAdapter(new TripEntryAdapter(getApplicationContext(),
+				tripEntryCursor, true));
+
+		gridview.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				TripEntry te = mStorageMgr.getTripEntry(id);
+				if (te.mediaLocation != null) {
+					File file = new File(te.mediaLocation);
+					Intent intent = new Intent();
+					intent.setAction(android.content.Intent.ACTION_VIEW);
+					switch(te.mediaType) {
+					case PHOTO:
+						intent.setDataAndType(Uri.fromFile(file), "image/*");
+						startActivity(intent);
+						break;
+					case VIDEO:
+						intent.setDataAndType(Uri.fromFile(file), "video/*");
+						startActivity(intent);
+						break;
+					case AUDIO:
+						intent.setDataAndType(Uri.fromFile(file), "audio/*");
+						startActivity(intent);
+					case TEXT:
+						intent.setDataAndType(Uri.fromFile(file), "text/*");
+						startActivity(intent);
+					case NONE:
+					default:
+						break;	
+					}
+				}
+			}
+		});
 	}
 
 	private class TripEntryAdapter extends CursorAdapter {
 
-//		private int mEntryIdx;
+		// private int mEntryIdx;
 		private int mEntryMediaLocIdx;
 		private int mEntryTypeIdx;
 
 		public TripEntryAdapter(Context context, Cursor c, boolean autoRequery) {
 			super(context, c, autoRequery);
 
-//			mEntryIdx = c.getColumnIndex(DbDefs.TripDetailCols._ID);
+			// mEntryIdx = c.getColumnIndex(DbDefs.TripDetailCols._ID);
 			mEntryMediaLocIdx = c
 					.getColumnIndex(DbDefs.TripDetailCols.MEDIA_LOCATION);
 			mEntryTypeIdx = c.getColumnIndex(DbDefs.TripDetailCols.MEDIA_TYPE);
@@ -92,15 +120,22 @@ public class TripGalleryActivity extends Activity {
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
-			ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(95, 95));
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            return imageView;
+			// ImageView imageView = new ImageView(context);
+			// imageView.setLayoutParams(new GridView.LayoutParams(95, 95));
+			// imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+			// return imageView;
+			LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			return vi.inflate(R.layout.trip_view_grid_item, parent, false);
 		}
 
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
-			ImageView ivImg = (ImageView) view;
+			ImageView ivImg = (ImageView) view.findViewById(R.id.tripGridImage);
+			// TextView tvId = (TextView)
+			// view.findViewById(R.id.tripGridEntryId);
+
+			// tvId.setText(cursor.getString(mEntryIdx));
+
 			Bitmap bm = null;
 			int defRes = R.drawable.picture;
 			switch (Enum.valueOf(TripEntry.MediaType.class,
@@ -108,9 +143,9 @@ public class TripGalleryActivity extends Activity {
 			case PHOTO:
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inSampleSize = 4;
-				options.inTempStorage = new byte[16*1024];
-				bm = BitmapFactory.decodeFile(cursor
-						.getString(mEntryMediaLocIdx), options);
+				options.inTempStorage = new byte[16 * 1024];
+				bm = BitmapFactory.decodeFile(
+						cursor.getString(mEntryMediaLocIdx), options);
 				defRes = R.drawable.picture;
 				break;
 			case VIDEO:
