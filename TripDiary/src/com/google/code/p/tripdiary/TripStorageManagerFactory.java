@@ -84,6 +84,24 @@ public class TripStorageManagerFactory {
 			td.setCreateTime(t.toMillis(false));
 			return td;
 		}
+		
+		@Override
+		public TripEntry getTripEntry(long tripEntryId)
+				throws IllegalArgumentException {
+			String media = null;
+			TripEntry.MediaType mediaType = TripEntry.MediaType.NONE;
+			if(photos != null && photos.length > 0) {
+				media = photos[0].getAbsolutePath();
+				mediaType = TripEntry.MediaType.PHOTO;
+			}
+			Time t = new Time();
+			t.setToNow();
+
+			TripEntry te = new TripEntry(47.465, -122.23, media,
+					mediaType, t.toMillis(false));
+
+			return te;
+		}
 
 		public Cursor getEntriesForTrip(long tripId)
 				throws IllegalArgumentException {
@@ -99,7 +117,7 @@ public class TripStorageManagerFactory {
 				return entryCursor;
 			}
 			
-			long id2 = 879;
+			long id2 = 7000;
 
 			String entryPhoto = null;
 			for (int j = 0; j < 50; j++) {

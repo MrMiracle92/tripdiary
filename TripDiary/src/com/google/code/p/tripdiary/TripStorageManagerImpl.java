@@ -165,6 +165,13 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	}
 
 	@Override
+	public TripEntry getTripEntry(long tripEntryId)
+			throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public long getLastUpdatedTime(long tripId) {
 		// TODO Auto-generated method stub
 		return 0;

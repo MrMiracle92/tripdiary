@@ -23,7 +23,7 @@
 			</LinearLayout>
 			<ImageView android:id="@+id/settingsTripImage"
 				android:layout_width="fill_parent" android:layout_height="160dip"
-				android:padding="4dip" android:scaleType="fitCenter"></ImageView>
+				android:padding="4dip" android:scaleType="fitCenter" android:src="@drawable/image_pick"></ImageView>
 			<TextView android:text="@string/settings_name_label"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 			<EditText android:id="@+id/edName" android:layout_width="fill_parent"

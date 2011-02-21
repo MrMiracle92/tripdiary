@@ -67,6 +67,15 @@ public interface TripStorageManager {
 	 * @throws IllegalArgumentException if the tripId is invalid
 	 */
 	TripDetail getTripDetail(long tripId) throws IllegalArgumentException;
+
+	/**
+	 * Gets the details for a particular trip entry.
+	 * 
+	 * @param tripEntryId the trip entry whose details to get.
+	 * @return the details of trip entry corresponding to tripId
+	 * @throws IllegalArgumentException if the trip entry Id is invalid
+	 */
+	TripEntry getTripEntry(long tripEntryId) throws IllegalArgumentException;
 	
 	/**
 	 * Gets the last updated time (from the latest trip entry) for the given trip id. 
