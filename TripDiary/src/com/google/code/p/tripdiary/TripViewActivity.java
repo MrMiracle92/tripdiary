@@ -223,21 +223,11 @@ public class TripViewActivity extends TabActivity {
 
 		case R.id.add_audio: {
 			// Prints on the screen. //TODO remove later
-			Toast.makeText(getBaseContext(), "Capturing audio",
+			Toast.makeText(getBaseContext(), "Press the button to start recording",
 					Toast.LENGTH_SHORT).show();
 			
-			
-			// Using intent
-			 Intent recordIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-			 String fileName = "/sdcard/" + getMediaFileName() + "test.amr";
-			 File file = new File(fileName);
-			 recordIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-			 startActivityForResult(recordIntent, REQUEST_AUDIO);
-
-
-
-//			Intent audioIntent = new Intent().setClass(this, AudioRecorder.class);
-//			startActivityForResult(audioIntent, REQUEST_AUDIO);
+			Intent audioIntent = new Intent().setClass(this, AudioRecorder.class);
+			startActivityForResult(audioIntent, REQUEST_AUDIO);
 			
 			break;
 		}
@@ -273,7 +263,7 @@ public class TripViewActivity extends TabActivity {
 		return false;
 	}
 
-	private String getMediaFileName() {
+	public static String getMediaFileName() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 		Date date = new Date();
 		String mediaFileName = dateFormat.format(date);
@@ -369,6 +359,9 @@ public class TripViewActivity extends TabActivity {
 
 			if (resultCode == RESULT_OK) {
 				try {
+					String abc = (String) dataIntent.getExtras().get("returnKey");
+					Toast.makeText(getBaseContext(), "Audio captured and saved in " + abc,
+							Toast.LENGTH_SHORT).show();
 
 				} catch (Exception e) {
 					if (dataIntent == null)
@@ -381,11 +374,6 @@ public class TripViewActivity extends TabActivity {
 				}
 
 			}
-			// Uri mRecordingUri = dataIntent.getData();
-			// String mRecordingFilename =
-			// getFilenameFromUri(mRecordingUri);
-			// String mFilename = mRecordingFilename;
-			// Log.d("ARPITA", "AUDIO FILE IS AT " + mRecordingFilename);
 
 			break;
 		}
