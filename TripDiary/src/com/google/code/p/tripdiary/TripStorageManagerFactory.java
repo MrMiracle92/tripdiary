@@ -5,21 +5,16 @@ package com.google.code.p.tripdiary;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.google.code.p.tripdiary.DbDefs.TripCols;
-import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
-import com.google.code.p.tripdiary.TripEntry.MediaType;
-
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Environment;
 import android.text.format.Time;
 import android.util.Log;
+
+import com.google.code.p.tripdiary.DbDefs.TripCols;
+import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * This is the Factory class for TripStorageManager.
@@ -98,7 +93,12 @@ public class TripStorageManagerFactory {
 					TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION };
 
 			MatrixCursor entryCursor = new MatrixCursor(columnNamesEntry);
-
+			
+			if(tripId == 9999) {
+				// new trip, empty cursor
+				return entryCursor;
+			}
+			
 			long id2 = 879;
 
 			String entryPhoto = null;
@@ -131,10 +131,10 @@ public class TripStorageManagerFactory {
 			MatrixCursor allTripsCursor = new MatrixCursor(columnNamesTrip);
 
 			long id = 3253;
+			Time t = new Time();
+			t.setToNow();
 			// create a list of trips
 			for (int i = 0; i < 20; i++) {
-				Time t = new Time();
-				t.setToNow();
 				String photo = null;
 				if (photos != null && i < photos.length) {
 					photo = photos[i].getAbsolutePath();
@@ -143,6 +143,11 @@ public class TripStorageManagerFactory {
 						"Fake Description", t.toMillis(false),
 						Boolean.toString(false), photo });
 			}
+			// we'll use this as a new trip
+			id = 9999;
+			allTripsCursor.addRow(new Object[] { id, "Fake Trip " + id,
+					"Fake Description", t.toMillis(false),
+					Boolean.toString(false), null });
 
 			return allTripsCursor;
 		}
@@ -150,7 +155,7 @@ public class TripStorageManagerFactory {
 		public long createNewTrip(String name, String tripDescription,
 				boolean traceRouteEnabled) {
 			// TODO Auto-generated method stub
-			return 0;
+			return 9999;
 		}
 
 		public boolean addTripEntry(long tripId, TripEntry tripEntry)

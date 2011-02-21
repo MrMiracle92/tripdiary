@@ -88,7 +88,8 @@ public class TripViewActivity extends TabActivity {
 
 		// at this point there needs to be a valid thisTripId
 		if (thisTripId == 0) {
-			Toast toast = Toast.makeText(this, "Could not determine trip id!",
+			Log.e(TAG, "Could not determine trip id.");
+			Toast toast = Toast.makeText(this, "Could not find trip!",
 					Toast.LENGTH_SHORT);
 			toast.show();
 			setResult(RESULT_CANCELED);
