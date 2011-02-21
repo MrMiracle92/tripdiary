@@ -12,21 +12,19 @@ import android.view.View;
 import android.widget.Button;
 
 /**
- * Activity which records audio
- * Another way of capturing audio is 
- * 	// Using intent
-	Intent recordIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-	String fileName = "/sdcard/" + getMediaFileName() + "test.amr";
-	File file = new File(fileName);
-	recordIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-	startActivityForResult(recordIntent, REQUEST_AUDIO);
+ * Activity which records audio Another way of capturing audio is // Using
+ * intent Intent recordIntent = new
+ * Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION); String fileName =
+ * "/sdcard/" + getMediaFileName() + "test.amr"; File file = new File(fileName);
+ * recordIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+ * startActivityForResult(recordIntent, REQUEST_AUDIO);
  * 
- * However, this does not work for us as no intent is returned to the caller activity.
- * We need that to extract the path where the audio is stored.
+ * However, this does not work for us as no intent is returned to the caller
+ * activity. We need that to extract the path where the audio is stored.
  * 
  * 
- * Default path for saving audio : 
- *  /sdcard/Sounds/tripDiaryAudioRecord_<time>.3gpp
+ * Default path for saving audio :
+ * /sdcard/Sounds/tripDiaryAudioRecord_<time>.3gpp
  * 
  * @author Arpita Saha
  * 
@@ -61,7 +59,7 @@ public class AudioRecorder extends Activity {
 	public void startRecord(View view) {
 		String state = android.os.Environment.getExternalStorageState();
 		if (!state.equals(android.os.Environment.MEDIA_MOUNTED)) {
-			
+
 			Log.d(TAG, "SD Card is not mounted.  It is " + state + ".");
 			return;
 		}
@@ -102,7 +100,7 @@ public class AudioRecorder extends Activity {
 			mediaRecorder.start();
 		} catch (Exception e) { // TODO Change to IllegalStateException ,
 								// IOException
-			Log.d("ARPITA", "Exception while recording audio " + e.getMessage());
+			Log.d(TAG, "Exception while recording audio " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -137,7 +135,7 @@ public class AudioRecorder extends Activity {
 			finish();
 
 		} catch (Exception e) {
-			Log.d("ARPITA",
+			Log.d(TAG,
 					"Exception while stopping audio recording "
 							+ e.getMessage());
 			e.printStackTrace();
