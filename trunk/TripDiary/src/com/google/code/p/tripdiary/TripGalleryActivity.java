@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,6 +28,7 @@ import android.widget.Toast;
  * 
  */
 public class TripGalleryActivity extends Activity {
+	private final static String TAG = "TripGalleryActivity";
 
 	private TripStorageManager storageMgr;
 
@@ -48,9 +50,7 @@ public class TripGalleryActivity extends Activity {
 
 			// by now there should be a trip id
 			if (thisTripId == 0) {
-				Toast toast = Toast.makeText(getApplicationContext(),
-						"Could not determine Trip Id.", Toast.LENGTH_SHORT);
-				toast.show();
+				Log.e(TAG, "Could not find trip.");
 				setResult(RESULT_CANCELED);
 				finish();
 				return;

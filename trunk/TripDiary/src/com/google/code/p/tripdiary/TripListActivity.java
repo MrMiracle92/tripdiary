@@ -18,7 +18,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * This is where the application starts. This activity lists the trips, and also
@@ -37,8 +36,7 @@ public class TripListActivity extends ListActivity {
 	private final int VIEW_TRIP = 2;
 
 	// Note: After much tinkering around, it turns out that we need to create
-	// this member for the preferences to get called. See details in the link
-	// here
+	// this member for the preferences to get called. For details see
 	// http://stackoverflow.com/questions/2542938/sharedpreferences-onsharedpreferencechangelistener-not-being-called-consistently/3104265#3104265
 	SharedPreferences.OnSharedPreferenceChangeListener mPrefListener;
 
@@ -60,16 +58,42 @@ public class TripListActivity extends ListActivity {
 
 		// set listeners for new trips and list items
 		findViewById(R.id.tvStartNewTrip).setOnClickListener(
-				new StartNewTripListener());
-		getListView().setOnItemClickListener(new TripOnItemClickListener());
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(TripListActivity.this,
+								TripSettingsActivity.class);
+						intent.putExtra(AppDataDefs.KEY_IS_NEW_TRIP, true);
+						Log.d(TAG,
+								"About to start Trip Settings activity for new trip.");
+						startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
+					}
+				});
+		
+		// set listener for list item click
+		getListView().setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				long tripId = Long.parseLong(((TextView) view
+						.findViewById(R.id.tripDetailId)).getText().toString());
+				Intent intent = new Intent(getApplicationContext(),
+						TripViewActivity.class);
+				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
+				Log.d(TAG, "About to start trip view activity for trip id "
+						+ tripId);
+				startActivityForResult(intent, VIEW_TRIP);
+			}
+		});
 
 		// listen for changes to current trip
 		mPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-
+			@Override
 			public void onSharedPreferenceChanged(
 					SharedPreferences sharedPreferences, String key) {
-				Log.d(TAG, "onSharedPreferenceChanged - " + key);
-				mTripAdapter.notifyDataSetChanged();
+				if (key == AppDataDefs.CURRENT_TRIP_ID_KEY) {
+					mTripAdapter.notifyDataSetChanged();
+				}
 			}
 		};
 		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
@@ -91,8 +115,13 @@ public class TripListActivity extends ListActivity {
 		} else {
 			switch (requestCode) {
 			case SETTINGS_CREATE_NEW_TRIP:
-				// TODO: new trip settings created.. check and proceed to
-				// current trip
+				long tripId = getCurrentTripId();
+				Intent intent = new Intent(getApplicationContext(),
+						TripViewActivity.class);
+				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
+				Log.d(TAG, "About to start trip view activity for trip id "
+						+ tripId);
+				startActivityForResult(intent, VIEW_TRIP);
 			}
 		}
 	}
@@ -155,31 +184,6 @@ public class TripListActivity extends ListActivity {
 			} else {
 				currTripIndicator.setBackgroundResource(0);
 			}
-		}
-	}
-
-	private class StartNewTripListener implements OnClickListener {
-		public void onClick(View v) {
-			Intent intent = new Intent(TripListActivity.this,
-					TripSettingsActivity.class);
-			intent.putExtra(AppDataDefs.KEY_IS_NEW_TRIP, true);
-			Log.d(TAG, "About to start activity for result");
-			startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
-		}
-
-	}
-
-	private class TripOnItemClickListener implements OnItemClickListener {
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			long tripId = Long.parseLong(((TextView) view
-					.findViewById(R.id.tripDetailId)).getText().toString());
-			Intent intent = new Intent(getApplicationContext(),
-					TripViewActivity.class);
-			intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-			Log.d(TAG, "About to start trip view activity for trip id "
-					+ tripId);
-			startActivityForResult(intent, VIEW_TRIP);
 		}
 	}
 }
