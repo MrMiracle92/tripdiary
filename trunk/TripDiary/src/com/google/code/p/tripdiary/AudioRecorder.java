@@ -131,7 +131,6 @@ public class AudioRecorder extends Activity {
 			data.putExtra("returnKey", filePath);
 			this.setResult(RESULT_OK, data);
 
-			// setResult(RESULT_OK);
 			finish();
 
 		} catch (Exception e) {
