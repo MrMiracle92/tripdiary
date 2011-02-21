@@ -227,16 +227,16 @@ public class TripViewActivity extends TabActivity {
 			
 			
 			// Using intent
-//			 Intent recordIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-//			 String fileName = "/sdcard/" + getMediaFileName() + "test.amr";
-//			 File file = new File(fileName);
-//			 recordIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-//			 startActivityForResult(recordIntent, REQUEST_AUDIO);
+			 Intent recordIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+			 String fileName = "/sdcard/" + getMediaFileName() + "test.amr";
+			 File file = new File(fileName);
+			 recordIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+			 startActivityForResult(recordIntent, REQUEST_AUDIO);
 
 
 
-			Intent audioIntent = new Intent().setClass(this, AudioRecorder.class);
-			startActivityForResult(audioIntent, REQUEST_AUDIO);
+//			Intent audioIntent = new Intent().setClass(this, AudioRecorder.class);
+//			startActivityForResult(audioIntent, REQUEST_AUDIO);
 			
 			break;
 		}
