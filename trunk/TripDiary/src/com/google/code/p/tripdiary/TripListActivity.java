@@ -1,12 +1,14 @@
 package com.google.code.p.tripdiary;
 
 import android.app.ListActivity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -161,9 +163,13 @@ public class TripListActivity extends ListActivity {
 						+ cursor.getString(mTripDescriptionIdx) + ".");
 			}
 			if (ivImg != null) {
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inSampleSize = 4;
+				options.inTempStorage = new byte[16*1024];
 				Bitmap bm = BitmapFactory.decodeFile(cursor
-						.getString(mTripImageIdx));
+						.getString(mTripImageIdx), options);
 				if (bm != null) {
+//					ivImg.setImageBitmap(ThumbnailUtils.extractThumbnail(bm, 50, 50));
 					ivImg.setImageBitmap(bm);
 				} else {
 					ivImg.setImageResource(R.drawable.defaultpicicon);

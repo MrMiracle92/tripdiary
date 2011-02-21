@@ -60,14 +60,6 @@ public class TripGalleryActivity extends Activity {
 			storageMgr = TripStorageManagerFactory.getTripStorageManager();
 			Cursor tripEntryCursor = storageMgr.getEntriesForTrip(thisTripId);
 			
-//			if(tripEntryCursor == null) {
-//				Toast.makeText(TripGalleryActivity.this, "No trip entries!",
-//						Toast.LENGTH_SHORT).show();
-//				setResult(RESULT_CANCELED);
-//				finish();
-//				return;
-//			}
-
 			GridView gridview = (GridView) findViewById(R.id.gridview);
 			gridview.setAdapter(new TripEntryAdapter(getApplicationContext(),
 					tripEntryCursor, true));
@@ -84,14 +76,14 @@ public class TripGalleryActivity extends Activity {
 
 	private class TripEntryAdapter extends CursorAdapter {
 
-		private int mEntryIdx;
+//		private int mEntryIdx;
 		private int mEntryMediaLocIdx;
 		private int mEntryTypeIdx;
 
 		public TripEntryAdapter(Context context, Cursor c, boolean autoRequery) {
 			super(context, c, autoRequery);
 
-			mEntryIdx = c.getColumnIndex(DbDefs.TripDetailCols._ID);
+//			mEntryIdx = c.getColumnIndex(DbDefs.TripDetailCols._ID);
 			mEntryMediaLocIdx = c
 					.getColumnIndex(DbDefs.TripDetailCols.MEDIA_LOCATION);
 			mEntryTypeIdx = c.getColumnIndex(DbDefs.TripDetailCols.MEDIA_TYPE);
@@ -114,8 +106,11 @@ public class TripGalleryActivity extends Activity {
 			switch (Enum.valueOf(TripEntry.MediaType.class,
 					cursor.getString(mEntryTypeIdx))) {
 			case PHOTO:
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inSampleSize = 4;
+				options.inTempStorage = new byte[16*1024];
 				bm = BitmapFactory.decodeFile(cursor
-						.getString(mEntryMediaLocIdx));
+						.getString(mEntryMediaLocIdx), options);
 				defRes = R.drawable.picture;
 				break;
 			case VIDEO:

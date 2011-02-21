@@ -52,7 +52,7 @@ public class TripStorageManagerFactory {
 			// .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 			File dcimDir = Environment.getExternalStorageDirectory();
 			File photosDir = new File(dcimDir.getAbsolutePath()
-					+ "/DCIM/.thumbnails");
+					+ "/DCIM/Camera");
 			if (photosDir.exists() && photosDir.isDirectory()) {
 				photos = photosDir.listFiles(new FilenameFilter() {
 
