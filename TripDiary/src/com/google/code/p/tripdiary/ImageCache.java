@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -82,7 +83,8 @@ public class ImageCache {
 	 *            type of media
 	 * @return bitmap for the file pointed to by pathName
 	 */
-	public Bitmap getBitmap(String pathName, TripEntry.MediaType mediaType) {
+	public Bitmap getBitmap(String pathName, TripEntry.MediaType mediaType,
+			Context context) {
 		Bitmap bm = null;
 
 		if (mBitmapCache.containsKey(pathName)) {
@@ -103,10 +105,22 @@ public class ImageCache {
 			options.inSampleSize = 16;
 			options.inTempStorage = new byte[16 * 1024];
 			bm = BitmapFactory.decodeFile(pathName, options);
+			if (bm == null) {
+				bm = BitmapFactory.decodeResource(context.getResources(),
+						R.drawable.picture);
+			}
 			break;
 		case VIDEO:
 			bm = ThumbnailUtils.createVideoThumbnail(pathName,
 					MediaStore.Video.Thumbnails.MINI_KIND);
+			if (bm == null) {
+				bm = BitmapFactory.decodeResource(context.getResources(),
+						R.drawable.video);
+			}
+			break;
+		default:
+			bm = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.icon);
 		}
 
 		// add to cache
@@ -181,19 +195,17 @@ public class ImageCache {
 			QueueItem qItem = null;
 			while ((qItem = mLoadQueue.poll()) != null) {
 				final ImageView ivImage = qItem.ivImage;
+				final TripEntry.MediaType mediaType = qItem.mediaType;
 				// proceed only if the image view really needs an update
 				if (mImagePathMap.containsKey(ivImage)) {
 					final Bitmap bm = getBitmap(mImagePathMap.get(ivImage),
-							qItem.mediaType);
-					if (bm != null) {
-						// post the update for the UI thread to pick up
-						qItem.ivImage.post(new Runnable() {
-							@Override
-							public void run() {
-								ivImage.setImageBitmap(bm);
-							}
-						});
-					}
+							mediaType, ivImage.getContext());
+					qItem.ivImage.post(new Runnable() {
+						@Override
+						public void run() {
+							ivImage.setImageBitmap(bm);
+						}
+					});
 					// the ImageView has just bee updated to the latest image.
 					// so, let's remove it from the map
 					mImagePathMap.remove(ivImage);

@@ -58,7 +58,7 @@ public class TripStorageManagerFactory {
 
 					public boolean accept(File dir, String filename) {
 						Log.d(TAG, filename);
-						if (filename.endsWith("jpg")) {
+						if (filename.endsWith("jpg") || filename.endsWith("3gp")) {
 							return true;
 						}
 						return false;
@@ -91,8 +91,12 @@ public class TripStorageManagerFactory {
 			String media = null;
 			TripEntry.MediaType mediaType = TripEntry.MediaType.NONE;
 			if(photos != null && photos.length > 0) {
-				media = photos[0].getAbsolutePath();
-				mediaType = TripEntry.MediaType.PHOTO;
+				media = photos[(int) (tripEntryId-TRIP_ENTRY_ID_START)].getAbsolutePath();
+				if(media.endsWith("3gp")) {
+					mediaType = TripEntry.MediaType.VIDEO;
+				} else if (media.endsWith("jpg")) {
+					mediaType = TripEntry.MediaType.PHOTO;
+				}
 			}
 			Time t = new Time();
 			t.setToNow();
@@ -117,19 +121,26 @@ public class TripStorageManagerFactory {
 				return entryCursor;
 			}
 			
-			long id2 = 7000;
+			long id2 = TRIP_ENTRY_ID_START;
 
-			String entryPhoto = null;
-			for (int j = 0; j < 50; j++) {
+			String media = null;
+			for (int j = 0; j < 100; j++) {
 				if (photos != null && j < photos.length) {
-					entryPhoto = photos[j].getAbsolutePath();
+					media = photos[j].getAbsolutePath();
 				}
 
 				Time t = new Time();
 				t.setToNow();
+				
+				MediaType mediaType = MediaType.PHOTO;
+				if(media.endsWith("3gp")) {
+					mediaType = TripEntry.MediaType.VIDEO;
+				} else if (media.endsWith("jpg")) {
+					mediaType = TripEntry.MediaType.PHOTO;
+				}
 
-				TripEntry te = new TripEntry(47.465, -122.23, entryPhoto,
-						MediaType.PHOTO, t.toMillis(false));
+				TripEntry te = new TripEntry(47.465, -122.23, media,
+						mediaType, t.toMillis(false));
 
 				entryCursor.addRow(new Object[] { id2++, tripId,
 						te.creationTime, te.lat, te.lon, te.mediaType.name(),
@@ -138,6 +149,9 @@ public class TripStorageManagerFactory {
 
 			return entryCursor;
 		}
+		
+		private final static long TRIP_ID_START = 3253;
+		private final static long TRIP_ENTRY_ID_START = 7000;
 
 		public Cursor getAllTrips() {
 
@@ -148,7 +162,7 @@ public class TripStorageManagerFactory {
 
 			MatrixCursor allTripsCursor = new MatrixCursor(columnNamesTrip);
 
-			long id = 3253;
+			long id = TRIP_ID_START;
 			Time t = new Time();
 			t.setToNow();
 			// create a list of trips
@@ -158,7 +172,7 @@ public class TripStorageManagerFactory {
 					photo = photos[i].getAbsolutePath();
 				}
 				allTripsCursor.addRow(new Object[] { id++, "Fake Trip " + id,
-						"Fake Description", t.toMillis(false),
+						"Fake Description - " + photo + ". Let's see how a long description shows up. More words here and even more and more and more.", t.toMillis(false),
 						Boolean.toString(false), photo });
 			}
 			// we'll use this as a new trip
