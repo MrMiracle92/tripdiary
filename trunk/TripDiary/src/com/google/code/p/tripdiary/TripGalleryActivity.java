@@ -5,17 +5,12 @@ package com.google.code.p.tripdiary;
 
 import java.io.File;
 
-import com.google.code.p.tripdiary.TripEntry.MediaType;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +20,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * This is the activity that shows the recorded trip media in a gallery view.
@@ -126,33 +123,23 @@ public class TripGalleryActivity extends Activity {
 		public void bindView(View view, Context context, Cursor cursor) {
 			ImageView ivImg = (ImageView) view.findViewById(R.id.tripGridImage);
 
-			int defRes = R.drawable.picture;
 			MediaType mediaType = Enum.valueOf(TripEntry.MediaType.class,
 					cursor.getString(mEntryTypeIdx));
-			Bitmap bm = null;
 			switch (mediaType) {
 			case PHOTO:
-				defRes = R.drawable.picture;
-				bm = ImageCache.getInstance().getBitmap(
-						cursor.getString(mEntryMediaLocIdx), mediaType);
+				ImageCache.getInstance().setBitmapThreaded(
+						cursor.getString(mEntryMediaLocIdx), mediaType, ivImg);
 				break;
 			case VIDEO:
-				defRes = R.drawable.video;
-				bm = ImageCache.getInstance().getBitmap(
-						cursor.getString(mEntryMediaLocIdx), mediaType);
+				ImageCache.getInstance().setBitmapThreaded(
+						cursor.getString(mEntryMediaLocIdx), mediaType, ivImg);
 				break;
 			case AUDIO:
-				defRes = R.drawable.audio;
+				ivImg.setImageResource(R.drawable.audio);
 				break;
 			case TEXT:
-				defRes = R.drawable.text;
+				ivImg.setImageResource(R.drawable.text);
 				break;
-			}
-
-			if (bm != null) {
-				ivImg.setImageBitmap(bm);
-			} else {
-				ivImg.setImageResource(defRes);
 			}
 		}
 	}
