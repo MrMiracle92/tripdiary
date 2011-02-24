@@ -1,13 +1,10 @@
 package com.google.code.p.tripdiary;
 
-import com.google.code.p.tripdiary.TripEntry.MediaType;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +16,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * This is where the application starts. This activity lists the trips, and also
@@ -70,7 +69,7 @@ public class TripListActivity extends ListActivity {
 						startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 					}
 				});
-		
+
 		// set listener for list item click
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -161,13 +160,10 @@ public class TripListActivity extends ListActivity {
 				tvText.setText(cursor.getString(mTripNameIdx) + " - "
 						+ cursor.getString(mTripDescriptionIdx) + ".");
 			}
-			if (ivImg != null) {
-				Bitmap bm  = ImageCache.getInstance().getBitmap(cursor.getString(mTripImageIdx), MediaType.PHOTO);
-				if (bm != null) {
-					ivImg.setImageBitmap(bm);
-				} else {
-					ivImg.setImageResource(R.drawable.defaultpicicon);
-				}
+			String imagePath = cursor.getString(mTripImageIdx);
+			if (imagePath != null && ivImg != null) {
+				ImageCache.getInstance().setBitmapThreaded(imagePath,
+						MediaType.PHOTO, ivImg);
 			}
 			long tripId = cursor.getLong(mTripIdIdx);
 			if (tvId != null) {
