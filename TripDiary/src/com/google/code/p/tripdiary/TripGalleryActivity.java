@@ -5,12 +5,13 @@ package com.google.code.p.tripdiary;
 
 import java.io.File;
 
+import com.google.code.p.tripdiary.TripEntry.MediaType;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +25,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * This is the activity that shows the recorded trip media in a gallery view.
@@ -78,7 +78,7 @@ public class TripGalleryActivity extends Activity {
 					File file = new File(te.mediaLocation);
 					Intent intent = new Intent();
 					intent.setAction(android.content.Intent.ACTION_VIEW);
-					switch(te.mediaType) {
+					switch (te.mediaType) {
 					case PHOTO:
 						intent.setDataAndType(Uri.fromFile(file), "image/*");
 						startActivity(intent);
@@ -95,7 +95,7 @@ public class TripGalleryActivity extends Activity {
 						startActivity(intent);
 					case NONE:
 					default:
-						break;	
+						break;
 					}
 				}
 			}
@@ -104,14 +104,12 @@ public class TripGalleryActivity extends Activity {
 
 	private class TripEntryAdapter extends CursorAdapter {
 
-		// private int mEntryIdx;
 		private int mEntryMediaLocIdx;
 		private int mEntryTypeIdx;
 
 		public TripEntryAdapter(Context context, Cursor c, boolean autoRequery) {
 			super(context, c, autoRequery);
 
-			// mEntryIdx = c.getColumnIndex(DbDefs.TripDetailCols._ID);
 			mEntryMediaLocIdx = c
 					.getColumnIndex(DbDefs.TripDetailCols.MEDIA_LOCATION);
 			mEntryTypeIdx = c.getColumnIndex(DbDefs.TripDetailCols.MEDIA_TYPE);
@@ -120,10 +118,6 @@ public class TripGalleryActivity extends Activity {
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
-			// ImageView imageView = new ImageView(context);
-			// imageView.setLayoutParams(new GridView.LayoutParams(95, 95));
-			// imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			// return imageView;
 			LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			return vi.inflate(R.layout.trip_view_grid_item, parent, false);
 		}
@@ -131,28 +125,21 @@ public class TripGalleryActivity extends Activity {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 			ImageView ivImg = (ImageView) view.findViewById(R.id.tripGridImage);
-			// TextView tvId = (TextView)
-			// view.findViewById(R.id.tripGridEntryId);
 
-			// tvId.setText(cursor.getString(mEntryIdx));
-
-			Bitmap bm = null;
 			int defRes = R.drawable.picture;
-			switch (Enum.valueOf(TripEntry.MediaType.class,
-					cursor.getString(mEntryTypeIdx))) {
+			MediaType mediaType = Enum.valueOf(TripEntry.MediaType.class,
+					cursor.getString(mEntryTypeIdx));
+			Bitmap bm = null;
+			switch (mediaType) {
 			case PHOTO:
-				BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inSampleSize = 4;
-				options.inTempStorage = new byte[16 * 1024];
-				bm = BitmapFactory.decodeFile(
-						cursor.getString(mEntryMediaLocIdx), options);
 				defRes = R.drawable.picture;
+				bm = ImageCache.getInstance().getBitmap(
+						cursor.getString(mEntryMediaLocIdx), mediaType);
 				break;
 			case VIDEO:
-				bm = ThumbnailUtils.createVideoThumbnail(
-						cursor.getString(mEntryMediaLocIdx),
-						MediaStore.Video.Thumbnails.MINI_KIND);
 				defRes = R.drawable.video;
+				bm = ImageCache.getInstance().getBitmap(
+						cursor.getString(mEntryMediaLocIdx), mediaType);
 				break;
 			case AUDIO:
 				defRes = R.drawable.audio;
@@ -169,5 +156,4 @@ public class TripGalleryActivity extends Activity {
 			}
 		}
 	}
-
 }
