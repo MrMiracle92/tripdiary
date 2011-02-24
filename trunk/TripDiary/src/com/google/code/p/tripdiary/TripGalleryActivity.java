@@ -73,8 +73,7 @@ public class TripGalleryActivity extends Activity {
 				TripEntry te = mStorageMgr.getTripEntry(id);
 				if (te.mediaLocation != null) {
 					File file = new File(te.mediaLocation);
-					Intent intent = new Intent();
-					intent.setAction(android.content.Intent.ACTION_VIEW);
+					Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
 					switch (te.mediaType) {
 					case PHOTO:
 						intent.setDataAndType(Uri.fromFile(file), "image/*");

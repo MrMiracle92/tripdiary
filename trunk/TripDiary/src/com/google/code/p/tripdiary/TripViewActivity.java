@@ -9,17 +9,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.google.android.maps.GeoPoint;
-import com.google.code.p.tripdiary.TripEntry.MediaType;
-
 import android.app.TabActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -107,25 +101,6 @@ public class TripViewActivity extends TabActivity {
 		} else {
 			tabHost.setCurrentTab(1);
 		}
-
-		// listen for changes to current trip
-		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
-				MODE_PRIVATE).registerOnSharedPreferenceChangeListener(
-				new SharedPreferences.OnSharedPreferenceChangeListener() {
-
-					@Override
-					public void onSharedPreferenceChanged(
-							SharedPreferences sharedPreferences, String key) {
-						Log.d(TAG, "onSharedPreferenceChanged - " + key);
-						// mTripAdapter.notifyDataSetInvalidated();
-						// mTripCursor.requery();
-						Toast toast = Toast.makeText(getApplicationContext(),
-								"Key " + key + " was refreshed.",
-								Toast.LENGTH_SHORT);
-						toast.show();
-					}
-				});
-
 	}
 
 	private long getCurrentTripId() {
