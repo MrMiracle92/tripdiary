@@ -19,9 +19,12 @@ public final class AppDataDefs {
 	/** Trip Id value when no trip is current */
 	public final static long NO_CURRENT_TRIP = 0;
 	
+	/* Defaults */
+	public final static boolean DEFAULT_TRACE_ROUTE_ENABLED = false;
 	
-	/* Keys for Intents */
+	/* Keys for Intents and Activities */
 	public final static String KEY_TRIP_ID = "com.google.code.p.tripdiary.TripId";
 	public final static String KEY_IS_NEW_TRIP = "com.google.code.p.tripdiary.IsNewTrip";
+	public final static String KEY_PATH_TO_TRIP_IMAGE = "com.google.code.p.tripdiary.PathToTripImage";
 
 }

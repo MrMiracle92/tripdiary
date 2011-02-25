@@ -8,33 +8,38 @@
 			<LinearLayout android:layout_width="fill_parent"
 				android:layout_height="fill_parent" android:orientation="horizontal">
 				<TextView android:id="@+id/tvCreatedLbl" android:text="@string/settings_created_label"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:paddingRight="2dp"></TextView>
-				<TextView android:id="@+id/tvCreated" android:layout_width="wrap_content"
-					android:layout_height="wrap_content"></TextView>
+					android:layout_width="100dp" android:layout_height="wrap_content"
+					android:gravity="right"
+					android:paddingRight="5dp"/>
+				<TextView android:id="@+id/tvCreated" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"/>
 			</LinearLayout>
 			<LinearLayout android:layout_width="fill_parent"
 				android:layout_height="fill_parent" android:orientation="horizontal">
 				<TextView android:id="@+id/tvLastUpdatedLbl" android:text="@string/settings_last_updated_label"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:paddingRight="2dp"></TextView>
+					android:layout_width="100dp" android:layout_height="wrap_content"
+					android:gravity="right"
+					android:paddingRight="5dp"/>
 				<TextView android:id="@+id/tvLastUpdated"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+					android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 			</LinearLayout>
 			<ImageView android:id="@+id/settingsTripImage"
 				android:layout_width="fill_parent" android:layout_height="160dip"
-				android:padding="4dip" android:scaleType="fitCenter" android:src="@drawable/image_pick"></ImageView>
+				android:padding="4dip" android:scaleType="fitCenter" android:src="@drawable/image_pick"/>
 			<TextView android:text="@string/settings_name_label"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+				android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 			<EditText android:id="@+id/edName" android:layout_width="fill_parent"
-				android:layout_height="wrap_content"></EditText>
+				android:layout_height="wrap_content"/>
 			<TextView android:text="@string/settings_description_label"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+				android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 			<EditText android:id="@+id/edDescription"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:lines="5" android:gravity="top"></EditText>
+				android:lines="5" android:gravity="top"/>
+			<CheckBox android:id="@+id/cbTraceRoute" android:text="@string/trace_route" 
+				android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 			<Button android:text="@string/trip_settings_ok" android:id="@+id/btnOk"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+				android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 		</LinearLayout>
 	</ScrollView>
 </LinearLayout>

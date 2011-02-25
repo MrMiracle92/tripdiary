@@ -82,6 +82,7 @@ public class TripStorageManagerFactory {
 			Time t = new Time();
 			t.setToNow();
 			td.setCreateTime(t.toMillis(false));
+			td.setDefaultThumbnail( (photos != null && photos.length > 0) ? photos[0].getAbsolutePath() : null );
 			return td;
 		}
 		
