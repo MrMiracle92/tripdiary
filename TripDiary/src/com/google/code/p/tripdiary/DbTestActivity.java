@@ -40,4 +40,8 @@ public class DbTestActivity extends Activity {
 	public Cursor getEntriesForTrip(long tripId) {
 		return impl.getEntriesForTrip(tripId);
 	}
+
+	public long getLastUpdatedTime(long tripId) {
+		return impl.getLastUpdatedTime(tripId);
+	}
 }

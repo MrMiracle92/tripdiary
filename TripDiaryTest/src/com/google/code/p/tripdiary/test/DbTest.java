@@ -59,6 +59,10 @@ public class DbTest extends ActivityInstrumentationTestCase2<DbTestActivity> {
        	assertTrue(testActivity.addTripEntry(tripId, tripEntry));
        	int afterInsertEntries  = testActivity.getEntriesForTrip(tripId).getCount();
        	assertEquals(preexistingEntries, (afterInsertEntries - 1));
+       	long currentTime = System.currentTimeMillis();
+       	TripEntry tripEntryLatest = new TripEntry(1.0, 1.0, "test", MediaType.AUDIO, currentTime);
+       	assertTrue(testActivity.addTripEntry(tripId, tripEntryLatest));
+       	assertEquals(currentTime, testActivity.getLastUpdatedTime(tripId));
     }
     
     private void log(String msg) {
