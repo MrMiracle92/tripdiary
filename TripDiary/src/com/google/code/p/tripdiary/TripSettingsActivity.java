@@ -49,7 +49,7 @@ public class TripSettingsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trip_settings);
 
-		storageMgr = TripStorageManagerFactory.getTripStorageManager();
+		storageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
 
 		// if the activity is resumed
 		if (savedInstanceState != null) {

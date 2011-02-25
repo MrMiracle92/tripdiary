@@ -6,6 +6,7 @@ package com.google.code.p.tripdiary;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Environment;
@@ -26,10 +27,11 @@ public class TripStorageManagerFactory {
 
 	private static TripStorageManager storageManagerInstance;
 
-	public static TripStorageManager getTripStorageManager() {
+	public static TripStorageManager getTripStorageManager(Context appContext) {
 		synchronized (TripStorageManagerFactory.class) {
 			if (storageManagerInstance == null) {
 				// TODO:need to use actual TripStorageManager impl when ready
+//				storageManagerInstance = new TripStorageManagerImpl(appContext);
 				storageManagerInstance = new TripStorageManagerFake();
 			}
 		}
@@ -201,6 +203,18 @@ public class TripStorageManagerFactory {
 			Time t = new Time();
 			t.setToNow();
 			return t.toMillis(false);
+		}
+
+		@Override
+		public boolean removeTrip(long tripId) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean removeTripEntry(long tripEntry) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 	}
 }

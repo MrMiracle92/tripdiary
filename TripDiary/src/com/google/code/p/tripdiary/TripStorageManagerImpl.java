@@ -176,4 +176,16 @@ public class TripStorageManagerImpl implements TripStorageManager {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public boolean removeTrip(long tripId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeTripEntry(long tripEntry) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
