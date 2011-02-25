@@ -40,8 +40,8 @@ public class ImageCache {
 	// no access to constructor
 	private ImageCache() {
 		mBitmapCache = new ConcurrentHashMap<String, SoftReference<Bitmap>>();
-		mLoadQueue = new ConcurrentLinkedQueue<QueueItem>();
-		mImagePathMap = new ConcurrentHashMap<ImageView, String>();
+		mLoadQueue = new ConcurrentLinkedQueue<ImageView>();
+		mImagePathMap = new ConcurrentHashMap<ImageView, PathAndType>();
 		mRunner = new QueueRunner();
 	};
 
@@ -53,16 +53,16 @@ public class ImageCache {
 
 	/**
 	 * This is a map of the ImageView and the path to the image. Having it as a
-	 * separate map ensures that only the latest (last) image path is udpated
+	 * separate map ensures that only the latest (last) image path is updated
 	 * thus avoiding repeated image updates (there is no need to update the
 	 * previous image if we know that there is already a new one)
 	 */
-	private ConcurrentMap<ImageView, String> mImagePathMap;
+	private ConcurrentMap<ImageView, PathAndType> mImagePathMap;
 
 	/**
 	 * The load queue serves as a queue of ImageViews that need updates.
 	 */
-	private Queue<QueueItem> mLoadQueue;
+	private Queue<ImageView> mLoadQueue;
 
 	/**
 	 * The runner is the runnable that works on the load queue and the image
@@ -156,12 +156,12 @@ public class ImageCache {
 		}
 
 		// add to load queue
-		QueueItem qItem = new QueueItem();
-		qItem.ivImage = ivImage;
-		qItem.mediaType = mediaType;
-		mImagePathMap.put(ivImage, pathName);
+		PathAndType pathItem = new PathAndType();
+		pathItem.path = pathName;
+		pathItem.mediaType = mediaType;
 
-		mLoadQueue.add(qItem);
+		mImagePathMap.put(ivImage, pathItem);
+		mLoadQueue.add(ivImage);
 
 		// start thread if needed
 		if (mThread == null || !mThread.isAlive()) {
@@ -170,9 +170,9 @@ public class ImageCache {
 		}
 	}
 
-	/** Queue item that contains the image view and the media type */
-	private class QueueItem {
-		public ImageView ivImage;
+	/** Queue item that contains the image path and the media type */
+	private class PathAndType {
+		public String path;
 		public TripEntry.MediaType mediaType;
 	}
 
@@ -192,23 +192,20 @@ public class ImageCache {
 	private class QueueRunner implements Runnable {
 		@Override
 		public void run() {
-			QueueItem qItem = null;
-			while ((qItem = mLoadQueue.poll()) != null) {
-				final ImageView ivImage = qItem.ivImage;
-				final TripEntry.MediaType mediaType = qItem.mediaType;
-				// proceed only if the image view really needs an update
-				if (mImagePathMap.containsKey(ivImage)) {
-					final Bitmap bm = getBitmap(mImagePathMap.get(ivImage),
-							mediaType, ivImage.getContext());
-					qItem.ivImage.post(new Runnable() {
+			while (!mLoadQueue.isEmpty()) {
+				final ImageView ivImage = mLoadQueue.poll();
+				// proceed only if the image view really needs an update (i.e.,
+				// there is an entry in imagePathMap)
+				PathAndType pathItem = mImagePathMap.remove(ivImage);
+				if (pathItem != null) {
+					final Bitmap bm = getBitmap(pathItem.path,
+							pathItem.mediaType, ivImage.getContext());
+					ivImage.post(new Runnable() {
 						@Override
 						public void run() {
 							ivImage.setImageBitmap(bm);
 						}
 					});
-					// the ImageView has just bee updated to the latest image.
-					// so, let's remove it from the map
-					mImagePathMap.remove(ivImage);
 				}
 			}
 		}
