@@ -85,4 +85,8 @@ public interface TripStorageManager {
 	 * @return
 	 */
 	long getLastUpdatedTime(long tripId);
+	
+	boolean removeTrip(long tripId);
+	
+	boolean removeTripEntry(long tripEntry);
 }

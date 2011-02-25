@@ -237,6 +237,10 @@ public class TripViewActivity extends TabActivity {
 		case R.id.stop_trip:
 			TripViewActivity.this.setCurrentTripId(0);
 			break;
+			
+		case R.id.delete_trip:
+//			TripStorageManagerFactory.getTripStorageManager(getApplicationContext())
+			break;
 
 		}
 		return false;

@@ -46,7 +46,8 @@ public class TripListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		mStorageMgr = TripStorageManagerFactory.getTripStorageManager();
+		mStorageMgr = TripStorageManagerFactory
+				.getTripStorageManager(getApplicationContext());
 
 		// get list of trips from storage manager
 		mTripCursor = mStorageMgr.getAllTrips();
