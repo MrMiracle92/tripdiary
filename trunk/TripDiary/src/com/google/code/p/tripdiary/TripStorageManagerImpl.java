@@ -47,6 +47,15 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	private static final String GET_ALL_TRIPS =
 		String.format("SELECT * FROM %s", TRIP_METADATA_TABLE);
 
+	/** Query to select a given trip entry. */
+	private static final String GET_TRIP_ENTRY =
+		String.format("SELECT * FROM %s WHERE _id=?", TRIP_DETAIL_TABLE);
+
+	/** Query to select the latest entry in the given trip. */
+	private static final String GET_LATEST_TRIP_UPDATE_TIME =
+		String.format("SELECT max(%s) FROM %s WHERE _id=?", TripDetailCols.CREATE_TIME,
+				TRIP_DETAIL_TABLE);
+
 	/** Where clause to select a given trip. */
 	private static final String TRIP_SELECTOR =
 		String.format("%s=?", TripCols._ID);
@@ -166,15 +175,38 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 	@Override
 	public TripEntry getTripEntry(long tripEntryId)
-			throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	throws IllegalArgumentException {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor result = db.rawQuery(GET_TRIP_ENTRY,
+				new String[] {String.format("%d", tripEntryId)});
+		if (result.getCount() <= 0) {
+			return null;
+		} else {
+			result.moveToFirst();
+			TripEntry tripEntry = new TripEntry();
+			tripEntry.tripEntryId = result.getLong(result.getColumnIndex(TripDetailCols._ID));
+			tripEntry.lat = result.getLong(result.getColumnIndex(TripDetailCols.LAT));
+			tripEntry.lon = result.getLong(result.getColumnIndex(TripDetailCols.LON));
+			tripEntry.mediaLocation =
+				result.getString(result.getColumnIndex(TripDetailCols.MEDIA_LOCATION));
+			tripEntry.mediaType = TripEntry.MediaType.valueOf(
+					result.getString(result.getColumnIndex(TripDetailCols.MEDIA_LOCATION)));
+			tripEntry.creationTime =
+				result.getLong(result.getColumnIndex(TripDetailCols.CREATE_TIME));
+			return tripEntry;
+		}
 	}
-	
+
 	@Override
 	public long getLastUpdatedTime(long tripId) {
-		// TODO Auto-generated method stub
-		return 0;
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor result = db.rawQuery(GET_LATEST_TRIP_UPDATE_TIME,
+				new String[] {String.format("%d", tripId)});
+		if (result.getCount() <= 0) {
+			return -1;
+		} else {
+			return result.getLong(result.getColumnIndex(TripDetailCols.CREATE_TIME));
+		}
 	}
 
 	@Override
