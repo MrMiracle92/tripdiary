@@ -4,14 +4,11 @@ package com.google.code.p.tripdiary;
  * Represents an entry in a Trip.
  * 
  * @author Arunabha Ghosh
+ * @author Arpita Saha
  */
 public class TripEntry {
 	public enum MediaType {
-		NONE,
-		PHOTO,
-		AUDIO,
-		VIDEO,
-		TEXT,
+		NONE, PHOTO, AUDIO, VIDEO, TEXT,
 	}
 
 	/** Internally used id. */
@@ -32,22 +29,47 @@ public class TripEntry {
 	/** The time this entry was created. */
 	public long creationTime;
 
-	public TripEntry(double lat, double lon, String mediaLocation, MediaType mediaType,
-			long creationTime) {
+	/** Notes (if any). */
+	public String noteText;
+
+	public TripEntry(double lat, double lon, String mediaLocation,
+			MediaType mediaType, long creationTime, String noteText) {
 		this.lat = lat;
 		this.lon = lon;
 		this.mediaLocation = mediaLocation;
 		this.creationTime = creationTime;
 		this.mediaType = mediaType;
+		this.noteText = noteText;
 	}
 
-	public TripEntry(double lat, double lon, String mediaLocation, MediaType mediaType)
-	{
+	public TripEntry(double lat, double lon, String mediaLocation,
+			MediaType mediaType, long creationTime) {
+		this.lat = lat;
+		this.lon = lon;
+		this.mediaLocation = mediaLocation;
+		this.creationTime = creationTime;
+		this.mediaType = mediaType;
+		this.noteText = ""; // Empty note
+	}
+
+	public TripEntry(double lat, double lon, String mediaLocation,
+			MediaType mediaType, String noteText) {
 		this.lat = lat;
 		this.lon = lon;
 		this.mediaLocation = mediaLocation;
 		this.creationTime = System.currentTimeMillis();
 		this.mediaType = mediaType;
+		this.noteText = noteText;
+	}
+
+	public TripEntry(double lat, double lon, String mediaLocation,
+			MediaType mediaType) {
+		this.lat = lat;
+		this.lon = lon;
+		this.mediaLocation = mediaLocation;
+		this.creationTime = System.currentTimeMillis();
+		this.mediaType = mediaType;
+		this.noteText = ""; // Empty notes
 	}
 
 	public TripEntry(double lat, double lon) {
@@ -56,11 +78,12 @@ public class TripEntry {
 		this.creationTime = System.currentTimeMillis();
 	}
 
-	public TripEntry() {}
+	public TripEntry() {
+	}
 
 	@Override
 	public String toString() {
-		return String.format("%d,%d,%d,%s,%s,%d", tripEntryId, lat, lon, mediaLocation, mediaType,
-				creationTime);
+		return String.format("%d,%d,%d,%s,%s,%d", tripEntryId, lat, lon,
+				mediaLocation, mediaType, creationTime);
 	}
 }

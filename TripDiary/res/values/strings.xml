@@ -20,4 +20,5 @@
 	<string name="audio_start">Start Audio Recording</string>
 	<string name="audio_stop">Stop Audio Recording</string>
 	<string name="trace_route">Trace Route for this Trip</string>
+    <string name="title_note">Note</string>  
 </resources>

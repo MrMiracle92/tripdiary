@@ -46,17 +46,21 @@ public class AudioRecorder extends Activity {
 
 		setContentView(R.layout.trip_audio_record);
 
-		ImageButton recordButton = (ImageButton) findViewById(R.id.audioStart);
-		recordButton.setVisibility(View.VISIBLE);
+		// Start button shows up
+		ImageButton startButton = (ImageButton) findViewById(R.id.audioStart);
+		startButton.setVisibility(View.VISIBLE);
 
+		// Faded stop button shows up
 		ImageButton stopFadedButton = (ImageButton) findViewById(R.id.audioStopFaded);
 		stopFadedButton.setVisibility(View.VISIBLE);
 		
+		// faded start button goes away
 		ImageButton startFadedButton = (ImageButton) findViewById(R.id.audioStartFaded);
 		startFadedButton.setVisibility(View.GONE);
 		
-		ImageButton stopbutton = (ImageButton) findViewById(R.id.audioStop);
-		stopbutton.setVisibility(View.GONE);
+		// stop button goes away
+		ImageButton stopButton = (ImageButton) findViewById(R.id.audioStop);
+		stopButton.setVisibility(View.GONE);
 
 		// Create the default file storage path
 		File dir = new File(Environment.getExternalStorageDirectory()
@@ -87,19 +91,21 @@ public class AudioRecorder extends Activity {
 			}
 			mediafile = null;
 			
-			// record button goes away
+			// Start button goes away
 			ImageButton startbutton = (ImageButton) findViewById(R.id.audioStart);
 			startbutton.setVisibility(View.GONE);
 			
+			// Faded Stop button goes away
 			ImageButton stopFadedButton = (ImageButton) findViewById(R.id.audioStopFaded);
 			stopFadedButton.setVisibility(View.GONE);
 			
+			// Faded Start button shows up
 			ImageButton startFadedButton = (ImageButton) findViewById(R.id.audioStartFaded);
 			startFadedButton.setVisibility(View.VISIBLE);
 
-			// stop button shows up
-			ImageButton stopbutton = (ImageButton) findViewById(R.id.audioStop);
-			stopbutton.setVisibility(View.VISIBLE);
+			// Stop button shows up
+			ImageButton stopButton = (ImageButton) findViewById(R.id.audioStop);
+			stopButton.setVisibility(View.VISIBLE);
 
 			// set up media recorder
 			if (mediaRecorder == null)
@@ -141,9 +147,13 @@ public class AudioRecorder extends Activity {
 
 			}
 
+			// Faded Start button goes away
+			ImageButton startFadedButton = (ImageButton) findViewById(R.id.audioStartFaded);
+			startFadedButton.setVisibility(View.GONE);
+			
 			// stop button goes away
-			ImageButton stopbutton = (ImageButton) findViewById(R.id.audioStop);
-			stopbutton.setVisibility(View.GONE);
+			ImageButton stopButton = (ImageButton) findViewById(R.id.audioStop);
+			stopButton.setVisibility(View.GONE);
 
 			Intent data = new Intent();
 			data.putExtra("returnKey", filePath);
