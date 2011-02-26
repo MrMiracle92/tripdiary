@@ -1,16 +1,10 @@
 package com.google.code.p.tripdiary;
 
-import java.util.HashMap;
-
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
-import android.net.Uri;
 import android.util.Log;
 
 import com.google.code.p.tripdiary.DbDefs.TripCols;
@@ -22,8 +16,7 @@ import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
  * @author Arunabha Ghosh
  * @author Arpita Saha
  */
-public class TripStorageManagerImpl extends ContentProvider implements
-		TripStorageManager {
+public class TripStorageManagerImpl implements TripStorageManager {
 
 	public static final String TAG = "TripStorageManagerImpl";
 
@@ -62,13 +55,13 @@ public class TripStorageManagerImpl extends ContentProvider implements
 			"SELECT * FROM %s", TRIP_METADATA_TABLE);
 
 	/** Query to select a given trip entry. */
-	private static final String GET_TRIP_ENTRY =
-		String.format("SELECT * FROM %s WHERE _id=?", TRIP_DETAIL_TABLE);
+	private static final String GET_TRIP_ENTRY = String.format(
+			"SELECT * FROM %s WHERE _id=?", TRIP_DETAIL_TABLE);
 
 	/** Query to select the latest entry in the given trip. */
-	private static final String GET_LATEST_TRIP_UPDATE_TIME =
-		String.format("SELECT max(%s) FROM %s WHERE _id=?", TripDetailCols.CREATE_TIME,
-				TRIP_DETAIL_TABLE);
+	private static final String GET_LATEST_TRIP_UPDATE_TIME = String.format(
+			"SELECT max(%s) FROM %s WHERE _id=?", TripDetailCols.CREATE_TIME,
+			TRIP_DETAIL_TABLE);
 
 	/** Where clause to select a given trip. */
 	private static final String TRIP_SELECTOR = String.format("%s=?",
@@ -204,24 +197,28 @@ public class TripStorageManagerImpl extends ContentProvider implements
 
 	@Override
 	public TripEntry getTripEntry(long tripEntryId)
-	throws IllegalArgumentException {
+			throws IllegalArgumentException {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor result = db.rawQuery(GET_TRIP_ENTRY,
-				new String[] {String.format("%d", tripEntryId)});
+				new String[] { String.format("%d", tripEntryId) });
 		if (result.getCount() <= 0) {
 			return null;
 		} else {
 			result.moveToFirst();
 			TripEntry tripEntry = new TripEntry();
-			tripEntry.tripEntryId = result.getLong(result.getColumnIndex(TripDetailCols._ID));
-			tripEntry.lat = result.getLong(result.getColumnIndex(TripDetailCols.LAT));
-			tripEntry.lon = result.getLong(result.getColumnIndex(TripDetailCols.LON));
-			tripEntry.mediaLocation =
-				result.getString(result.getColumnIndex(TripDetailCols.MEDIA_LOCATION));
-			tripEntry.mediaType = TripEntry.MediaType.valueOf(
-					result.getString(result.getColumnIndex(TripDetailCols.MEDIA_LOCATION)));
-			tripEntry.creationTime =
-				result.getLong(result.getColumnIndex(TripDetailCols.CREATE_TIME));
+			tripEntry.tripEntryId = result.getLong(result
+					.getColumnIndex(TripDetailCols._ID));
+			tripEntry.lat = result.getLong(result
+					.getColumnIndex(TripDetailCols.LAT));
+			tripEntry.lon = result.getLong(result
+					.getColumnIndex(TripDetailCols.LON));
+			tripEntry.mediaLocation = result.getString(result
+					.getColumnIndex(TripDetailCols.MEDIA_LOCATION));
+			tripEntry.mediaType = TripEntry.MediaType.valueOf(result
+					.getString(result
+							.getColumnIndex(TripDetailCols.MEDIA_LOCATION)));
+			tripEntry.creationTime = result.getLong(result
+					.getColumnIndex(TripDetailCols.CREATE_TIME));
 			return tripEntry;
 		}
 	}
@@ -230,11 +227,12 @@ public class TripStorageManagerImpl extends ContentProvider implements
 	public long getLastUpdatedTime(long tripId) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor result = db.rawQuery(GET_LATEST_TRIP_UPDATE_TIME,
-				new String[] {String.format("%d", tripId)});
+				new String[] { String.format("%d", tripId) });
 		if (result.getCount() <= 0) {
 			return -1;
 		} else {
-			return result.getLong(result.getColumnIndex(TripDetailCols.CREATE_TIME));
+			return result.getLong(result
+					.getColumnIndex(TripDetailCols.CREATE_TIME));
 		}
 	}
 
@@ -249,85 +247,4 @@ public class TripStorageManagerImpl extends ContentProvider implements
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	
-	
-	
-	
-	private static final UriMatcher sUriMatcher;
-	private static HashMap<String, String> sNotesProjectionMap;
-	public static final int NOTES = 1;
-
-	static {
-		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		sUriMatcher.addURI(DbDefs.AUTHORITY, "notes", NOTES);
-		// sUriMatcher.addURI(NotePad.AUTHORITY, "notes/#", NOTE_ID);
-		// sUriMatcher.addURI(NotePad.AUTHORITY, "live_folders/notes",
-		// LIVE_FOLDER_NOTES);
-
-		sNotesProjectionMap = new HashMap<String, String>();
-		sNotesProjectionMap.put(TripDetailCols._ID, TripDetailCols._ID);
-		sNotesProjectionMap.put(TripDetailCols.NOTE, TripDetailCols.NOTE);
-
-		// // Support for Live Folders.
-		// sLiveFolderProjectionMap = new HashMap<String, String>();
-		// sLiveFolderProjectionMap.put(LiveFolders._ID, Notes._ID + " AS " +
-		// LiveFolders._ID);
-		// sLiveFolderProjectionMap.put(LiveFolders.NAME, Notes.TITLE + " AS " +
-		// LiveFolders.NAME);
-		// // Add more columns here for more robust Live Folders.
-	}
-
-	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getType(Uri uri) {
-		switch (sUriMatcher.match(uri)) {
-		case NOTES:
-			return "vnd.android.cursor.dir/vnd.google.note"; // TODO hard coding
-
-		default:
-			throw new IllegalArgumentException("Unknown URI " + uri);
-		}
-	}
-
-	@Override
-	public Uri insert(Uri uri, ContentValues values) {
-		// TODO Auto-generated method stub
-
-		return null;
-	}
-
-	@Override
-	public boolean onCreate() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		// TODO Auto-generated method stub
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables(TRIP_DETAIL_TABLE);
-
-		switch (sUriMatcher.match(uri)) {
-		case NOTES:
-			qb.setProjectionMap(sNotesProjectionMap);
-		}
-
-		return null;
-	}
-
-	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }
