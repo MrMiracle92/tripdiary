@@ -119,14 +119,12 @@ public class TripSettingsActivity extends Activity {
 			TripDetail td = storageMgr.getTripDetail(mThisTripId);
 			long created = td.getCreateTime();
 			long updated = storageMgr.getLastUpdatedTime(mThisTripId);
-			if(updated == -1) {
-				updated = created;
-			}
+
 			DateFormat df = DateFormat.getDateInstance();
 			((TextView) findViewById(R.id.tvCreated)).setText(df
 					.format(new Date(created)));
 			((TextView) findViewById(R.id.tvLastUpdated))
-					.setText(df.format(new Date(updated)));
+					.setText(updated < 0? "Never" : df.format(new Date(updated)));
 			((TextView) findViewById(R.id.edName)).setText(td.getName());
 			((TextView) findViewById(R.id.edDescription)).setText(td
 					.getTripDescription());

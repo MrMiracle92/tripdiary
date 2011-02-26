@@ -1,5 +1,8 @@
 package com.google.code.p.tripdiary;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -133,6 +136,7 @@ public class TripListActivity extends ListActivity {
 		private int mTripNameIdx;
 		private int mTripDescriptionIdx;
 		private int mTripImageIdx;
+		private int mTripCreateTimeIdx;
 
 		public TripAdapter(Context context, Cursor c, boolean autoRequery) {
 			super(context, c, autoRequery);
@@ -143,6 +147,7 @@ public class TripListActivity extends ListActivity {
 					.getColumnIndex(DbDefs.TripCols.TRIP_DESCRIPTION);
 			mTripImageIdx = c
 					.getColumnIndex(DbDefs.TripCols.THUMBNAIL_LOCATION);
+			mTripCreateTimeIdx = c.getColumnIndex(DbDefs.TripCols.CREATE_TIME);
 		}
 
 		@Override
@@ -157,18 +162,30 @@ public class TripListActivity extends ListActivity {
 			ImageView ivImg = (ImageView) view
 					.findViewById(R.id.tripDetailImage);
 			TextView tvId = (TextView) view.findViewById(R.id.tripDetailId);
+			TextView tvItemDate = (TextView) view.findViewById(R.id.tripItemDate);
+			long tripId = cursor.getLong(mTripIdIdx);
+			if (tvId != null) {
+				tvId.setText(Long.toString(tripId));
+			}
 			if (tvText != null) {
 				tvText.setText(cursor.getString(mTripNameIdx) + " - "
 						+ cursor.getString(mTripDescriptionIdx) + ".");
+			}
+			if (tvItemDate != null) {
+				long createTime = cursor.getLong(mTripCreateTimeIdx);
+				long updateTime = mStorageMgr.getLastUpdatedTime(tripId);
+				DateFormat df = DateFormat.getDateInstance();
+				StringBuffer dateString = new StringBuffer();
+				dateString.append("Created: ")
+					.append(df.format(new Date(createTime)))
+					.append(" | Updated: ")
+					.append(updateTime < 0 ? "Never" : df.format(new Date(updateTime)));
+				tvItemDate.setText(dateString);
 			}
 			String imagePath = cursor.getString(mTripImageIdx);
 			if (imagePath != null && ivImg != null) {
 				ImageCache.getInstance().setBitmapThreaded(imagePath,
 						MediaType.PHOTO, ivImg);
-			}
-			long tripId = cursor.getLong(mTripIdIdx);
-			if (tvId != null) {
-				tvId.setText(Long.toString(tripId));
 			}
 			View currTripIndicator = view
 					.findViewById(R.id.tripDetailCurrIndicator);

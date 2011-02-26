@@ -14,7 +14,14 @@
 		android:layout_height="70dp" />
 	<TextView android:id="@+id/tripDetailId" android:layout_width="wrap_content"
 		android:visibility="gone" android:layout_height="70dp" />
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical">
 	<TextView android:id="@+id/tripDetailText"
 		android:layout_width="fill_parent" android:gravity="center_vertical|left"
-		android:layout_height="70dp" />
+		android:maxLines="3"
+		android:layout_height="55dp" />
+	<TextView android:id="@+id/tripItemDate" android:textSize="10dp" android:paddingRight="10dp"
+		android:layout_width="fill_parent" android:gravity="bottom|right"
+		android:layout_height="15dp"/>
+	</LinearLayout >
 </LinearLayout>
