@@ -58,22 +58,5 @@ public class DbDefs {
 
 		/** Notes column (if any). */
 		public static final String NOTE = "note";
-
-		/**
-		 * The content:// style URL for this table
-		 */
-		public static final Uri CONTENT_URI = Uri.parse("content://"
-				+ AUTHORITY + "/notes");
-
-		/**
-		 * The MIME type of {@link #CONTENT_URI} providing a directory of notes.
-		 */
-		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.google.note";
-
-		/**
-		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single
-		 * note.
-		 */
-		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.google.note";
 	}
 }
