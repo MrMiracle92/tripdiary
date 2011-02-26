@@ -19,6 +19,12 @@
 			android:theme="@android:style/Theme.NoTitleBar">
 		</activity>
 		<activity android:name="AudioRecorder" android:label="@string/app_name"></activity>
+		<activity android:name="TripNoteEditor" 
+		          android:theme="@android:style/Theme.Light"
+                  android:label="@string/title_note"
+                  android:screenOrientation="sensor"
+                  android:configChanges="keyboardHidden|orientation">
+        </activity>
 	</application>
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7"></uses-sdk>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

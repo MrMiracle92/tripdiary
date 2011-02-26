@@ -15,7 +15,8 @@
                  android:layout_height="wrap_content"
                  android:layout_alignParentBottom="true"
                  android:layout_alignParentLeft="true"
-                 android:paddingLeft="45dp"
+                 android:paddingLeft="50dp"
+                 android:paddingBottom="25dp"
                  android:onClick="startRecord">
     </ImageButton>
     

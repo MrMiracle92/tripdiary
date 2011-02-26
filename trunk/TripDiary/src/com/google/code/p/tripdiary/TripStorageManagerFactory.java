@@ -115,7 +115,8 @@ public class TripStorageManagerFactory {
 			String[] columnNamesEntry = new String[] { TripDetailCols._ID,
 					TripDetailCols.TRIP_ID, TripDetailCols.CREATE_TIME,
 					TripDetailCols.LAT, TripDetailCols.LON,
-					TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION };
+					TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION,
+					TripDetailCols.NOTE};
 
 			MatrixCursor entryCursor = new MatrixCursor(columnNamesEntry);
 			
@@ -147,7 +148,7 @@ public class TripStorageManagerFactory {
 
 				entryCursor.addRow(new Object[] { id2++, tripId,
 						te.creationTime, te.lat, te.lon, te.mediaType.name(),
-						te.mediaLocation });
+						te.mediaLocation, te.noteText });
 			}
 
 			return entryCursor;

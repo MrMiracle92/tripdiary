@@ -39,7 +39,7 @@ public class TripViewActivity extends TabActivity {
 	public final int REQUEST_PICTURE = 0;
 	public final int REQUEST_VIDEO = 1;
 	public final int REQUEST_AUDIO = 2;
-
+	public final int REQUEST_NOTES = 3;
 	private final int EDIT_TRIP_SETTINGS = 4;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
@@ -213,9 +213,11 @@ public class TripViewActivity extends TabActivity {
 
 		case R.id.add_text: {
 			// Prints on the screen. //TODO remove later
-			Toast.makeText(getBaseContext(),
-					"Capturing notes - to be implemented", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(getBaseContext(), "Capturing notes",
+					Toast.LENGTH_SHORT).show();
+			Intent noteIntent = new Intent().setClass(this,
+					TripNoteEditor.class);
+			startActivityForResult(noteIntent, REQUEST_NOTES);
 
 			break;
 		}
@@ -237,9 +239,9 @@ public class TripViewActivity extends TabActivity {
 		case R.id.stop_trip:
 			TripViewActivity.this.setCurrentTripId(0);
 			break;
-			
+
 		case R.id.delete_trip:
-//			TripStorageManagerFactory.getTripStorageManager(getApplicationContext())
+			// TripStorageManagerFactory.getTripStorageManager(getApplicationContext())
 			break;
 
 		}
@@ -280,26 +282,38 @@ public class TripViewActivity extends TabActivity {
 					File dir = new File(fileName);
 					FileOutputStream fos = new FileOutputStream(dir);
 					capturedPic.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-					
-//					// get handle for LocationManager
-//			        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//
-//			        // connect to the GPS location service
-//			        Location location = lm.getLastKnownLocation("gps");
-//
-//			        // get lat, lon
-//			        double lat = location.getLatitude();
-//			        double lon = location.getLongitude();
-//
-//			        TripEntry tripEntry = new TripEntry(lat, lon, fileName, MediaType.PHOTO);
-//			        TripStorageManager storageMgr = TripStorageManagerFactory.getTripStorageManager();
-//			        storageMgr.addTripEntry(thisTripId, tripEntry);
-//			        
-//			        Log.d("ARPITA", "Trip entry created " + lat + " " + lon + " " + fileName);
+
+					// // get handle for LocationManager
+					// LocationManager lm = (LocationManager)
+					// getSystemService(Context.LOCATION_SERVICE);
+					//
+					// // connect to the GPS location service
+					// Location location = lm.getLastKnownLocation("gps");
+					//
+					// // get lat, lon
+					// if (location != null) {
+					// double lat = location.getLatitude();
+					// double lon = location.getLongitude();
+					//
+					// TripEntry tripEntry = new TripEntry(lat, lon, fileName,
+					// MediaType.PHOTO);
+					// TripStorageManager storageMgr = TripStorageManagerFactory
+					// .getTripStorageManager();
+					// storageMgr.addTripEntry(thisTripId, tripEntry);
+					//
+					// Log.d("ARPITA", "Trip entry created " + lat + " " + lon
+					// + " " + fileName);
+					// }
+					// else
+					// {
+					// Log.e(TAG,
+					// "Location not available - trip entry not created");
+					// }
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(),
 							"Exception while saving a captured photo ",
 							Toast.LENGTH_SHORT).show();
+
 					Log.e(TAG,
 							"Exception while saving a captured photo : "
 									+ e.getMessage());
@@ -359,10 +373,10 @@ public class TripViewActivity extends TabActivity {
 
 			if (resultCode == RESULT_OK) {
 				try {
-					String abc = (String) dataIntent.getExtras().get(
+					String filePath = (String) dataIntent.getExtras().get(
 							"returnKey");
 					Toast.makeText(getBaseContext(),
-							"Audio captured and saved in " + abc,
+							"Audio captured and saved in " + filePath,
 							Toast.LENGTH_SHORT).show();
 
 				} catch (Exception e) {
@@ -377,6 +391,36 @@ public class TripViewActivity extends TabActivity {
 			}
 
 			break;
+		}
+
+		case REQUEST_NOTES: {
+			if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(getBaseContext(), "Note not captured",
+						Toast.LENGTH_SHORT).show();
+			} else {
+
+			}
+
+			if (resultCode == RESULT_OK) {
+				try {
+					String text = (String) dataIntent.getExtras().get(
+							"capturedText");
+					Toast.makeText(getBaseContext(), "Text captured " + text,
+							Toast.LENGTH_SHORT).show();
+
+					// TODO
+					// Save the captured text in a tripEntry
+
+				} catch (Exception e) {
+					if (dataIntent == null)
+						Toast.makeText(getBaseContext(), "dataIntent is NULL",
+								Toast.LENGTH_SHORT).show();
+					else
+						Toast.makeText(getBaseContext(),
+								"Exception while capturing audio",
+								Toast.LENGTH_SHORT).show();
+				}
+			}
 		}
 
 		case EDIT_TRIP_SETTINGS: {

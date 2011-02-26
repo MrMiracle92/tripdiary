@@ -1,16 +1,21 @@
 package com.google.code.p.tripdiary;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Defintions of columns of the two tables in the database.
+ * Definitions of columns of the two tables in the database.
  * 
  * @author Arunabha Ghosh
+ * @author Arpita Saha
  */
 public class DbDefs {
+	public static final String AUTHORITY = "com.google.code.p.tripDiary";
+
 	public static final class TripCols implements BaseColumns {
 		// Prevent instantiation.
-		private TripCols() {}
+		private TripCols() {
+		}
 
 		/** The name column. */
 		public static final String TRIP_NAME = "Tripname";
@@ -30,7 +35,8 @@ public class DbDefs {
 
 	public static final class TripDetailCols implements BaseColumns {
 		// Prevent instantiation.
-		private TripDetailCols() {}
+		private TripDetailCols() {
+		}
 
 		/** The trip to which this entry belongs. */
 		public static final String TRIP_ID = "Tripid";
@@ -49,5 +55,25 @@ public class DbDefs {
 
 		/** The media location column. */
 		public static final String MEDIA_LOCATION = "Medialocation";
+
+		/** Notes column (if any). */
+		public static final String NOTE = "note";
+
+		/**
+		 * The content:// style URL for this table
+		 */
+		public static final Uri CONTENT_URI = Uri.parse("content://"
+				+ AUTHORITY + "/notes");
+
+		/**
+		 * The MIME type of {@link #CONTENT_URI} providing a directory of notes.
+		 */
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.google.note";
+
+		/**
+		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single
+		 * note.
+		 */
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.google.note";
 	}
 }
