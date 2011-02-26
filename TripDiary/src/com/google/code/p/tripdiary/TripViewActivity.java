@@ -9,7 +9,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -43,6 +46,8 @@ public class TripViewActivity extends TabActivity {
 	private final int EDIT_TRIP_SETTINGS = 4;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
+
+	private final int DIALOG_CONFIRM_AND_DELETE_TRIP = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -241,11 +246,51 @@ public class TripViewActivity extends TabActivity {
 			break;
 
 		case R.id.delete_trip:
-			// TripStorageManagerFactory.getTripStorageManager(getApplicationContext())
+			showDialog(DIALOG_CONFIRM_AND_DELETE_TRIP);
 			break;
 
 		}
 		return false;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+		switch (id) {
+		case DIALOG_CONFIRM_AND_DELETE_TRIP:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setIcon(R.drawable.delete);
+			builder.setMessage(
+					"This will remove all trip entries including GPS coordinates and notes.\n" +
+					"However, photos, video clips and audio clips will not be deleted.\n" +
+					"Are you sure you want to remove this trip?")
+					.setCancelable(true)
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int id) {
+									TripStorageManager storageMgr = TripStorageManagerFactory
+											.getTripStorageManager(
+													getApplicationContext());
+									storageMgr.removeTrip(thisTripId);
+									//TODO: refresh screen
+								}
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.cancel();
+								}
+							});
+			dialog = builder.create();
+			break;
+		default:
+			dialog = null;
+		}
+		return dialog;
 	}
 
 	public static String getMediaFileName() {
