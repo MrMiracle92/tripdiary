@@ -3,11 +3,9 @@ package com.google.code.p.tripdiary;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,9 +13,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-
-import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
 
 /**
  * Captures a note entry from the user and saves in the database.
