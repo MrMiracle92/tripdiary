@@ -39,7 +39,7 @@ public class TripSettingsActivity extends Activity {
 	private long mThisTripId = 0;
 	private boolean mIsNewTrip = false;
 
-	private final int DIALOG_INVALID_INPUT_NAME_REQUIRED = 0;
+	private final int DIALOG_INVALID_INPUT_NAME_REQUIRED = 1;
 
 	// Requests (for activities)
 	private final int REQUEST_PICK_TRIP_IMAGE = 1;
@@ -117,12 +117,16 @@ public class TripSettingsActivity extends Activity {
 	private void populateContent() {
 		if (!mIsNewTrip) {
 			TripDetail td = storageMgr.getTripDetail(mThisTripId);
+			long created = td.getCreateTime();
+			long updated = storageMgr.getLastUpdatedTime(mThisTripId);
+			if(updated == -1) {
+				updated = created;
+			}
 			DateFormat df = DateFormat.getDateInstance();
 			((TextView) findViewById(R.id.tvCreated)).setText(df
-					.format(new Date(td.getCreateTime())));
+					.format(new Date(created)));
 			((TextView) findViewById(R.id.tvLastUpdated))
-					.setText(df.format(new Date(storageMgr
-							.getLastUpdatedTime(mThisTripId))));
+					.setText(df.format(new Date(updated)));
 			((TextView) findViewById(R.id.edName)).setText(td.getName());
 			((TextView) findViewById(R.id.edDescription)).setText(td
 					.getTripDescription());
