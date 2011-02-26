@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 
@@ -111,8 +112,10 @@ public class ImageCache {
 			}
 			break;
 		case VIDEO:
-			bm = ThumbnailUtils.createVideoThumbnail(pathName,
-					MediaStore.Video.Thumbnails.MINI_KIND);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+				bm = ThumbnailUtils.createVideoThumbnail(pathName,
+						MediaStore.Video.Thumbnails.MINI_KIND);
+			}
 			if (bm == null) {
 				bm = BitmapFactory.decodeResource(context.getResources(),
 						R.drawable.video);
