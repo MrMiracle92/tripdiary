@@ -50,6 +50,12 @@ public class TripEntry {
 		this.mediaType = mediaType;
 	}
 
+	public TripEntry(double lat, double lon) {
+		this.lat = lat;
+		this.lon = lon;
+		this.creationTime = System.currentTimeMillis();
+	}
+
 	public TripEntry() {}
 
 	@Override
