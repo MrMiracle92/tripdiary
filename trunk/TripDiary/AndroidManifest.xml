@@ -30,6 +30,8 @@
                   android:screenOrientation="sensor"
                   android:configChanges="keyboardHidden|orientation">
         </activity>
+        <service android:enabled="true"
+                 android:name=".BackgroundGpsService" />
 	</application>
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7"></uses-sdk>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
