@@ -27,6 +27,8 @@ import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import com.google.code.p.tripdiary.TripEntry.MediaType;
+
 /**
  * This activity takes care of showing the tabbed views of the trips (on the
  * gallery tab and the map tab.)
@@ -44,6 +46,7 @@ public class TripViewActivity extends TabActivity {
 	public final int REQUEST_AUDIO = 2;
 	public final int REQUEST_NOTES = 3;
 	private final int EDIT_TRIP_SETTINGS = 4;
+	private final int SHARE_TRIP = 5;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 
@@ -249,6 +252,13 @@ public class TripViewActivity extends TabActivity {
 			showDialog(DIALOG_CONFIRM_AND_DELETE_TRIP);
 			break;
 
+		case R.id.share_trip:
+			Intent shareIntent = new Intent(getApplicationContext(),
+					TripShare.class);
+			shareIntent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
+			Log.d(TAG, "Start exporting trip");
+
+			startActivityForResult(shareIntent, SHARE_TRIP);
 		}
 		return false;
 	}
@@ -261,9 +271,9 @@ public class TripViewActivity extends TabActivity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setIcon(R.drawable.delete);
 			builder.setMessage(
-					"This will remove all trip entries including GPS coordinates and notes.\n" +
-					"However, photos, video clips and audio clips will not be deleted.\n" +
-					"Are you sure you want to remove this trip?")
+					"This will remove all trip entries including GPS coordinates and notes.\n"
+							+ "However, photos, video clips and audio clips will not be deleted.\n"
+							+ "Are you sure you want to remove this trip?")
 					.setCancelable(true)
 					.setPositiveButton("Yes",
 							new DialogInterface.OnClickListener() {
@@ -271,10 +281,9 @@ public class TripViewActivity extends TabActivity {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									TripStorageManager storageMgr = TripStorageManagerFactory
-											.getTripStorageManager(
-													getApplicationContext());
+											.getTripStorageManager(getApplicationContext());
 									storageMgr.removeTrip(thisTripId);
-									//TODO: refresh screen
+									// TODO: refresh screen
 								}
 							})
 					.setNegativeButton("No",
@@ -328,32 +337,6 @@ public class TripViewActivity extends TabActivity {
 					FileOutputStream fos = new FileOutputStream(dir);
 					capturedPic.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 
-					// // get handle for LocationManager
-					// LocationManager lm = (LocationManager)
-					// getSystemService(Context.LOCATION_SERVICE);
-					//
-					// // connect to the GPS location service
-					// Location location = lm.getLastKnownLocation("gps");
-					//
-					// // get lat, lon
-					// if (location != null) {
-					// double lat = location.getLatitude();
-					// double lon = location.getLongitude();
-					//
-					// TripEntry tripEntry = new TripEntry(lat, lon, fileName,
-					// MediaType.PHOTO);
-					// TripStorageManager storageMgr = TripStorageManagerFactory
-					// .getTripStorageManager();
-					// storageMgr.addTripEntry(thisTripId, tripEntry);
-					//
-					// Log.d("ARPITA", "Trip entry created " + lat + " " + lon
-					// + " " + fileName);
-					// }
-					// else
-					// {
-					// Log.e(TAG,
-					// "Location not available - trip entry not created");
-					// }
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(),
 							"Exception while saving a captured photo ",
@@ -412,8 +395,6 @@ public class TripViewActivity extends TabActivity {
 			if (resultCode == RESULT_CANCELED) {
 				Toast.makeText(getBaseContext(), "Audio not captured",
 						Toast.LENGTH_SHORT).show();
-			} else {
-
 			}
 
 			if (resultCode == RESULT_OK) {
@@ -424,26 +405,34 @@ public class TripViewActivity extends TabActivity {
 							"Audio captured and saved in " + filePath,
 							Toast.LENGTH_SHORT).show();
 
+					double lat = 10.0; // TODO
+					double lon = 20.0; // TODO
+					String fileName = filePath;
+
+					TripEntry tripEntry = new TripEntry(lat, lon, fileName,
+							MediaType.AUDIO);
+					TripStorageManager storageMgr = TripStorageManagerFactory
+							.getTripStorageManager(getBaseContext());
+
+					assert (storageMgr.addTripEntry(thisTripId, tripEntry));
+					Log.d("ARPITA", "Trip entry created for Audio : " + lat
+							+ " " + lon + " " + fileName);
+
+					break;
+
 				} catch (Exception e) {
 					if (dataIntent == null)
-						Toast.makeText(getBaseContext(), "dataIntent is NULL",
-								Toast.LENGTH_SHORT).show();
+						Log.e(TAG, "dataIntent is NULL");
 					else
-						Toast.makeText(getBaseContext(),
-								"Exception while capturing audio",
-								Toast.LENGTH_SHORT).show();
+						Log.e(TAG, "Exception while capturing audio : " + e.getMessage());
 				}
 			}
-
-			break;
 		}
 
 		case REQUEST_NOTES: {
 			if (resultCode == RESULT_CANCELED) {
 				Toast.makeText(getBaseContext(), "Note not captured",
 						Toast.LENGTH_SHORT).show();
-			} else {
-
 			}
 
 			if (resultCode == RESULT_OK) {
@@ -451,25 +440,59 @@ public class TripViewActivity extends TabActivity {
 					String text = (String) dataIntent.getExtras().get(
 							"capturedText");
 					Toast.makeText(getBaseContext(), "Text captured " + text,
-							Toast.LENGTH_SHORT).show();
+							Toast.LENGTH_SHORT).show(); // TODO delete
 
 					// TODO
+					double lat = 10.0; // TODO
+					double lon = 20.0; // TODO
+
 					// Save the captured text in a tripEntry
+					TripEntry tripEntry = new TripEntry(lat, lon, text);
+					TripStorageManager storageMgr = TripStorageManagerFactory
+							.getTripStorageManager(getBaseContext());
+
+					storageMgr.addTripEntry(thisTripId, tripEntry);
+
+					Log.d(TAG, "Trip entry created for notes : " + lat + " "
+							+ lon);
 
 				} catch (Exception e) {
 					if (dataIntent == null)
-						Toast.makeText(getBaseContext(), "dataIntent is NULL",
-								Toast.LENGTH_SHORT).show();
+						Log.e(TAG, "dataIntent is NULL");
 					else
-						Toast.makeText(getBaseContext(),
-								"Exception while capturing audio",
-								Toast.LENGTH_SHORT).show();
+						Log.e(TAG, "Exception while capturing notes : " + e.getMessage());
 				}
 			}
 		}
 
 		case EDIT_TRIP_SETTINGS: {
 			// nothing to do here
+			break;
+		}
+
+		case SHARE_TRIP: {
+			if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(getBaseContext(), "Trip not exported",
+						Toast.LENGTH_SHORT).show();
+			}
+
+			if (resultCode == RESULT_OK) {
+				try {
+					String filePath = (String) dataIntent.getExtras().get(
+							"returnKey");
+					Toast.makeText(getBaseContext(),
+							"Copy the kml file from " + filePath,
+							Toast.LENGTH_SHORT).show();
+
+					break;
+
+				} catch (Exception e) {
+					if (dataIntent == null)
+						Log.e(TAG, "dataIntent is NULL");
+					else
+						Log.e(TAG, "Exception while exporting a trip : " + e.getMessage());
+				}
+			}
 			break;
 		}
 
