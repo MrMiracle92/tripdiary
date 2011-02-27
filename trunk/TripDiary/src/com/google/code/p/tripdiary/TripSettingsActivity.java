@@ -238,6 +238,7 @@ public class TripSettingsActivity extends Activity {
 						traceRouteEnabled, null);
 			}
 			// finish with result ok
+			setResult(RESULT_OK);
 			finish();
 		}
 	}

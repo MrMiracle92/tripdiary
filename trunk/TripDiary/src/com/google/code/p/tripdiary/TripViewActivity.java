@@ -275,7 +275,9 @@ public class TripViewActivity extends TabActivity {
 									TripStorageManager storageMgr = TripStorageManagerFactory
 											.getTripStorageManager(getApplicationContext());
 									storageMgr.deleteTrip(thisTripId);
-									// TODO: refresh screen
+									Toast.makeText(getBaseContext(), "Trip deleted.", Toast.LENGTH_SHORT).show();
+									setResult(RESULT_OK);
+									finish();
 								}
 							})
 					.setNegativeButton("No",
