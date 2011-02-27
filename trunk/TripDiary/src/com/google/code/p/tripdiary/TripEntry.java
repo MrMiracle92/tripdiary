@@ -32,16 +32,35 @@ public class TripEntry {
 	/** Notes (if any). */
 	public String noteText;
 
-	public TripEntry(double lat, double lon, String mediaLocation,
-			MediaType mediaType, long creationTime, String noteText) {
+	/**
+	 * Call this method to insert notes (time specified) MediaType - set by the
+	 * method
+	 */
+	public TripEntry(double lat, double lon, long creationTime, String noteText) {
 		this.lat = lat;
 		this.lon = lon;
-		this.mediaLocation = mediaLocation;
+		this.mediaLocation = ""; // Notes saved in db itself
 		this.creationTime = creationTime;
-		this.mediaType = mediaType;
+		this.mediaType = MediaType.TEXT;
 		this.noteText = noteText;
 	}
 
+	/**
+	 * Call this method to insert notes (no time specified) MediaType - set by
+	 * the method
+	 */
+	public TripEntry(double lat, double lon, String noteText) {
+		this.lat = lat;
+		this.lon = lon;
+		this.mediaLocation = ""; // Notes saved in db itself
+		this.creationTime = System.currentTimeMillis();
+		this.mediaType = MediaType.TEXT;
+		this.noteText = noteText;
+	}
+
+	/**
+	 * Call this method to insert all other media (time specified)
+	 */
 	public TripEntry(double lat, double lon, String mediaLocation,
 			MediaType mediaType, long creationTime) {
 		this.lat = lat;
@@ -52,16 +71,9 @@ public class TripEntry {
 		this.noteText = ""; // Empty note
 	}
 
-	public TripEntry(double lat, double lon, String mediaLocation,
-			MediaType mediaType, String noteText) {
-		this.lat = lat;
-		this.lon = lon;
-		this.mediaLocation = mediaLocation;
-		this.creationTime = System.currentTimeMillis();
-		this.mediaType = mediaType;
-		this.noteText = noteText;
-	}
-
+	/**
+	 * Call this method to insert all other media (time not specified)
+	 */
 	public TripEntry(double lat, double lon, String mediaLocation,
 			MediaType mediaType) {
 		this.lat = lat;
@@ -72,6 +84,9 @@ public class TripEntry {
 		this.noteText = ""; // Empty notes
 	}
 
+	/**
+	 * No media
+	 */
 	public TripEntry(double lat, double lon) {
 		this.lat = lat;
 		this.lon = lon;
