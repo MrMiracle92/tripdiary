@@ -6,14 +6,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
 /**
- * Implements the background service which logs the gps location at regular intervals.
+ * Implements the background service which logs the gps location at regular
+ * intervals.
  * 
  * @author Arunabha Ghosh
+ * @author Arpita Saha
  */
 public class BackgroundGpsService extends Service implements LocationListener {
 	/**
@@ -29,17 +32,31 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	private final float minUpdateDistanceMetres = 100.0f;
 	private final long minUpdateIntervalMillis = 120000l;
 
+	private final IBinder gpsBinder = new GPSBinder();
+
+	/**
+	 * Class for clients to access location.
+	 */
+	public class GPSBinder extends Binder {
+		BackgroundGpsService getService() {
+			return BackgroundGpsService.this;
+		}
+	}
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Required definition, not used.
-		return null;
+		return gpsBinder;
 	}
 
 	@Override
 	public void onCreate() {
+		logInfo("Background GPS created");
+
 		// Get the location manager.
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		storageManager = TripStorageManagerFactory.getTripStorageManager(getBaseContext());
+		storageManager = TripStorageManagerFactory
+				.getTripStorageManager(getBaseContext());
 	}
 
 	/**
@@ -48,6 +65,8 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		logInfo("Background GPS onStartCommand");
+
 		Bundle extras = intent.getExtras();
 		if (extras.containsKey(INTENT_TRIP_ID_KEY)) {
 			currentTripId = extras.getLong(INTENT_TRIP_ID_KEY);
@@ -66,10 +85,16 @@ public class BackgroundGpsService extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		logInfo(String.format("Updated location lat: %d, lon: %d", location.getLatitude(),
-				location.getLongitude()));
-		TripEntry tripEntry = new TripEntry(location.getLatitude(), location.getLongitude());
+		logInfo(String.format("Updated location lat: " + location.getLatitude()
+				+ " lon: " + location.getLongitude()));
+		TripEntry tripEntry = new TripEntry(location.getLatitude(),
+				location.getLongitude());
 		storageManager.addTripEntry(currentTripId, tripEntry);
+	}
+
+	public Location getLastKnownLocation() {
+		return locationManager
+				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
 
 	@Override

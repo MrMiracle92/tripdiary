@@ -45,10 +45,10 @@ public class TripMapActivity extends MapActivity {
 		}
 
 		// Using locationManager class to obtain GPS locations
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-		locationListener = new TripLocationListener();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 10.0f, locationListener);
+//		locationListener = new TripLocationListener();
+//		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 10.0f, locationListener);
 	}
 
 	@Override
