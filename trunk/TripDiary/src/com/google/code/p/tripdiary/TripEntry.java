@@ -91,6 +91,9 @@ public class TripEntry {
 		this.lat = lat;
 		this.lon = lon;
 		this.creationTime = System.currentTimeMillis();
+		this.mediaType = MediaType.NONE;
+		this.mediaLocation = "";
+		this.noteText = "";
 	}
 
 	public TripEntry() {
