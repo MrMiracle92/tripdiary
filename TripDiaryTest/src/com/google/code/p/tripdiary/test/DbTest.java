@@ -49,6 +49,12 @@ public class DbTest extends ActivityInstrumentationTestCase2<DbTestActivity> {
     	expected.defaultThumbnail = "test_thumb";
     	tripDetails = testActivity.getTripDetails(tripId).toString();
     	assertEquals(expected.toString(), tripDetails);
+    	
+    	// delete the trip and check again
+    	testActivity.testDeleteTrip(tripId);
+    	assertNull(testActivity.getTripDetails(tripId));
+    	assertEquals(0, testActivity.getEntriesForTrip(tripId).getCount());
+    	
     }
     
     public void testTripEntryOps() {
