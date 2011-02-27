@@ -274,7 +274,7 @@ public class TripViewActivity extends TabActivity {
 										int id) {
 									TripStorageManager storageMgr = TripStorageManagerFactory
 											.getTripStorageManager(getApplicationContext());
-									storageMgr.removeTrip(thisTripId);
+									storageMgr.deleteTrip(thisTripId);
 									// TODO: refresh screen
 								}
 							})

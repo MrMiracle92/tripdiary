@@ -31,8 +31,8 @@ public class TripStorageManagerFactory {
 		synchronized (TripStorageManagerFactory.class) {
 			if (storageManagerInstance == null) {
 				// TODO:need to use actual TripStorageManager impl when ready
-//				storageManagerInstance = new TripStorageManagerImpl(appContext);
-				storageManagerInstance = new TripStorageManagerFake();
+				storageManagerInstance = new TripStorageManagerImpl(appContext);
+//				storageManagerInstance = new TripStorageManagerFake();
 			}
 		}
 		return storageManagerInstance;
@@ -207,15 +207,13 @@ public class TripStorageManagerFactory {
 		}
 
 		@Override
-		public boolean removeTrip(long tripId) {
+		public void deleteTrip(long tripId) {
 			// TODO Auto-generated method stub
-			return false;
 		}
 
 		@Override
-		public boolean removeTripEntry(long tripEntry) {
+		public void deleteTripEntry(long tripEntry) {
 			// TODO Auto-generated method stub
-			return false;
 		}
 	}
 }
