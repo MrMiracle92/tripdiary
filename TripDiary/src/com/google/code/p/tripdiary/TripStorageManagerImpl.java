@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.google.code.p.tripdiary.DbDefs.TripCols;
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
@@ -18,9 +17,6 @@ import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
  * @author Ankan Mukherjee
  */
 public class TripStorageManagerImpl implements TripStorageManager {
-
-	public static final String TAG = "TripStorageManagerImpl";
-
 	private static final String DATABASE_NAME = "tripdiary.db";
 	private static final int DATABASE_VERSION = 2;
 
@@ -82,7 +78,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
+			tripDiaryLogger.logWarning("Upgrading database from version " + oldVersion + " to "
 					+ newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + TRIP_METADATA_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRIP_DETAIL_TABLE);

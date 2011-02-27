@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,6 @@ import com.google.code.p.tripdiary.TripEntry.MediaType;
  * 
  */
 public class TripGalleryActivity extends Activity {
-	private final static String TAG = "TripGalleryActivity";
-
 	private TripStorageManager mStorageMgr;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
@@ -52,7 +49,7 @@ public class TripGalleryActivity extends Activity {
 
 			// by now there should be a trip id
 			if (thisTripId == 0) {
-				Log.e(TAG, "Could not find trip.");
+				tripDiaryLogger.logError("Could not find trip.");
 				setResult(RESULT_CANCELED);
 				finish();
 				return;

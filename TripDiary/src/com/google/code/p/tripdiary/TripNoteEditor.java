@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,8 +20,6 @@ import android.widget.EditText;
  * 
  */
 public class TripNoteEditor extends Activity {
-	private static final String TAG = "NoteEditor";
-
 	/**
 	 * A custom EditText that draws lines between each line of text that is
 	 * displayed.
@@ -75,7 +72,7 @@ public class TripNoteEditor extends Activity {
 			});
 
 		} catch (Exception e) {
-			Log.d(TAG, "Fatal exception " + e.getMessage());
+			tripDiaryLogger.logDebug("Fatal exception " + e.getMessage());
 		}
 	}
 
@@ -95,7 +92,7 @@ public class TripNoteEditor extends Activity {
 
 			this.setResult(RESULT_OK, data);
 		} else {
-			Log.d(TAG, "No notes captured");
+			tripDiaryLogger.logDebug("No notes captured");
 
 			// User pressed OK button - lets save this and go back
 			this.setResult(RESULT_CANCELED);

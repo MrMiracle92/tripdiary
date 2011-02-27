@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -35,7 +34,6 @@ public class AudioRecorder extends Activity {
 	Bundle mySavedInstanceState;
 	String filePath;
 
-	private final String TAG = "AudioRecorder";
 	private final String DEFAULT_FILE_EXTENSION = ".3gpp";
 	private final String DEFAULT_FILE_NAME = "tripDiaryAudioRecord";
 
@@ -90,7 +88,7 @@ public class AudioRecorder extends Activity {
 			Toast.makeText(getBaseContext(),
 					"SD Card is not mounted.  It is " + state + ".",
 					Toast.LENGTH_SHORT).show();
-			Log.d(TAG, "SD Card is not mounted.  It is " + state + ".");
+			tripDiaryLogger.logDebug( "SD Card is not mounted.  It is " + state + ".");
 			return;
 		}
 
@@ -138,7 +136,7 @@ public class AudioRecorder extends Activity {
 			mediaRecorder.start();
 		} catch (Exception e) { // TODO Change to IllegalStateException ,
 								// IOException
-			Log.d(TAG, "Exception while recording audio " + e.getMessage());
+			tripDiaryLogger.logDebug( "Exception while recording audio " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -175,7 +173,7 @@ public class AudioRecorder extends Activity {
 			finish();
 
 		} catch (Exception e) {
-			Log.d(TAG,
+			tripDiaryLogger.logDebug(
 					"Exception while stopping audio recording "
 							+ e.getMessage());
 			e.printStackTrace();
