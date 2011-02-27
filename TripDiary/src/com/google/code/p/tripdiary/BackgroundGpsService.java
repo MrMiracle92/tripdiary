@@ -51,7 +51,7 @@ public class BackgroundGpsService extends Service implements LocationListener {
 
 	@Override
 	public void onCreate() {
-		logInfo("Background GPS created");
+		tripDiaryLogger.logInfo("Background GPS service created");
 
 		// Get the location manager.
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -65,7 +65,7 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		logInfo("Background GPS onStartCommand");
+		tripDiaryLogger.logDebug("BackgroundGpsService - onStartCommand");
 
 		Bundle extras = intent.getExtras();
 		if (extras.containsKey(INTENT_TRIP_ID_KEY)) {
@@ -80,12 +80,14 @@ public class BackgroundGpsService extends Service implements LocationListener {
 
 	@Override
 	public void onDestroy() {
+		tripDiaryLogger.logDebug("BackgroundGpsService - onDestroy");
+		
 		locationManager.removeUpdates(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		logInfo(String.format("Updated location lat: " + location.getLatitude()
+		tripDiaryLogger.logInfo(String.format("Updating location lat: " + location.getLatitude()
 				+ " lon: " + location.getLongitude()));
 		TripEntry tripEntry = new TripEntry(location.getLatitude(),
 				location.getLongitude());
@@ -93,6 +95,8 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	}
 
 	public Location getLastKnownLocation() {
+		tripDiaryLogger.logDebug("BackgroundGpsService - getLastKnownLocation");
+		
 		return locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
@@ -112,9 +116,5 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 
-	}
-
-	private void logInfo(String msg) {
-		Log.i("BackgroundGpsService", msg);
 	}
 }

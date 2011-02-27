@@ -1,6 +1,5 @@
 package com.google.code.p.tripdiary;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -37,11 +36,7 @@ public class TripMapActivity extends MapActivity {
 //			mapController = mapView.getController();
 
 		} catch (Exception e) {
-			System.out.println("Exception caught : " + e.getMessage());// TODO
-																		// change
-																		// to
-																		// right
-																		// exceptions
+			
 		}
 
 		// Using locationManager class to obtain GPS locations
