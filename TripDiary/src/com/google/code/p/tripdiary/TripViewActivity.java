@@ -182,10 +182,6 @@ public class TripViewActivity extends TabActivity {
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		switch (menuItem.getItemId()) {
 		case R.id.add_photo: {
-			// Prints on the screen. //TODO remove later
-			Toast.makeText(getBaseContext(), "Capturing photo",
-					Toast.LENGTH_SHORT).show();
-
 			Intent cameraIntent = new Intent(
 					android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -195,10 +191,6 @@ public class TripViewActivity extends TabActivity {
 		}
 
 		case R.id.add_video: {
-			// Prints on the screen. //TODO remove later
-			Toast.makeText(getBaseContext(), "Capturing video",
-					Toast.LENGTH_SHORT).show();
-
 			Intent videoIntent = new Intent(
 					android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
@@ -303,7 +295,7 @@ public class TripViewActivity extends TabActivity {
 	}
 
 	public static String getMediaFileName() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 		Date date = new Date();
 		String mediaFileName = dateFormat.format(date);
 
@@ -327,7 +319,6 @@ public class TripViewActivity extends TabActivity {
 				Bitmap capturedPic = (Bitmap) dataIntent.getExtras()
 						.get("data");
 
-				// save image in /tripDiary
 				try {
 					String fileName = Environment.getExternalStorageDirectory()
 							.getAbsolutePath()
@@ -417,9 +408,6 @@ public class TripViewActivity extends TabActivity {
 					assert (storageMgr.addTripEntry(thisTripId, tripEntry));
 					Log.d("ARPITA", "Trip entry created for Audio : " + lat
 							+ " " + lon + " " + fileName);
-
-					break;
-
 				} catch (Exception e) {
 					if (dataIntent == null)
 						Log.e(TAG, "dataIntent is NULL");
@@ -427,6 +415,8 @@ public class TripViewActivity extends TabActivity {
 						Log.e(TAG, "Exception while capturing audio : " + e.getMessage());
 				}
 			}
+			
+			break;
 		}
 
 		case REQUEST_NOTES: {
@@ -463,6 +453,8 @@ public class TripViewActivity extends TabActivity {
 						Log.e(TAG, "Exception while capturing notes : " + e.getMessage());
 				}
 			}
+			
+			break;
 		}
 
 		case EDIT_TRIP_SETTINGS: {

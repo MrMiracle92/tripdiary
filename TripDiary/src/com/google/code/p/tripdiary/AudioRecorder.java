@@ -42,6 +42,19 @@ public class AudioRecorder extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		String state = Environment.getExternalStorageState();
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+			// Something else is wrong. It may be one of many other states, but
+			// all we need
+			// to know is we can not write
+			Toast.makeText(getBaseContext(),
+					"External storage not available for writing.",
+					Toast.LENGTH_SHORT).show();
+			this.setResult(RESULT_CANCELED);
+			finish();
+			return;
+		}
+
 		mySavedInstanceState = savedInstanceState;
 
 		setContentView(R.layout.trip_audio_record);
@@ -53,11 +66,11 @@ public class AudioRecorder extends Activity {
 		// Faded stop button shows up
 		ImageButton stopFadedButton = (ImageButton) findViewById(R.id.audioStopFaded);
 		stopFadedButton.setVisibility(View.VISIBLE);
-		
+
 		// faded start button goes away
 		ImageButton startFadedButton = (ImageButton) findViewById(R.id.audioStartFaded);
 		startFadedButton.setVisibility(View.GONE);
-		
+
 		// stop button goes away
 		ImageButton stopButton = (ImageButton) findViewById(R.id.audioStop);
 		stopButton.setVisibility(View.GONE);
@@ -90,15 +103,15 @@ public class AudioRecorder extends Activity {
 				mediafile.delete();
 			}
 			mediafile = null;
-			
+
 			// Start button goes away
 			ImageButton startbutton = (ImageButton) findViewById(R.id.audioStart);
 			startbutton.setVisibility(View.GONE);
-			
+
 			// Faded Stop button goes away
 			ImageButton stopFadedButton = (ImageButton) findViewById(R.id.audioStopFaded);
 			stopFadedButton.setVisibility(View.GONE);
-			
+
 			// Faded Start button shows up
 			ImageButton startFadedButton = (ImageButton) findViewById(R.id.audioStartFaded);
 			startFadedButton.setVisibility(View.VISIBLE);
@@ -150,7 +163,7 @@ public class AudioRecorder extends Activity {
 			// Faded Start button goes away
 			ImageButton startFadedButton = (ImageButton) findViewById(R.id.audioStartFaded);
 			startFadedButton.setVisibility(View.GONE);
-			
+
 			// stop button goes away
 			ImageButton stopButton = (ImageButton) findViewById(R.id.audioStop);
 			stopButton.setVisibility(View.GONE);

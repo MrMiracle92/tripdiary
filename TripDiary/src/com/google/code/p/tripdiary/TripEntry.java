@@ -81,7 +81,7 @@ public class TripEntry {
 		this.mediaLocation = mediaLocation;
 		this.creationTime = System.currentTimeMillis();
 		this.mediaType = mediaType;
-		this.noteText = ""; // Empty notes
+		this.noteText = ""; // Empty note
 	}
 
 	/**

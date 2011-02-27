@@ -3,7 +3,6 @@ package com.google.code.p.tripdiary;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,8 +13,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * 
@@ -37,9 +38,23 @@ public class TripShare extends Activity {
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 	private TripStorageManager mStorageMgr;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// setContentView(R.layout.) //TODO
+
+		String state = Environment.getExternalStorageState();
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+			// Something else is wrong. It may be one of many other states, but
+			// all we need
+			// to know is we can not write
+			Toast.makeText(getBaseContext(),
+					"External storage not available for writing.",
+					Toast.LENGTH_SHORT).show();
+			this.setResult(RESULT_CANCELED);
+			finish();
+			return;
+		}
 
 		// Get the tripId
 		if (thisTripId == 0) {
@@ -78,7 +93,11 @@ public class TripShare extends Activity {
 
 	private String toXMLString() {
 		StringBuilder sb = new StringBuilder("");
-		sb.append("<kml>");
+
+		String xmlStart = "<?xml version=\"1.0\"?>"
+				+ "<kml xmlns=\"http://www.opengis.net/kml/2.2\">"
+				+ "<Document>";
+		sb.append(xmlStart);
 
 		// Cursor to the trip entries
 		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
@@ -86,7 +105,20 @@ public class TripShare extends Activity {
 
 		while (tripEntryCursor.isAfterLast() == false) {
 			// Create the <Placemark> element
-			sb.append("<Placemark");
+			sb.append("<Placemark>");
+
+			if (tripEntryCursor.getString(
+					tripEntryCursor.getColumnIndex(TripDetailCols.MEDIA_TYPE))
+					.equalsIgnoreCase("TEXT")) {
+				sb.append("<description>");
+				String noteText = tripEntryCursor.getString(
+						tripEntryCursor.getColumnIndex(TripDetailCols.NOTE));
+				sb.append(noteText);
+				sb.append("</description>");
+			} else {
+				sb.append("<description>" + " Created by tripDiary application"
+						+ "</description>");
+			}
 			sb.append("<Point>");
 
 			String latlon = tripEntryCursor.getString(tripEntryCursor
@@ -100,6 +132,9 @@ public class TripShare extends Activity {
 
 			tripEntryCursor.moveToNext();
 		}
+
+		String xmlEnd = "</Document> </kml>";
+		sb.append(xmlEnd);
 
 		tripEntryCursor.close();
 		return sb.toString();
@@ -116,15 +151,17 @@ public class TripShare extends Activity {
 		{
 			kmlDir.mkdir();
 		}
-		fileName = getKMLFileName() + ".txt"; // TODO use DEFAULT_FILE_EXTENSION
+		fileName = "tripDiary-" + getKMLFileName() + ".txt"; // TODO use
+																// DEFAULT_FILE_EXTENSION
 		File kmlFile = new File(kmlDir, fileName);
 
 		// Write to disk
 		try {
-			OutputStream os = new FileOutputStream(kmlFile);
+			FileOutputStream fos = new FileOutputStream(kmlFile, false);
 			byte[] data = kmlStr.getBytes();
-			os.write(data);
-			os.close();
+			fos.write(data);
+			fos.flush();
+			fos.close();
 		} catch (IOException e) {
 			Log.e(TAG, "Error writing " + kmlFile + e.getMessage());
 			return false;
