@@ -15,6 +15,7 @@ import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
  * 
  * @author Arunabha Ghosh
  * @author Arpita Saha
+ * @author Ankan Mukherjee
  */
 public class TripStorageManagerImpl implements TripStorageManager {
 
@@ -35,7 +36,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 	private static final String TRIP_DETAIL_TABLE_CREATOR = String.format(
 			"CREATE TABLE %s (%s INTEGER PRIMARY KEY, %s INTEGER, %s TEXT, %s TEXT, "
-					+ "%s TEXT, %s TEXT, %s TEXT %s TEXT);", TRIP_DETAIL_TABLE,
+					+ "%s TEXT, %s TEXT, %s TEXT, %s TEXT);", TRIP_DETAIL_TABLE,
 			TripDetailCols._ID, TripDetailCols.TRIP_ID, TripDetailCols.LAT,
 			TripDetailCols.LON, TripDetailCols.CREATE_TIME,
 			TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION,
@@ -59,9 +60,9 @@ public class TripStorageManagerImpl implements TripStorageManager {
 			"SELECT * FROM %s WHERE _id=?", TRIP_DETAIL_TABLE);
 
 	/** Query to select the latest entry in the given trip. */
-	private static final String GET_LATEST_TRIP_UPDATE_TIME = String.format(
-			"SELECT max(%s) FROM %s WHERE _id=?", TripDetailCols.CREATE_TIME,
-			TRIP_DETAIL_TABLE);
+	private static final String GET_TRIP_ENTRY_TIME_DESC = String.format(
+			"SELECT %s FROM %s WHERE %s=? ORDER BY %s DESC", TripDetailCols.CREATE_TIME,
+			TRIP_DETAIL_TABLE, TripDetailCols.TRIP_ID, TripDetailCols.CREATE_TIME);
 
 	/** Where clause to select a given trip. */
 	private static final String TRIP_SELECTOR = String.format("%s=?",
@@ -226,25 +227,34 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	@Override
 	public long getLastUpdatedTime(long tripId) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor result = db.rawQuery(GET_LATEST_TRIP_UPDATE_TIME,
+		Cursor result = db.rawQuery(GET_TRIP_ENTRY_TIME_DESC,
 				new String[] { String.format("%d", tripId) });
 		if (result.getCount() <= 0) {
 			return -1;
 		} else {
+			result.moveToFirst();
 			return result.getLong(result
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
 		}
 	}
-
+	
 	@Override
-	public boolean removeTrip(long tripId) {
-		// TODO Auto-generated method stub
-		return false;
+	public void deleteTrip(long tripId) {
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		// delete trip from trip details
+		db.delete(TRIP_DETAIL_TABLE,
+				String.format("%s=?", TripDetailCols.TRIP_ID),
+				new String[] { String.format("%d", tripId) });
+		// delete trip from trip db
+		db.delete(TRIP_METADATA_TABLE, TRIP_SELECTOR,
+				new String[] { String.format("%d", tripId) });
+
 	}
 
 	@Override
-	public boolean removeTripEntry(long tripEntry) {
-		// TODO Auto-generated method stub
-		return false;
+	public void deleteTripEntry(long tripEntryId) {
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		db.delete(TRIP_DETAIL_TABLE, String.format("%s=?", TripDetailCols._ID),
+				new String[] { String.format("%d", tripEntryId) });
 	}
 }
