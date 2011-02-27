@@ -87,16 +87,16 @@ public interface TripStorageManager {
 	long getLastUpdatedTime(long tripId);
 	
 	/**
-	 * Removes the particular trup and all associated trip entries
+	 * Deletes the particular trip and all associated trip entries
 	 * @param tripId the trip id that needs to be deleted
 	 * @return true on success, false otherwise
 	 */
-	boolean removeTrip(long tripId);
+	void deleteTrip(long tripId);
 	
 	/**
-	 * Removes the particular trip entry
+	 * Delete the particular trip entry
 	 * @param tripEntryId the trip entry which has to be removed
 	 * @return true on success, false otherwise
 	 */
-	boolean removeTripEntry(long tripEntryId);
+	void deleteTripEntry(long tripEntryId);
 }

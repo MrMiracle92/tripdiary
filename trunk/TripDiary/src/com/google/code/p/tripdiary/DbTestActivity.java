@@ -24,6 +24,10 @@ public class DbTestActivity extends Activity {
 			boolean traceRouteEnabled, String thumbnailLocation) {
 		impl.updateTrip(tripId, name, tripDescription, traceRouteEnabled, thumbnailLocation);
 	}
+	
+	public void testDeleteTrip(long tripId) {
+		impl.deleteTrip(tripId);
+	}
 
 	public TripDetail getTripDetails(long tripId) {
 		return impl.getTripDetail(tripId);
