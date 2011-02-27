@@ -34,7 +34,7 @@ public class TripMapActivity extends MapActivity {
 			setContentView(R.layout.trip_map);
 			mapView = (MapView) findViewById(R.id.mapview);
 			mapView.setBuiltInZoomControls(true);
-			mapController = mapView.getController();
+//			mapController = mapView.getController();
 
 		} catch (Exception e) {
 			System.out.println("Exception caught : " + e.getMessage());// TODO
@@ -63,7 +63,7 @@ public class TripMapActivity extends MapActivity {
 	@Override
 	public void onPause() {
 	    super.onPause();
-	    locationManager.removeUpdates(locationListener);
+//	    locationManager.removeUpdates(locationListener);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class TripMapActivity extends MapActivity {
 	@Override
 	public void onResume() {
 	    super.onResume();
-	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 10.0f, locationListener);
+//	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 10.0f, locationListener);
 	}
 	
 	
