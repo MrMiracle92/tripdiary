@@ -1,11 +1,10 @@
 package com.google.code.p.tripdiary;
 
-import static com.google.code.p.tripdiary.AppDataDefs.*;
+import static com.google.code.p.tripdiary.AppDataDefs.KEY_IS_NEW_TRIP;
+import static com.google.code.p.tripdiary.AppDataDefs.KEY_TRIP_ID;
 
 import java.sql.Date;
 import java.text.DateFormat;
-
-import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.code.p.tripdiary.TripEntry.MediaType;
+
 ;
 
 /**
@@ -33,7 +34,6 @@ import android.widget.Toast;
  * @author Ankan Mukherjee
  */
 public class TripSettingsActivity extends Activity {
-	// private final String TAG = "TripSettingsActivity";
 
 	private TripStorageManager storageMgr;
 	private long mThisTripId = 0;
@@ -49,7 +49,8 @@ public class TripSettingsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trip_settings);
 
-		storageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
+		storageMgr = TripStorageManagerFactory
+				.getTripStorageManager(getApplicationContext());
 
 		// if the activity is resumed
 		if (savedInstanceState != null) {
@@ -124,7 +125,8 @@ public class TripSettingsActivity extends Activity {
 			((TextView) findViewById(R.id.tvCreated)).setText(df
 					.format(new Date(created)));
 			((TextView) findViewById(R.id.tvLastUpdated))
-					.setText(updated < 0? "Never" : df.format(new Date(updated)));
+					.setText(updated < 0 ? "Never" : df
+							.format(new Date(updated)));
 			((TextView) findViewById(R.id.edName)).setText(td.getName());
 			((TextView) findViewById(R.id.edDescription)).setText(td
 					.getTripDescription());

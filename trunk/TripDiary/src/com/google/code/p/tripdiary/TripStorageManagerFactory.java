@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Environment;
 import android.text.format.Time;
-import android.util.Log;
 
 import com.google.code.p.tripdiary.DbDefs.TripCols;
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
@@ -42,8 +41,6 @@ public class TripStorageManagerFactory {
 	 * TODO:Fake classes.. to be removed later
 	 */
 	private static class TripStorageManagerFake implements TripStorageManager {
-		private final String TAG = "TripStorageManagerFake";
-
 		// list of photos
 		private File[] photos = null;
 
@@ -59,7 +56,7 @@ public class TripStorageManagerFactory {
 				photos = photosDir.listFiles(new FilenameFilter() {
 
 					public boolean accept(File dir, String filename) {
-						Log.d(TAG, filename);
+						tripDiaryLogger.logDebug(filename);
 						if (filename.endsWith("jpg") || filename.endsWith("3gp")) {
 							return true;
 						}

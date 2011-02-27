@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +28,6 @@ import com.google.code.p.tripdiary.TripEntry.MediaType;
  * @author Ankan Mukherjee
  */
 public class TripListActivity extends ListActivity {
-	private static String TAG = "TripListActivity";
 
 	private TripStorageManager mStorageMgr;
 	private Cursor mTripCursor;
@@ -68,7 +66,7 @@ public class TripListActivity extends ListActivity {
 						Intent intent = new Intent(TripListActivity.this,
 								TripSettingsActivity.class);
 						intent.putExtra(AppDataDefs.KEY_IS_NEW_TRIP, true);
-						Log.d(TAG,
+						tripDiaryLogger.logDebug(
 								"About to start Trip Settings activity for new trip.");
 						startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 					}
@@ -84,7 +82,7 @@ public class TripListActivity extends ListActivity {
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-				Log.d(TAG, "About to start trip view activity for trip id "
+				tripDiaryLogger.logDebug( "About to start trip view activity for trip id "
 						+ tripId);
 				startActivityForResult(intent, VIEW_TRIP);
 			}
@@ -130,7 +128,7 @@ public class TripListActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_CANCELED) {
-			Log.d(TAG, "Sub Activity cancelled.");
+			tripDiaryLogger.logDebug( "Sub Activity cancelled.");
 		} else {
 			mTripAdapter.notifyDataSetChanged();
 			switch (requestCode) {
@@ -139,7 +137,7 @@ public class TripListActivity extends ListActivity {
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-				Log.d(TAG, "About to start trip view activity for trip id "
+				tripDiaryLogger.logDebug( "About to start trip view activity for trip id "
 						+ tripId);
 				startActivityForResult(intent, VIEW_TRIP);
 			}

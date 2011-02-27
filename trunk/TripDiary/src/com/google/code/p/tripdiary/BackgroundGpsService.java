@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 /**
  * Implements the background service which logs the gps location at regular

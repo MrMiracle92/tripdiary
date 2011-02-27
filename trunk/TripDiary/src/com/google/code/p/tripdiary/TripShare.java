@@ -12,11 +12,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
-import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * 
@@ -29,8 +27,6 @@ import com.google.code.p.tripdiary.TripEntry.MediaType;
  * 
  */
 public class TripShare extends Activity {
-	private static final String TAG = "TripShare";
-
 	private final String DEFAULT_FILE_EXTENSION = ".kml";
 
 	private String fileName;
@@ -64,7 +60,7 @@ public class TripShare extends Activity {
 
 			// by now there should be a trip id
 			if (thisTripId == 0) {
-				Log.e(TAG, "Could not find trip.");
+				tripDiaryLogger.logError("Could not find trip.");
 				setResult(RESULT_CANCELED);
 				finish();
 				return;
@@ -76,7 +72,7 @@ public class TripShare extends Activity {
 				.getTripStorageManager(getApplicationContext());
 
 		if (mStorageMgr == null) {
-			Log.e(TAG, "Could not find trip.");
+			tripDiaryLogger.logError("Could not find trip.");
 			setResult(RESULT_CANCELED);
 			finish();
 			return;
@@ -163,7 +159,7 @@ public class TripShare extends Activity {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			Log.e(TAG, "Error writing " + kmlFile + e.getMessage());
+			tripDiaryLogger.logError("Error writing " + kmlFile + e.getMessage());
 			return false;
 		}
 
