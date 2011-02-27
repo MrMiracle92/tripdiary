@@ -53,7 +53,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 	/** Query to select all trips. */
 	private static final String GET_ALL_TRIPS = String.format(
-			"SELECT * FROM %s", TRIP_METADATA_TABLE);
+			"SELECT * FROM %s ORDER BY %s DESC", TRIP_METADATA_TABLE, TripCols.CREATE_TIME);
 
 	/** Query to select a given trip entry. */
 	private static final String GET_TRIP_ENTRY = String.format(
