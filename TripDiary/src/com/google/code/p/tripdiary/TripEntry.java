@@ -33,7 +33,7 @@ public class TripEntry {
 	public String noteText;
 
 	/**
-	 * Call this method to insert notes (time specified) MediaType - set by the
+	 * Method called to insert notes with time specified. MediaType is set by the
 	 * method
 	 */
 	public TripEntry(double lat, double lon, long creationTime, String noteText) {
@@ -46,7 +46,7 @@ public class TripEntry {
 	}
 
 	/**
-	 * Call this method to insert notes (no time specified) MediaType - set by
+	 * Method called to insert notes with no time specified. MediaType is set by
 	 * the method
 	 */
 	public TripEntry(double lat, double lon, String noteText) {
@@ -59,7 +59,7 @@ public class TripEntry {
 	}
 
 	/**
-	 * Call this method to insert all other media (time specified)
+	 * Method called to insert all other types of media with time specified.
 	 */
 	public TripEntry(double lat, double lon, String mediaLocation,
 			MediaType mediaType, long creationTime) {
@@ -72,7 +72,7 @@ public class TripEntry {
 	}
 
 	/**
-	 * Call this method to insert all other media (time not specified)
+	 * Method called to insert all other types of media with no time specified.
 	 */
 	public TripEntry(double lat, double lon, String mediaLocation,
 			MediaType mediaType) {
