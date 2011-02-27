@@ -105,10 +105,25 @@ public class TripListActivity extends ListActivity {
 				mPrefListener);
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
+				MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(
+				mPrefListener);
+	}
+
 	private long getCurrentTripId() {
 		return getApplicationContext().getSharedPreferences(
 				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
 				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mTripCursor.requery();
+		mTripAdapter.notifyDataSetInvalidated();
 	}
 
 	@Override
@@ -117,6 +132,7 @@ public class TripListActivity extends ListActivity {
 		if (resultCode == RESULT_CANCELED) {
 			Log.d(TAG, "Sub Activity cancelled.");
 		} else {
+			mTripAdapter.notifyDataSetChanged();
 			switch (requestCode) {
 			case SETTINGS_CREATE_NEW_TRIP:
 				long tripId = getCurrentTripId();
@@ -162,24 +178,27 @@ public class TripListActivity extends ListActivity {
 			ImageView ivImg = (ImageView) view
 					.findViewById(R.id.tripDetailImage);
 			TextView tvId = (TextView) view.findViewById(R.id.tripDetailId);
-			TextView tvItemDate = (TextView) view.findViewById(R.id.tripItemDate);
+			TextView tvItemDate = (TextView) view
+					.findViewById(R.id.tripItemDate);
 			long tripId = cursor.getLong(mTripIdIdx);
 			if (tvId != null) {
 				tvId.setText(Long.toString(tripId));
 			}
 			if (tvText != null) {
 				tvText.setText(cursor.getString(mTripNameIdx) + " - "
-						+ cursor.getString(mTripDescriptionIdx) + ".");
+						+ cursor.getString(mTripDescriptionIdx));
 			}
 			if (tvItemDate != null) {
 				long createTime = cursor.getLong(mTripCreateTimeIdx);
 				long updateTime = mStorageMgr.getLastUpdatedTime(tripId);
 				DateFormat df = DateFormat.getDateInstance();
 				StringBuffer dateString = new StringBuffer();
-				dateString.append("Created: ")
-					.append(df.format(new Date(createTime)))
-					.append(" | Updated: ")
-					.append(updateTime < 0 ? "Never" : df.format(new Date(updateTime)));
+				dateString
+						.append("Created: ")
+						.append(df.format(new Date(createTime)))
+						.append(" | Updated: ")
+						.append(updateTime < 0 ? "Never" : df.format(new Date(
+								updateTime)));
 				tvItemDate.setText(dateString);
 			}
 			String imagePath = cursor.getString(mTripImageIdx);
