@@ -102,6 +102,16 @@ public class BackgroundGpsService extends Service implements LocationListener {
 		return locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
+	
+	public void updateEntryWithBestCurrentLocation(long tripEntryId) {
+		//TODO: 
+		// 1. get the best current location first (not last known location)
+		// 2. update the trip entry with the current location
+		// More TODO:
+		// 3. determine what's the best way to find curr location without using too
+		// much time and losing too much accuracy
+		// 4. May be there could be a user pref at some point in the future
+	}
 
 	@Override
 	public void onProviderDisabled(String provider) {

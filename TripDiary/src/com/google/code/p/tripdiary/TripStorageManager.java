@@ -38,10 +38,10 @@ public interface TripStorageManager {
 	 * 
 	 * @param tripId the trip to which to add this entry
 	 * @param tripEntry the entry to add
-	 * @return true on success, false otherwise
+	 * @return the trip entry id or -1 on failure
 	 * @throws IllegalArgumentException if the triId is invalid
 	 */
-	boolean addTripEntry(long tripId, TripEntry tripEntry) throws IllegalArgumentException;
+	long addTripEntry(long tripId, TripEntry tripEntry) throws IllegalArgumentException;
 
 	/**
 	 * Returns the entries for a given trip.

@@ -1,15 +1,11 @@
 package com.google.code.p.tripdiary.test;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.test.ActivityInstrumentationTestCase2;
 
 import com.google.code.p.tripdiary.DbTestActivity;
 import com.google.code.p.tripdiary.TripDetail;
 import com.google.code.p.tripdiary.TripEntry;
 import com.google.code.p.tripdiary.TripEntry.MediaType;
-
-import android.content.Context;
-import android.test.ActivityInstrumentationTestCase2;
 
 public class DbTest extends ActivityInstrumentationTestCase2<DbTestActivity> {
 	private static final String TRIP_NAME = "TEST_TRIP";
@@ -62,12 +58,12 @@ public class DbTest extends ActivityInstrumentationTestCase2<DbTestActivity> {
        	assertTrue(tripId > 0);
     	int preexistingEntries  = testActivity.getEntriesForTrip(tripId).getCount();
        	TripEntry tripEntry = new TripEntry(1.0, 1.0, "test", MediaType.AUDIO, CREATE_TIME);
-       	assertTrue(testActivity.addTripEntry(tripId, tripEntry));
+       	assertTrue(testActivity.addTripEntry(tripId, tripEntry) >= 0);
        	int afterInsertEntries  = testActivity.getEntriesForTrip(tripId).getCount();
        	assertEquals(preexistingEntries, (afterInsertEntries - 1));
        	long currentTime = System.currentTimeMillis();
        	TripEntry tripEntryLatest = new TripEntry(1.0, 1.0, "test", MediaType.AUDIO, currentTime);
-       	assertTrue(testActivity.addTripEntry(tripId, tripEntryLatest));
+       	assertTrue(testActivity.addTripEntry(tripId, tripEntryLatest) >= 0);
        	assertEquals(currentTime, testActivity.getLastUpdatedTime(tripId));
     }
     

@@ -32,6 +32,8 @@ public class TripGalleryActivity extends Activity {
 	private TripStorageManager mStorageMgr;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
+	private Cursor mTripEntryCursor = null;
+	private TripEntryAdapter mTripEntryAdapter = null;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,10 +61,11 @@ public class TripGalleryActivity extends Activity {
 		// get the storage manager
 		mStorageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
 
-		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
+		mTripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
+		mTripEntryAdapter = new TripEntryAdapter(getApplicationContext(),
+				mTripEntryCursor, true);
 		GridView gridview = (GridView) findViewById(R.id.gridview);
-		gridview.setAdapter(new TripEntryAdapter(getApplicationContext(),
-				tripEntryCursor, true));
+		gridview.setAdapter(mTripEntryAdapter);
 
 		gridview.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
@@ -93,6 +96,14 @@ public class TripGalleryActivity extends Activity {
 				}
 			}
 		});
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mTripEntryCursor.requery();
+		TripDiaryLogger.logDebug("Entries = " + mTripEntryCursor.getCount());
+		mTripEntryAdapter.notifyDataSetInvalidated();
 	}
 
 	private class TripEntryAdapter extends CursorAdapter {

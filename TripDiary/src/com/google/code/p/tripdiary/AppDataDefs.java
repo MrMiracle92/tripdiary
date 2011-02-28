@@ -19,6 +19,10 @@ public final class AppDataDefs {
 	/** Trip Id value when no trip is current */
 	public final static long NO_CURRENT_TRIP = -1;
 	
+	/* Unknown Lat and Unknown Lon */
+	public final static long LAT_UNKNOWN = -1;
+	public final static long LON_UNKNOWN = -1;
+	
 	/* Defaults */
 	public final static boolean DEFAULT_TRACE_ROUTE_ENABLED = false;
 	

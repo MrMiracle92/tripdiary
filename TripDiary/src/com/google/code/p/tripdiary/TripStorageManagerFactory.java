@@ -191,10 +191,10 @@ public class TripStorageManagerFactory {
 			return 9999;
 		}
 
-		public boolean addTripEntry(long tripId, TripEntry tripEntry)
+		public long addTripEntry(long tripId, TripEntry tripEntry)
 				throws IllegalArgumentException {
 			// TODO Auto-generated method stub
-			return false;
+			return -1;
 		}
 
 		public long getLastUpdatedTime(long tripId) {

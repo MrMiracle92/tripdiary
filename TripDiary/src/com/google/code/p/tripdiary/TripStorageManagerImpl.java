@@ -127,7 +127,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	}
 
 	@Override
-	public boolean addTripEntry(long tripId, TripEntry tripEntry)
+	public long addTripEntry(long tripId, TripEntry tripEntry)
 			throws IllegalArgumentException {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		ContentValues insertValues = new ContentValues();
@@ -139,9 +139,8 @@ public class TripStorageManagerImpl implements TripStorageManager {
 				.put(TripDetailCols.MEDIA_LOCATION, tripEntry.mediaLocation);
 		insertValues.put(TripDetailCols.MEDIA_TYPE, tripEntry.mediaType.name());
 		insertValues.put(TripDetailCols.NOTE, tripEntry.noteText);
-		long retval = db.insert(TRIP_DETAIL_TABLE,
+		return db.insertOrThrow(TRIP_DETAIL_TABLE,
 				TripDetailCols.MEDIA_LOCATION, insertValues);
-		return (retval != -1);
 	}
 
 	@Override
