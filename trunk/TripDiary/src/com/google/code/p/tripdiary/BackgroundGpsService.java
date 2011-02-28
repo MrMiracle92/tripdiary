@@ -49,7 +49,7 @@ public class BackgroundGpsService extends Service implements LocationListener {
 
 	@Override
 	public void onCreate() {
-		tripDiaryLogger.logInfo("BackgroundGpsService - onCreate");
+		tripDiaryLogger.logDebug("BackgroundGpsService - onCreate");
 
 		// Get the location manager.
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -63,7 +63,7 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		tripDiaryLogger.logInfo("BackgroundGpsService - onStartCommand");
+		tripDiaryLogger.logDebug("BackgroundGpsService - onStartCommand");
 
 		Bundle extras = intent.getExtras();
 		if (extras.containsKey(INTENT_TRIP_ID_KEY)) {
@@ -72,29 +72,33 @@ public class BackgroundGpsService extends Service implements LocationListener {
 		// Request location updates.
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				minUpdateIntervalMillis, minUpdateDistanceMetres, this);
-		
+
+		/**
+		 * We want this service to continue running until it is explicitly
+		 * stopped, so return sticky.
+		 */
 		return Service.START_STICKY;
 	}
 
 	@Override
 	public void onDestroy() {
-		tripDiaryLogger.logInfo("BackgroundGpsService - onDestroy");
-		
+		tripDiaryLogger.logDebug("BackgroundGpsService - onDestroy");
+
 		locationManager.removeUpdates(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		tripDiaryLogger.logInfo(String.format("Location changed lat: " + location.getLatitude()
-				+ " lon: " + location.getLongitude()));
+		tripDiaryLogger.logDebug(String.format("Location changed lat: "
+				+ location.getLatitude() + " lon: " + location.getLongitude()));
 		TripEntry tripEntry = new TripEntry(location.getLatitude(),
 				location.getLongitude());
 		storageManager.addTripEntry(currentTripId, tripEntry);
 	}
 
 	public Location getLastKnownLocation() {
-		tripDiaryLogger.logInfo("BackgroundGpsService - getLastKnownLocation");
-		
+		tripDiaryLogger.logDebug("BackgroundGpsService - getLastKnownLocation");
+
 		return locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
