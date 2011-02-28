@@ -203,6 +203,8 @@ public class TripListActivity extends ListActivity {
 			if (imagePath != null && ivImg != null) {
 				ImageCache.getInstance().setBitmapThreaded(imagePath,
 						MediaType.PHOTO, ivImg);
+			} else {
+				ivImg.setImageBitmap(null);
 			}
 			View currTripIndicator = view
 					.findViewById(R.id.tripDetailCurrIndicator);

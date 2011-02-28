@@ -1,11 +1,15 @@
 package com.google.code.p.tripdiary;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Holds the Metadata for a trip (Name, time etc).
  * 
  * @author Arunabha Ghosh
+ * @author Ankan Mukherjee
  */
-public class TripDetail {
+public class TripDetail implements Parcelable {
 	/** The name of the trip. */
 	public String name;
 
@@ -24,7 +28,7 @@ public class TripDetail {
 	/** The location of the default thumbnail of the trip */
 	public String defaultThumbnail;
 
-	public boolean isCurrent = false;
+//	public boolean isCurrent = false;
 
 	public TripDetail(String name, long tripId, long createTime, String tripDescription,
 			boolean traceRouteEnabled, String defaultThumbnail) {
@@ -92,11 +96,53 @@ public class TripDetail {
 		this.defaultThumbnail = defaultThumbnail;
 	}
 
-	public boolean isCurrent() {
-		return isCurrent;
+//	public boolean isCurrent() {
+//		return isCurrent;
+//	}
+//
+//	public void setCurrent(boolean isCurrent) {
+//		this.isCurrent = isCurrent;
+//	}
+
+	// Parcelable impl follows 
+
+	@Override
+	public int describeContents() {
+		return TripDetail.class.getCanonicalName().hashCode();
 	}
 
-	public void setCurrent(boolean isCurrent) {
-		this.isCurrent = isCurrent;
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {		
+		dest.writeLong(tripId);
+		dest.writeLong(createTime);
+		dest.writeString(name);
+		dest.writeString(tripDescription);
+		dest.writeString(defaultThumbnail);
+		dest.writeBooleanArray(new boolean[] {traceRouteEnabled});
 	}
+	
+	private TripDetail(Parcel in) {
+		tripId = in.readLong();
+		createTime = in.readLong();
+		name = in.readString();
+		tripDescription = in.readString();
+		defaultThumbnail = in.readString();
+		boolean bool[] = new boolean[1];
+		in.readBooleanArray(bool);
+		traceRouteEnabled = bool[0];
+	}
+
+	public static final Parcelable.Creator<TripDetail> CREATOR 
+		= new Parcelable.Creator<TripDetail>() {
+
+		@Override
+		public TripDetail createFromParcel(Parcel source) {
+			return new TripDetail(source);
+		}
+
+		@Override
+		public TripDetail[] newArray(int size) {
+			return new TripDetail[size];
+		}
+	};
 }
