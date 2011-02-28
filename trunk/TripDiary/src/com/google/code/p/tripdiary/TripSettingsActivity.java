@@ -222,6 +222,10 @@ public class TripSettingsActivity extends Activity {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		savedInstanceState.putLong(KEY_TRIP_ID, mThisTripId);
 		savedInstanceState.putBoolean(KEY_IS_NEW_TRIP, mIsNewTrip);
+		if(mTripDetailFormCopy == null) {
+			// must be a new trip, let's create trip detail for store current form data
+			mTripDetailFormCopy = new TripDetail();
+		}
 		loadFormData(mTripDetailFormCopy);
 		savedInstanceState.putParcelable(KEY_SETTINGS_TRIPDETAIL, mTripDetailFormCopy);
 	}
@@ -245,6 +249,10 @@ public class TripSettingsActivity extends Activity {
 			nameEditText.requestFocus();
 			return;
 		} else {
+			if(mTripDetailFormCopy == null) {
+				// must be a new trip, let's create trip detail for store current form data
+				mTripDetailFormCopy = new TripDetail();
+			}
 			loadFormData(mTripDetailFormCopy);
 			if (mIsNewTrip) {
 				mThisTripId = storageMgr.createNewTrip(mTripDetailFormCopy.getName(), mTripDetailFormCopy.getTripDescription(),
