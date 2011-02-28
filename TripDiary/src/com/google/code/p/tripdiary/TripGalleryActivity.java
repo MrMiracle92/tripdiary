@@ -49,7 +49,7 @@ public class TripGalleryActivity extends Activity {
 
 			// by now there should be a trip id
 			if (thisTripId == 0) {
-				tripDiaryLogger.logError("Could not find trip.");
+				TripDiaryLogger.logError("Could not find trip.");
 				setResult(RESULT_CANCELED);
 				finish();
 				return;
