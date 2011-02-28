@@ -212,7 +212,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 					.getColumnIndex(TripDetailCols.MEDIA_LOCATION));
 			tripEntry.mediaType = TripEntry.MediaType.valueOf(result
 					.getString(result
-							.getColumnIndex(TripDetailCols.MEDIA_LOCATION)));
+							.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
 			tripEntry.creationTime = result.getLong(result
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
 			return tripEntry;
