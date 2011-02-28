@@ -42,6 +42,15 @@ public interface TripStorageManager {
 	 * @throws IllegalArgumentException if the triId is invalid
 	 */
 	long addTripEntry(long tripId, TripEntry tripEntry) throws IllegalArgumentException;
+	
+	/**
+	 * Returns the entries with media type not none for a given trip.
+	 * 
+	 * @param tripId the trip to fetch
+	 * @return the list of TripEntry objects
+	 * @throws IllegalArgumentException if the trip does not exist.
+	 */
+	Cursor getMediaEntriesForTrip(long tripId) throws IllegalArgumentException;
 
 	/**
 	 * Returns the entries for a given trip.

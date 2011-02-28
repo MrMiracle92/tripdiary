@@ -46,7 +46,12 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	private static final String GET_TRIP_ENTRIES = String.format(
 			"SELECT * FROM %s WHERE %s=?", TRIP_DETAIL_TABLE,
 			TripDetailCols.TRIP_ID);
-
+	
+	/** Query to select all trip entries for a given trip. */
+	private static final String GET_TRIP_MEDIA_ENTRIES = String.format(
+			"SELECT * FROM %s WHERE %s=? AND %s=%s", TRIP_DETAIL_TABLE,
+			TripDetailCols.TRIP_ID, TripDetailCols.MEDIA_TYPE, TripEntry.MediaType.NONE.name());
+	
 	/** Query to select all trips. */
 	private static final String GET_ALL_TRIPS = String.format(
 			"SELECT * FROM %s ORDER BY %s DESC", TRIP_METADATA_TABLE, TripCols.CREATE_TIME);
@@ -141,6 +146,14 @@ public class TripStorageManagerImpl implements TripStorageManager {
 		insertValues.put(TripDetailCols.NOTE, tripEntry.noteText);
 		return db.insertOrThrow(TRIP_DETAIL_TABLE,
 				TripDetailCols.MEDIA_LOCATION, insertValues);
+	}
+	
+	@Override
+	public Cursor getMediaEntriesForTrip(long tripId)
+			throws IllegalArgumentException {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		return db.rawQuery(GET_TRIP_MEDIA_ENTRIES,
+				new String[] { String.format("%d", tripId) });
 	}
 
 	@Override
