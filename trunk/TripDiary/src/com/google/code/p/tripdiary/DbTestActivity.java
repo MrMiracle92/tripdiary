@@ -37,7 +37,7 @@ public class DbTestActivity extends Activity {
 		return impl.getAllTrips();
 	}
 
-	public boolean addTripEntry(long tripId, TripEntry tripEntry) {
+	public long addTripEntry(long tripId, TripEntry tripEntry) {
 		return impl.addTripEntry(tripId, tripEntry);
 	}
 

@@ -3,6 +3,9 @@
  */
 package com.google.code.p.tripdiary;
 
+import static com.google.code.p.tripdiary.AppDataDefs.LAT_UNKNOWN;
+import static com.google.code.p.tripdiary.AppDataDefs.LON_UNKNOWN;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
@@ -20,7 +23,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.code.p.tripdiary.BackgroundGpsService.GPSBinder;
 import com.google.code.p.tripdiary.TripEntry.MediaType;
+
 
 /**
  * This activity takes care of showing the tabbed views of the trips (on the
@@ -53,6 +56,8 @@ public class TripViewActivity extends TabActivity {
 	private final int DIALOG_CONFIRM_AND_DELETE_TRIP = 1;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
+	
+	private TripStorageManager mTripStorageMgr = null;
 
 	/** GPS service */
 	private BackgroundGpsService gpsService;
@@ -130,6 +135,8 @@ public class TripViewActivity extends TabActivity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trip_view);
+		
+		mTripStorageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
 
 		// if the activity is resumed
 		thisTripId = savedInstanceState != null ? savedInstanceState
@@ -185,7 +192,6 @@ public class TripViewActivity extends TabActivity {
 
 			// If this is a current trip, then start the GPS background service
 			if (gpsServiceIsBound == false) {
-				TripViewActivity.this.setCurrentTripId(thisTripId);
 				GpsController.startGpsLogging(getBaseContext(), thisTripId);
 				doBindService();
 			}
@@ -419,36 +425,38 @@ public class TripViewActivity extends TabActivity {
 					File dir = new File(fileName);
 					FileOutputStream fos = new FileOutputStream(dir);
 					capturedPic.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+					
+					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN, LON_UNKNOWN, fileName,
+							MediaType.PHOTO);
+					addEntryToTrip(tripEntry);
 
-					if (gpsServiceIsBound && (gpsService != null)) {
-						Location location = gpsService.getLastKnownLocation();
-						if (location == null)
-							TripDiaryLogger
-									.logError("Location not found - no entry created");
-						else {
-							// Save the captured audio path in a tripEntry
-							TripEntry tripEntry = new TripEntry(
-									location.getLatitude(),
-									location.getLongitude(), fileName,
-									MediaType.PHOTO);
-							TripStorageManager storageMgr = TripStorageManagerFactory
-									.getTripStorageManager(getBaseContext());
-							storageMgr.addTripEntry(thisTripId, tripEntry);
-							TripDiaryLogger
-									.logDebug("Trip entry created for captured photo : "
-											+ location.getLatitude()
-											+ " "
-											+ location.getLongitude()
-											+ " "
-											+ fileName);
-							Toast.makeText(getBaseContext(),
-									"Photo captured and saved in " + fileName,
-									Toast.LENGTH_SHORT).show();
-						}
-					} else {
-						TripDiaryLogger
-								.logError("gpsService was not bound when photo was captured");
-					}
+//					if (gpsServiceIsBound && (gpsService != null)) {
+//						Location location = gpsService.getLastKnownLocation();
+//						if (location == null)
+//							TripDiaryLogger
+//									.logError("Location not found - no entry created");
+//						else {
+//							// Save the captured audio path in a tripEntry
+//							TripEntry tripEntry = new TripEntry(
+//									location.getLatitude(),
+//									location.getLongitude(), fileName,
+//									MediaType.PHOTO);
+//							mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
+//							TripDiaryLogger
+//									.logDebug("Trip entry created for captured photo : "
+//											+ location.getLatitude()
+//											+ " "
+//											+ location.getLongitude()
+//											+ " "
+//											+ fileName);
+//							Toast.makeText(getBaseContext(),
+//									"Photo captured and saved in " + fileName,
+//									Toast.LENGTH_SHORT).show();
+//						}
+//					} else {
+//						TripDiaryLogger
+//								.logError("gpsService was not bound when photo was captured");
+//					}
 				} catch (Exception e) {
 					TripDiaryLogger
 							.logError("Exception while saving a captured photo : "
@@ -476,41 +484,46 @@ public class TripViewActivity extends TabActivity {
 					Toast.makeText(getBaseContext(),
 							"Video saved in " + videoFileURI.toString(),
 							Toast.LENGTH_SHORT).show();
+					
+					TripEntry tripEntry = new TripEntry(
+							LAT_UNKNOWN, LON_UNKNOWN, videoFileURI.toString(), MediaType.VIDEO);
+					addEntryToTrip(tripEntry);
 
-					if (gpsServiceIsBound && (gpsService != null)) {
-						Location location = gpsService.getLastKnownLocation();
-						if (location == null)
-							TripDiaryLogger
-									.logError("Location not found - no entry created");
-						else {
-							// Save the captured audio path in a tripEntry
-							TripEntry tripEntry = new TripEntry(
-									location.getLatitude(),
-									location.getLongitude(),
-									videoFileURI.toString(), MediaType.VIDEO);
-							TripStorageManager storageMgr = TripStorageManagerFactory
-									.getTripStorageManager(getBaseContext());
-
-							storageMgr.addTripEntry(thisTripId, tripEntry);
-
-							TripDiaryLogger
-									.logDebug("Trip entry created for captured video : "
-											+ location.getLatitude()
-											+ " "
-											+ location.getLongitude()
-											+ " "
-											+ videoFileURI.toString());
-
-							Toast.makeText(
-									getBaseContext(),
-									"Video captured and saved in "
-											+ videoFileURI.toString(),
-									Toast.LENGTH_SHORT).show();
-						}
-					} else {
-						TripDiaryLogger
-								.logError("gpsService was not bound when video was captured");
-					}
+//					TripStorageManager storageMgr = TripStorageManagerFactory
+//							.getTripStorageManager(getBaseContext());
+//
+//					if (gpsServiceIsBound && (gpsService != null)) {
+//						Location location = gpsService.getLastKnownLocation();
+//						if (location == null)
+//							TripDiaryLogger
+//									.logError("Location not found - no entry created");
+//						else {
+//							// Save the captured audio path in a tripEntry
+//							TripEntry tripEntry = new TripEntry(
+//									location.getLatitude(),
+//									location.getLongitude(),
+//									videoFileURI.toString(), MediaType.VIDEO);
+//
+//							mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
+//
+//							TripDiaryLogger
+//									.logDebug("Trip entry created for captured video : "
+//											+ location.getLatitude()
+//											+ " "
+//											+ location.getLongitude()
+//											+ " "
+//											+ videoFileURI.toString());
+//
+//							Toast.makeText(
+//									getBaseContext(),
+//									"Video captured and saved in "
+//											+ videoFileURI.toString(),
+//									Toast.LENGTH_SHORT).show();
+//						}
+//					} else {
+//						TripDiaryLogger
+//								.logError("gpsService was not bound when video was captured");
+//					}
 				} catch (Exception e) {
 					TripDiaryLogger
 							.logError("Exception while saving a captured video : "
@@ -534,37 +547,39 @@ public class TripViewActivity extends TabActivity {
 					Toast.makeText(getBaseContext(),
 							"Audio captured and saved in " + filePath,
 							Toast.LENGTH_SHORT).show();
+					
+					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN, LON_UNKNOWN, filePath,
+							MediaType.AUDIO);
+					addEntryToTrip(tripEntry);
 
-					if (gpsServiceIsBound && (gpsService != null)) {
-						Location location = gpsService.getLastKnownLocation();
-						if (location == null)
-							TripDiaryLogger
-									.logError("Location not found - no entry created");
-						else {
-							// Save the captured audio path in a tripEntry
-							TripEntry tripEntry = new TripEntry(
-									location.getLatitude(),
-									location.getLongitude(), filePath,
-									MediaType.AUDIO);
-							TripStorageManager storageMgr = TripStorageManagerFactory
-									.getTripStorageManager(getBaseContext());
-
-							storageMgr.addTripEntry(thisTripId, tripEntry);
-
-							TripDiaryLogger
-									.logDebug("Trip entry created for Audio : "
-											+ location.getLatitude() + " "
-											+ location.getLongitude() + " "
-											+ filePath);
-
-							Toast.makeText(getBaseContext(),
-									"Audio captured and saved in " + filePath,
-									Toast.LENGTH_SHORT).show();
-						}
-					} else {
-						TripDiaryLogger
-								.logError("gpsService was not bound when photo was captured");
-					}
+//					if (gpsServiceIsBound && (gpsService != null)) {
+//						Location location = gpsService.getLastKnownLocation();
+//						if (location == null)
+//							TripDiaryLogger
+//									.logError("Location not found - no entry created");
+//						else {
+//							// Save the captured audio path in a tripEntry
+//							TripEntry tripEntry = new TripEntry(
+//									location.getLatitude(),
+//									location.getLongitude(), filePath,
+//									MediaType.AUDIO);
+//
+//							mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
+//
+//							TripDiaryLogger
+//									.logDebug("Trip entry created for Audio : "
+//											+ location.getLatitude() + " "
+//											+ location.getLongitude() + " "
+//											+ filePath);
+//
+//							Toast.makeText(getBaseContext(),
+//									"Audio captured and saved in " + filePath,
+//									Toast.LENGTH_SHORT).show();
+//						}
+//					} else {
+//						TripDiaryLogger
+//								.logError("gpsService was not bound when photo was captured");
+//					}
 				} catch (Exception e) {
 					if (dataIntent == null)
 						TripDiaryLogger.logError("dataIntent is NULL");
@@ -590,35 +605,37 @@ public class TripViewActivity extends TabActivity {
 							"capturedText");
 					Toast.makeText(getBaseContext(), "Text captured " + text,
 							Toast.LENGTH_SHORT).show(); // TODO delete
+					
+					TripEntry tripEntry = new TripEntry(
+							LAT_UNKNOWN, LON_UNKNOWN, text);
+					addEntryToTrip(tripEntry);
 
-					if (gpsServiceIsBound && (gpsService != null)) {
-						Location location = gpsService.getLastKnownLocation();
-						if (location == null)
-							TripDiaryLogger
-									.logError("Location not found - no entry created");
-						else {
-							// Save the captured text in a tripEntry
-							TripEntry tripEntry = new TripEntry(
-									location.getLatitude(),
-									location.getLongitude(), text);
-							TripStorageManager storageMgr = TripStorageManagerFactory
-									.getTripStorageManager(getBaseContext());
-
-							storageMgr.addTripEntry(thisTripId, tripEntry);
-
-							TripDiaryLogger
-									.logDebug("Trip entry created for notes : "
-											+ location.getLatitude() + " "
-											+ location.getLongitude());
-
-							Toast.makeText(getBaseContext(),
-									"Notes captured and saved.",
-									Toast.LENGTH_SHORT).show();
-						}
-					} else {
-						TripDiaryLogger
-								.logError("gpsService was not bound when photo was captured");
-					}
+//					if (gpsServiceIsBound && (gpsService != null)) {
+//						Location location = gpsService.getLastKnownLocation();
+//						if (location == null)
+//							TripDiaryLogger
+//									.logError("Location not found - no entry created");
+//						else {
+//							// Save the captured text in a tripEntry
+//							TripEntry tripEntry = new TripEntry(
+//									location.getLatitude(),
+//									location.getLongitude(), text);
+//
+//							mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
+//
+//							TripDiaryLogger
+//									.logDebug("Trip entry created for notes : "
+//											+ location.getLatitude() + " "
+//											+ location.getLongitude());
+//
+//							Toast.makeText(getBaseContext(),
+//									"Notes captured and saved.",
+//									Toast.LENGTH_SHORT).show();
+//						}
+//					} else {
+//						TripDiaryLogger
+//								.logError("gpsService was not bound when photo was captured");
+//					}
 				} catch (Exception e) {
 					if (dataIntent == null)
 						TripDiaryLogger.logError("dataIntent is NULL");
@@ -670,5 +687,16 @@ public class TripViewActivity extends TabActivity {
 					Toast.LENGTH_SHORT).show();
 			TripDiaryLogger.logError("Unknown option");
 		} // switch
+	}
+	
+	private void addEntryToTrip(TripEntry tripEntry) {
+		// let's add the trip entry anyway (we don't need to lose this entry if
+		// gps fails or is not available etc.)
+		long tripEntryId = mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
+
+		// now let's ask the gps service to add the best current location to the entry
+		if (gpsServiceIsBound && (gpsService != null)) {
+			gpsService.updateEntryWithBestCurrentLocation(tripEntryId);
+		}
 	}
 }
