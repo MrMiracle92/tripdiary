@@ -80,7 +80,7 @@ public class TripViewActivity extends TabActivity {
 
 	/** Bind with the background GPS service */
 	void doBindService() {
-		tripDiaryLogger.logDebug("tripViewActivity - doBindService");
+		tripDiaryLogger.logDebug("TripViewActivity - doBindService");
 
 		Intent gpsIntent = new Intent(this, BackgroundGpsService.class);
 		gpsIntent.putExtra(BackgroundGpsService.INTENT_TRIP_ID_KEY, thisTripId);
@@ -93,7 +93,7 @@ public class TripViewActivity extends TabActivity {
 
 	/** Unbind from the background GPS service */
 	void doUnbindService() {
-		tripDiaryLogger.logDebug("tripViewActivity - doUnbindService");
+		tripDiaryLogger.logDebug("TripViewActivity - doUnbindService");
 
 		if (gpsServiceIsBound) {
 			unbindService(gpsServiceConnection);
@@ -119,7 +119,7 @@ public class TripViewActivity extends TabActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		tripDiaryLogger.logDebug("tripViewActivity - onDestroy");
+		tripDiaryLogger.logDebug("TripViewActivity - onDestroy");
 		doUnbindService();
 		// GpsController.stopGpsLogging(this); // Do not stop the service
 	}
