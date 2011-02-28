@@ -66,7 +66,7 @@ public class TripListActivity extends ListActivity {
 						Intent intent = new Intent(TripListActivity.this,
 								TripSettingsActivity.class);
 						intent.putExtra(AppDataDefs.KEY_IS_NEW_TRIP, true);
-						tripDiaryLogger.logDebug(
+						TripDiaryLogger.logDebug(
 								"About to start Trip Settings activity for new trip.");
 						startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 					}
@@ -82,7 +82,7 @@ public class TripListActivity extends ListActivity {
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-				tripDiaryLogger.logDebug( "About to start trip view activity for trip id "
+				TripDiaryLogger.logDebug( "About to start trip view activity for trip id "
 						+ tripId);
 				startActivityForResult(intent, VIEW_TRIP);
 			}
@@ -128,7 +128,7 @@ public class TripListActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_CANCELED) {
-			tripDiaryLogger.logDebug( "Sub Activity cancelled.");
+			TripDiaryLogger.logDebug( "Sub Activity cancelled.");
 		} else {
 			mTripAdapter.notifyDataSetChanged();
 			switch (requestCode) {
@@ -137,7 +137,7 @@ public class TripListActivity extends ListActivity {
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-				tripDiaryLogger.logDebug( "About to start trip view activity for trip id "
+				TripDiaryLogger.logDebug( "About to start trip view activity for trip id "
 						+ tripId);
 				startActivityForResult(intent, VIEW_TRIP);
 			}

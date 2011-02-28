@@ -16,7 +16,7 @@ public class GpsController {
 	 * @param tripId
 	 */
 	public static void startGpsLogging(Context context, long tripId) {
-		tripDiaryLogger.logDebug("GpsController - StartGpsLogging");
+		TripDiaryLogger.logDebug("GpsController - StartGpsLogging");
 		
 		Intent intent = new Intent(context, BackgroundGpsService.class);
 		intent.putExtra(BackgroundGpsService.INTENT_TRIP_ID_KEY, tripId);
@@ -26,7 +26,7 @@ public class GpsController {
 	}
 
 	public static void stopGpsLogging(Context context) {
-		tripDiaryLogger.logDebug("GpsController - StopGpsLogging");
+		TripDiaryLogger.logDebug("GpsController - StopGpsLogging");
 		
 		Intent intent = new Intent(context, BackgroundGpsService.class);
 		context.stopService(intent);

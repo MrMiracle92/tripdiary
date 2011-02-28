@@ -56,7 +56,7 @@ public class TripStorageManagerFactory {
 				photos = photosDir.listFiles(new FilenameFilter() {
 
 					public boolean accept(File dir, String filename) {
-						tripDiaryLogger.logDebug(filename);
+						TripDiaryLogger.logDebug(filename);
 						if (filename.endsWith("jpg") || filename.endsWith("3gp")) {
 							return true;
 						}

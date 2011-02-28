@@ -63,24 +63,24 @@ public class TripViewActivity extends TabActivity {
 	/** Connection to GPS service */
 	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			tripDiaryLogger
+			TripDiaryLogger
 					.logDebug("TripViewActivity.gpsServiceConnection.onServiceConnected");
 			GPSBinder binder = (GPSBinder) service;
 			gpsService = binder.getService();
-			tripDiaryLogger.logDebug("GPS Service connected");
+			TripDiaryLogger.logDebug("GPS Service connected");
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			tripDiaryLogger
+			TripDiaryLogger
 					.logDebug("TripViewActivity.gpsServiceConnection.onServiceDisconnected");
 			gpsService = null;
-			tripDiaryLogger.logDebug("GPS Service disconnected");
+			TripDiaryLogger.logDebug("GPS Service disconnected");
 		}
 	};
 
 	/** Bind with the background GPS service */
 	void doBindService() {
-		tripDiaryLogger.logDebug("TripViewActivity - doBindService");
+		TripDiaryLogger.logDebug("TripViewActivity - doBindService");
 
 		Intent gpsIntent = new Intent(this, BackgroundGpsService.class);
 		gpsIntent.putExtra(BackgroundGpsService.INTENT_TRIP_ID_KEY, thisTripId);
@@ -88,12 +88,12 @@ public class TripViewActivity extends TabActivity {
 				Context.BIND_AUTO_CREATE))
 			gpsServiceIsBound = true;
 		else
-			tripDiaryLogger.logError("Service bound failed");
+			TripDiaryLogger.logError("Service bound failed");
 	}
 
 	/** Unbind from the background GPS service */
 	void doUnbindService() {
-		tripDiaryLogger.logDebug("TripViewActivity - doUnbindService");
+		TripDiaryLogger.logDebug("TripViewActivity - doUnbindService");
 
 		if (gpsServiceIsBound) {
 			unbindService(gpsServiceConnection);
@@ -105,11 +105,11 @@ public class TripViewActivity extends TabActivity {
 	public void onStart() {
 		super.onStart();
 
-		tripDiaryLogger.logDebug("TripViewActivity - onStart");
+		TripDiaryLogger.logDebug("TripViewActivity - onStart");
 
 		if ((gpsServiceIsBound == false) && (thisTripId == getCurrentTripId())) {
 			// Bind to localservice
-			tripDiaryLogger.logDebug("Starting again");
+			TripDiaryLogger.logDebug("Starting again");
 			GpsController.startGpsLogging(getBaseContext(), thisTripId);
 			doBindService();
 		}
@@ -119,14 +119,14 @@ public class TripViewActivity extends TabActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		tripDiaryLogger.logDebug("TripViewActivity - onDestroy");
+		TripDiaryLogger.logDebug("TripViewActivity - onDestroy");
 		doUnbindService();
 		// GpsController.stopGpsLogging(this); // Do not stop the service
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		tripDiaryLogger.logDebug("TripViewActivity - onCreate");
+		TripDiaryLogger.logDebug("TripViewActivity - onCreate");
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trip_view);
@@ -169,7 +169,7 @@ public class TripViewActivity extends TabActivity {
 
 		// at this point there needs to be a valid thisTripId
 		if (thisTripId == 0) {
-			tripDiaryLogger.logError("Could not determine trip id.");
+			TripDiaryLogger.logError("Could not determine trip id.");
 			Toast toast = Toast.makeText(this, "Could not find trip!",
 					Toast.LENGTH_SHORT);
 			toast.show();
@@ -307,7 +307,7 @@ public class TripViewActivity extends TabActivity {
 			Intent intent = new Intent(getApplicationContext(),
 					TripSettingsActivity.class);
 			intent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
-			tripDiaryLogger
+			TripDiaryLogger
 					.logDebug("About to start edit trip settings activity for trip id "
 							+ thisTripId);
 			startActivityForResult(intent, EDIT_TRIP_SETTINGS);
@@ -332,10 +332,10 @@ public class TripViewActivity extends TabActivity {
 			break;
 
 		case R.id.share_trip:
-			tripDiaryLogger.logDebug("Start exporting trip");
+			TripDiaryLogger.logDebug("Start exporting trip");
 
 			Intent shareIntent = new Intent(getApplicationContext(),
-					TripShare.class);
+					TripExport.class);
 			shareIntent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
 
 			startActivityForResult(shareIntent, SHARE_TRIP);
@@ -423,7 +423,7 @@ public class TripViewActivity extends TabActivity {
 					if (gpsServiceIsBound && (gpsService != null)) {
 						Location location = gpsService.getLastKnownLocation();
 						if (location == null)
-							tripDiaryLogger
+							TripDiaryLogger
 									.logError("Location not found - no entry created");
 						else {
 							// Save the captured audio path in a tripEntry
@@ -434,7 +434,7 @@ public class TripViewActivity extends TabActivity {
 							TripStorageManager storageMgr = TripStorageManagerFactory
 									.getTripStorageManager(getBaseContext());
 							storageMgr.addTripEntry(thisTripId, tripEntry);
-							tripDiaryLogger
+							TripDiaryLogger
 									.logDebug("Trip entry created for captured photo : "
 											+ location.getLatitude()
 											+ " "
@@ -446,11 +446,11 @@ public class TripViewActivity extends TabActivity {
 									Toast.LENGTH_SHORT).show();
 						}
 					} else {
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("gpsService was not bound when photo was captured");
 					}
 				} catch (Exception e) {
-					tripDiaryLogger
+					TripDiaryLogger
 							.logError("Exception while saving a captured photo : "
 									+ e.getMessage());
 					e.printStackTrace();
@@ -480,7 +480,7 @@ public class TripViewActivity extends TabActivity {
 					if (gpsServiceIsBound && (gpsService != null)) {
 						Location location = gpsService.getLastKnownLocation();
 						if (location == null)
-							tripDiaryLogger
+							TripDiaryLogger
 									.logError("Location not found - no entry created");
 						else {
 							// Save the captured audio path in a tripEntry
@@ -493,7 +493,7 @@ public class TripViewActivity extends TabActivity {
 
 							storageMgr.addTripEntry(thisTripId, tripEntry);
 
-							tripDiaryLogger
+							TripDiaryLogger
 									.logDebug("Trip entry created for captured video : "
 											+ location.getLatitude()
 											+ " "
@@ -508,11 +508,11 @@ public class TripViewActivity extends TabActivity {
 									Toast.LENGTH_SHORT).show();
 						}
 					} else {
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("gpsService was not bound when video was captured");
 					}
 				} catch (Exception e) {
-					tripDiaryLogger
+					TripDiaryLogger
 							.logError("Exception while saving a captured video : "
 									+ e.getMessage());
 				}
@@ -538,7 +538,7 @@ public class TripViewActivity extends TabActivity {
 					if (gpsServiceIsBound && (gpsService != null)) {
 						Location location = gpsService.getLastKnownLocation();
 						if (location == null)
-							tripDiaryLogger
+							TripDiaryLogger
 									.logError("Location not found - no entry created");
 						else {
 							// Save the captured audio path in a tripEntry
@@ -551,7 +551,7 @@ public class TripViewActivity extends TabActivity {
 
 							storageMgr.addTripEntry(thisTripId, tripEntry);
 
-							tripDiaryLogger
+							TripDiaryLogger
 									.logDebug("Trip entry created for Audio : "
 											+ location.getLatitude() + " "
 											+ location.getLongitude() + " "
@@ -562,14 +562,14 @@ public class TripViewActivity extends TabActivity {
 									Toast.LENGTH_SHORT).show();
 						}
 					} else {
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("gpsService was not bound when photo was captured");
 					}
 				} catch (Exception e) {
 					if (dataIntent == null)
-						tripDiaryLogger.logError("dataIntent is NULL");
+						TripDiaryLogger.logError("dataIntent is NULL");
 					else
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("Exception while capturing audio : "
 										+ e.getMessage());
 				}
@@ -594,7 +594,7 @@ public class TripViewActivity extends TabActivity {
 					if (gpsServiceIsBound && (gpsService != null)) {
 						Location location = gpsService.getLastKnownLocation();
 						if (location == null)
-							tripDiaryLogger
+							TripDiaryLogger
 									.logError("Location not found - no entry created");
 						else {
 							// Save the captured text in a tripEntry
@@ -606,7 +606,7 @@ public class TripViewActivity extends TabActivity {
 
 							storageMgr.addTripEntry(thisTripId, tripEntry);
 
-							tripDiaryLogger
+							TripDiaryLogger
 									.logDebug("Trip entry created for notes : "
 											+ location.getLatitude() + " "
 											+ location.getLongitude());
@@ -616,14 +616,14 @@ public class TripViewActivity extends TabActivity {
 									Toast.LENGTH_SHORT).show();
 						}
 					} else {
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("gpsService was not bound when photo was captured");
 					}
 				} catch (Exception e) {
 					if (dataIntent == null)
-						tripDiaryLogger.logError("dataIntent is NULL");
+						TripDiaryLogger.logError("dataIntent is NULL");
 					else
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("Exception while capturing notes : "
 										+ e.getMessage());
 				}
@@ -655,9 +655,9 @@ public class TripViewActivity extends TabActivity {
 
 				} catch (Exception e) {
 					if (dataIntent == null)
-						tripDiaryLogger.logError("dataIntent is NULL");
+						TripDiaryLogger.logError("dataIntent is NULL");
 					else
-						tripDiaryLogger
+						TripDiaryLogger
 								.logError("Exception while exporting a trip : "
 										+ e.getMessage());
 				}
@@ -668,7 +668,7 @@ public class TripViewActivity extends TabActivity {
 		default:
 			Toast.makeText(getBaseContext(), "Unknown option!",
 					Toast.LENGTH_SHORT).show();
-			tripDiaryLogger.logError("Unknown option");
+			TripDiaryLogger.logError("Unknown option");
 		} // switch
 	}
 }

@@ -72,7 +72,7 @@ public class TripNoteEditor extends Activity {
 			});
 
 		} catch (Exception e) {
-			tripDiaryLogger.logDebug("Fatal exception " + e.getMessage());
+			TripDiaryLogger.logDebug("Fatal exception " + e.getMessage());
 		}
 	}
 
@@ -92,7 +92,7 @@ public class TripNoteEditor extends Activity {
 
 			this.setResult(RESULT_OK, data);
 		} else {
-			tripDiaryLogger.logDebug("No notes captured");
+			TripDiaryLogger.logDebug("No notes captured");
 
 			// User pressed OK button - lets save this and go back
 			this.setResult(RESULT_CANCELED);

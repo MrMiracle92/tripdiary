@@ -78,7 +78,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			tripDiaryLogger.logWarning("Upgrading database from version " + oldVersion + " to "
+			TripDiaryLogger.logWarning("Upgrading database from version " + oldVersion + " to "
 					+ newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + TRIP_METADATA_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRIP_DETAIL_TABLE);

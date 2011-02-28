@@ -26,7 +26,7 @@ import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
  * @author Arpita Saha
  * 
  */
-public class TripShare extends Activity {
+public class TripExport extends Activity {
 	private final String DEFAULT_FILE_EXTENSION = ".kml";
 
 	private String fileName;
@@ -60,7 +60,7 @@ public class TripShare extends Activity {
 
 			// by now there should be a trip id
 			if (thisTripId == 0) {
-				tripDiaryLogger.logError("Could not find trip.");
+				TripDiaryLogger.logError("Could not find trip.");
 				setResult(RESULT_CANCELED);
 				finish();
 				return;
@@ -72,7 +72,7 @@ public class TripShare extends Activity {
 				.getTripStorageManager(getApplicationContext());
 
 		if (mStorageMgr == null) {
-			tripDiaryLogger.logError("Could not find trip.");
+			TripDiaryLogger.logError("Could not find trip.");
 			setResult(RESULT_CANCELED);
 			finish();
 			return;
@@ -159,7 +159,7 @@ public class TripShare extends Activity {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			tripDiaryLogger.logError("Error writing " + kmlFile + e.getMessage());
+			TripDiaryLogger.logError("Error writing " + kmlFile + e.getMessage());
 			return false;
 		}
 
