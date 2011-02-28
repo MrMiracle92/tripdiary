@@ -210,6 +210,11 @@ public class TripViewActivity extends TabActivity {
 				.edit();
 		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, thisTripId);
 		editPref.commit();
+		if(mTripStorageMgr.getTripDetail(tripId).isTraceRouteEnabled()) {
+			GpsController.startGpsLogging(getApplicationContext(), tripId);
+		} else {
+			GpsController.stopGpsLogging(getApplicationContext());
+		}
 	}
 
 	@Override
@@ -692,11 +697,11 @@ public class TripViewActivity extends TabActivity {
 	private void addEntryToTrip(TripEntry tripEntry) {
 		// let's add the trip entry anyway (we don't need to lose this entry if
 		// gps fails or is not available etc.)
-		long tripEntryId = mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
+		tripEntry.tripEntryId = mTripStorageMgr.addTripEntry(thisTripId, tripEntry);
 
 		// now let's ask the gps service to add the best current location to the entry
 		if (gpsServiceIsBound && (gpsService != null)) {
-			gpsService.updateEntryWithBestCurrentLocation(tripEntryId);
+			gpsService.updateEntryWithBestCurrentLocation(thisTripId, tripEntry);
 		}
 	}
 }

@@ -212,5 +212,12 @@ public class TripStorageManagerFactory {
 		public void deleteTripEntry(long tripEntry) {
 			// TODO Auto-generated method stub
 		}
+
+		@Override
+		public Cursor getMediaEntriesForTrip(long tripId)
+				throws IllegalArgumentException {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }

@@ -1,5 +1,8 @@
 package com.google.code.p.tripdiary;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.os.IBinder;
  * 
  * @author Arunabha Ghosh
  * @author Arpita Saha
+ * @author Ankan Mukherjee
  */
 public class BackgroundGpsService extends Service implements LocationListener {
 	/**
@@ -24,14 +28,17 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	 */
 	public static final String INTENT_TRIP_ID_KEY = "TRIP_ID";
 
-	private LocationManager locationManager;
-	private TripStorageManager storageManager;
+	private LocationManager mLocationManager;
+	private TripStorageManager mStorageManager;
+	private Location mLastUpdatedLocation;
 	private long currentTripId = -1;
 
 	private final float minUpdateDistanceMetres = 100.0f;
 	private final long minUpdateIntervalMillis = 120000l;
 
 	private final IBinder gpsBinder = new GPSBinder();
+
+	private Queue<QueueItem> mEntryQueue = null;
 
 	/**
 	 * Class for clients to access location.
@@ -52,9 +59,10 @@ public class BackgroundGpsService extends Service implements LocationListener {
 		TripDiaryLogger.logDebug("BackgroundGpsService - onCreate");
 
 		// Get the location manager.
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		storageManager = TripStorageManagerFactory
+		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		mStorageManager = TripStorageManagerFactory
 				.getTripStorageManager(getBaseContext());
+		mEntryQueue = new ConcurrentLinkedQueue<QueueItem>();
 	}
 
 	/**
@@ -70,8 +78,7 @@ public class BackgroundGpsService extends Service implements LocationListener {
 			currentTripId = extras.getLong(INTENT_TRIP_ID_KEY);
 		}
 		// Request location updates.
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				minUpdateIntervalMillis, minUpdateDistanceMetres, this);
+		requestLocationUpdatesStd();
 
 		/**
 		 * We want this service to continue running until it is explicitly
@@ -80,37 +87,77 @@ public class BackgroundGpsService extends Service implements LocationListener {
 		return Service.START_STICKY;
 	}
 
+	private void requestLocationUpdatesStd() {
+		mLocationManager.removeUpdates(this);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				minUpdateIntervalMillis, minUpdateDistanceMetres, this);
+	}
+
+	private void requestLocationUpdateASAP() {
+		mLocationManager.removeUpdates(this);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				0, 0, this);
+	}
+
 	@Override
 	public void onDestroy() {
 		TripDiaryLogger.logDebug("BackgroundGpsService - onDestroy");
-
-		locationManager.removeUpdates(this);
+		mLocationManager.removeUpdates(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		TripDiaryLogger.logDebug(String.format("Location changed lat: "
 				+ location.getLatitude() + " lon: " + location.getLongitude()));
-		TripEntry tripEntry = new TripEntry(location.getLatitude(),
-				location.getLongitude());
-		storageManager.addTripEntry(currentTripId, tripEntry);
+
+		if (!mEntryQueue.isEmpty()) { // if there are entries to update
+			QueueItem item = null;
+			while ((item = mEntryQueue.poll()) != null) {
+				if (item.tripEntry.tripEntryId > 0) {
+					mStorageManager.deleteTripEntry(item.tripEntry.tripEntryId);
+				}
+				item.tripEntry.lat = location.getLatitude();
+				item.tripEntry.lon = location.getLongitude();
+				item.tripEntry.tripEntryId = mStorageManager.addTripEntry(
+						item.tripId, item.tripEntry);
+				mLastUpdatedLocation = location;
+			}
+			requestLocationUpdatesStd();
+		} else { // add an entry for the route only if trace route is enabled
+					// for current trip and a min distance has passed since the
+					// last updated location
+			if (mStorageManager.getTripDetail(getCurrentTripId())
+					.isTraceRouteEnabled()
+					&& mLastUpdatedLocation.distanceTo(location) >= minUpdateDistanceMetres) {
+				TripEntry tripEntry = new TripEntry(location.getLatitude(),
+						location.getLongitude());
+				mStorageManager.addTripEntry(currentTripId, tripEntry);
+			}
+		}
 	}
 
 	public Location getLastKnownLocation() {
 		TripDiaryLogger.logDebug("BackgroundGpsService - getLastKnownLocation");
 
-		return locationManager
+		return mLocationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
-	
-	public void updateEntryWithBestCurrentLocation(long tripEntryId) {
-		//TODO: 
-		// 1. get the best current location first (not last known location)
-		// 2. update the trip entry with the current location
-		// More TODO:
-		// 3. determine what's the best way to find curr location without using too
-		// much time and losing too much accuracy
-		// 4. May be there could be a user pref at some point in the future
+
+	private class QueueItem {
+		long tripId;
+		TripEntry tripEntry;
+
+		public QueueItem(long tripId, TripEntry tripEntry) {
+			this.tripId = tripId;
+			this.tripEntry = tripEntry;
+		}
+	}
+
+	public void updateEntryWithBestCurrentLocation(long tripId,
+			TripEntry tripEntry) {
+		// add entry to queue and request locatio asap
+		mEntryQueue.add(new QueueItem(tripId, tripEntry));
+		requestLocationUpdateASAP();
 	}
 
 	@Override
@@ -128,5 +175,11 @@ public class BackgroundGpsService extends Service implements LocationListener {
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 
+	}
+
+	private long getCurrentTripId() {
+		return getApplicationContext().getSharedPreferences(
+				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
+				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
 	}
 }

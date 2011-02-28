@@ -263,6 +263,11 @@ public class TripSettingsActivity extends Activity {
 								MODE_PRIVATE).edit();
 				editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, mThisTripId);
 				editPref.commit();
+				if(storageMgr.getTripDetail(mThisTripId).isTraceRouteEnabled()) {
+					GpsController.startGpsLogging(getApplicationContext(), mThisTripId);
+				} else {
+					GpsController.stopGpsLogging(getApplicationContext());
+				}
 			} else {
 				storageMgr.updateTrip(mThisTripId, mTripDetailFormCopy.getName(),  mTripDetailFormCopy.getTripDescription(),
 						mTripDetailFormCopy.isTraceRouteEnabled(), mTripDetailFormCopy.getDefaultThumbnail());
