@@ -333,7 +333,7 @@ public class TripViewActivity extends TabActivity {
 			break;
 
 		case R.id.stop_trip:
-			TripViewActivity.this.setCurrentTripId(0);
+			TripViewActivity.this.setCurrentTripId(AppDataDefs.NO_CURRENT_TRIP);
 			// GpsController.stopGpsLogging(getBaseContext());
 
 			doUnbindService();
