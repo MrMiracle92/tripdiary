@@ -155,7 +155,7 @@ public class BackgroundGpsService extends Service implements LocationListener {
 
 	public void updateEntryWithBestCurrentLocation(long tripId,
 			TripEntry tripEntry) {
-		// add entry to queue and request locatio asap
+		// add entry to queue and request location asap
 		mEntryQueue.add(new QueueItem(tripId, tripEntry));
 		requestLocationUpdateASAP();
 	}

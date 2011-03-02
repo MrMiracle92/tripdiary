@@ -94,7 +94,7 @@ public class TripNoteEditor extends Activity {
 		} else {
 			TripDiaryLogger.logDebug("No notes captured");
 
-			// User pressed OK button - lets save this and go back
+			// User pressed OK button but no text entered - lets just go back
 			this.setResult(RESULT_CANCELED);
 		}
 

@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.code.p.tripdiary.utils.Util;
+
 /**
  * Activity which records audio Another way of capturing audio is // Using
  * intent Intent recordIntent = new
@@ -94,7 +96,7 @@ public class AudioRecorder extends Activity {
 
 		filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
 				+ "/Sounds" + "/" + DEFAULT_FILE_NAME + "_"
-				+ TripViewActivity.getMediaFileName() + DEFAULT_FILE_EXTENSION;
+				+ Util.getMediaFileName() + DEFAULT_FILE_EXTENSION;
 		try {
 			File mediafile = new File(filePath);
 			if (mediafile.exists()) {
