@@ -5,8 +5,10 @@
 	<string name="settings_title">Trip Diary > Trip Settings</string>
 	<string name="settings_created_label">Created:</string>
 	<string name="settings_last_updated_label">Updated:</string>
-	<string name="settings_name_label">Name</string>
+	<string name="settings_name_label">Name*</string>
+	<string name="settings_name_hint">Provide a trip name here (required)</string>
 	<string name="settings_description_label">Description</string>
+	<string name="settings_description_hint">Provide a trip description here e.g. "Trip to Hawaii!" (optional)</string>
 	<string name="trip_settings_ok">OK</string>
 	<string name="menu_add_photo">Add Photo</string>
 	<string name="menu_add_video">Add Video</string>
@@ -18,12 +20,9 @@
 	<string name="menu_resume_trip">Resume Trip</string>
 	<string name="menu_stop_trip">Stop Trip</string>
     <string name="trace_route">Trace Route for this Trip</string>
-    
 	<string name="trip_audio">Audio recording</string>
 	<string name="audio_start">Start Audio Recording</string>
 	<string name="audio_stop">Stop Audio Recording</string>
-	
 	<string name="trip_note">Note</string>  
-	
 	<string name="trip_share">Export trip</string>
 </resources>
