@@ -12,5 +12,9 @@
     <item android:id="@+id/home_exit"
           android:icon="@drawable/exit"
           android:title="@string/home_exit" />
- 
+          
+<!-- Just for debugging/test purposes.. to be removed later [[ -->
+	<item android:id="@+id/use_fake_db" android:title="Use Fake DB" />
+	<item android:id="@+id/use_real_db" android:title="Use Real DB" />
+<!-- Just for debugging/test purposes.. to be removed later ]]--> 
 </menu>
