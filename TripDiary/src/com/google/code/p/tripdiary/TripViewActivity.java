@@ -35,7 +35,7 @@ import com.google.code.p.tripdiary.TripEntry.MediaType;
 import com.google.code.p.tripdiary.utils.*;
 
 /**
- * This activity takes care of showing the tabbed views of the trips (on the
+ * This activity takes care of showing the tab views of the trips (on the
  * gallery tab and the map tab.)
  * 
  * @author Ankan Mukherjee
@@ -57,7 +57,6 @@ public class TripViewActivity extends TabActivity {
 	private TripStorageManager mTripStorageMgr = null;
 
 	private String mediaFileName = "";
-	private Location mediaLocation;
 
 	/** GPS service */
 	private BackgroundGpsService gpsService;
@@ -113,7 +112,7 @@ public class TripViewActivity extends TabActivity {
 		TripDiaryLogger.logDebug("TripViewActivity - onStart");
 
 		if ((gpsServiceIsBound == false) && (thisTripId == getCurrentTripId())) {
-			// Bind to localservice
+			// Bind to GPS service
 			TripDiaryLogger.logDebug("Starting again");
 			GpsController.startGpsLogging(getBaseContext(), thisTripId);
 			doBindService();
@@ -584,7 +583,7 @@ public class TripViewActivity extends TabActivity {
 		}
 		
 		// let's now add the trip entry anyway (we don't need to lose this entry if
-		// gps fails or is not available etc.)
+		// GPS fails or is not available etc.)
 		tripEntry.tripEntryId = mTripStorageMgr.addTripEntry(thisTripId,
 				tripEntry);
 

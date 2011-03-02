@@ -1,5 +1,6 @@
 package com.google.code.p.tripdiary;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -8,8 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,12 +27,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.code.p.tripdiary.TripEntry.MediaType;
+import com.google.code.p.tripdiary.utils.Util;
 
 /**
  * This is where the application starts. This activity lists the trips, and also
  * provides the user an option to start a new trip.
  * 
  * @author Ankan Mukherjee
+ * @author Arpita Saha
  */
 public class TripListActivity extends ListActivity {
 
@@ -66,8 +75,8 @@ public class TripListActivity extends ListActivity {
 						Intent intent = new Intent(TripListActivity.this,
 								TripSettingsActivity.class);
 						intent.putExtra(AppDataDefs.KEY_IS_NEW_TRIP, true);
-						TripDiaryLogger.logDebug(
-								"About to start Trip Settings activity for new trip.");
+						TripDiaryLogger
+								.logDebug("About to start Trip Settings activity for new trip.");
 						startActivityForResult(intent, SETTINGS_CREATE_NEW_TRIP);
 					}
 				});
@@ -82,8 +91,9 @@ public class TripListActivity extends ListActivity {
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-				TripDiaryLogger.logDebug( "About to start trip view activity for trip id "
-						+ tripId);
+				TripDiaryLogger
+						.logDebug("About to start trip view activity for trip id "
+								+ tripId);
 				startActivityForResult(intent, VIEW_TRIP);
 			}
 		});
@@ -128,7 +138,7 @@ public class TripListActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_CANCELED) {
-			TripDiaryLogger.logDebug( "Sub Activity cancelled.");
+			TripDiaryLogger.logDebug("Sub Activity cancelled.");
 		} else {
 			mTripAdapter.notifyDataSetChanged();
 			switch (requestCode) {
@@ -137,8 +147,9 @@ public class TripListActivity extends ListActivity {
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
-				TripDiaryLogger.logDebug( "About to start trip view activity for trip id "
-						+ tripId);
+				TripDiaryLogger
+						.logDebug("About to start trip view activity for trip id "
+								+ tripId);
 				startActivityForResult(intent, VIEW_TRIP);
 			}
 		}
@@ -218,5 +229,51 @@ public class TripListActivity extends ListActivity {
 				currTripIndicator.setBackgroundResource(0);
 			}
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.trip_home_settings_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.findItem(R.id.home_settings).setEnabled(true);
+		menu.findItem(R.id.home_info).setEnabled(true);
+		menu.findItem(R.id.home_issues).setEnabled(true);
+		menu.findItem(R.id.home_exit).setEnabled(true);
+
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	/**
+	 * This method is called whenever an item from the menu is selected.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		switch (menuItem.getItemId()) {
+		case R.id.home_settings: {
+			
+			break;
+		}
+		
+		case R.id.home_info: {
+			break;
+		}
+		
+		case R.id.home_issues: {
+			break;
+		}
+		
+		case R.id.home_exit: {
+			finish();
+			break;
+		}
+		}
+		
+
+		return false;
 	}
 }

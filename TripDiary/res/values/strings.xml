@@ -25,4 +25,10 @@
 	<string name="audio_stop">Stop Audio Recording</string>
 	<string name="trip_note">Note</string>  
 	<string name="trip_share">Export trip</string>
+
+    <string name="home_settings">Settings</string>
+	<string name="home_info">Info</string>
+	<string name="home_issues">Questions</string>
+	<string name="home_exit">Exit</string>
+
 </resources>
