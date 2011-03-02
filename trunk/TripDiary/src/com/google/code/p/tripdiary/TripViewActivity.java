@@ -281,7 +281,7 @@ public class TripViewActivity extends TabActivity {
 			mediaFileName = Environment.getExternalStorageDirectory()
 					.getAbsolutePath()
 					+ "/DCIM/Camera/"
-					+ Util.getMediaFileName()
+					+ Util.tripDiaryFileName()
 					+ ".jpg";
 			imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 					Uri.fromFile(new File(mediaFileName)));

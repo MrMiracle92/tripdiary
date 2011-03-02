@@ -145,7 +145,7 @@ public class TripExport extends Activity {
 		{
 			kmlDir.mkdir();
 		}
-		fileName = "tripDiary-" + Util.tripDiaryFileName() + ".txt"; // TODO use
+		fileName = Util.tripDiaryFileName() + ".txt"; // TODO use
 																// DEFAULT_FILE_EXTENSION
 		File kmlFile = new File(kmlDir, fileName);
 
