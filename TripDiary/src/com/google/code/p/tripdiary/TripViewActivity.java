@@ -574,12 +574,21 @@ public class TripViewActivity extends TabActivity {
 	}
 
 	private void addEntryToTrip(TripEntry tripEntry) {
-		// let's add the trip entry anyway (we don't need to lose this entry if
+		// let's try to get the last known location and add it to entry
+		if (gpsServiceIsBound && (gpsService != null)) {
+			Location lastKnownLocation = gpsService.getLastKnownLocation();
+			if(lastKnownLocation != null) {
+				tripEntry.lat = lastKnownLocation.getLatitude();
+				tripEntry.lon = lastKnownLocation.getLongitude();
+			}
+		}
+		
+		// let's now add the trip entry anyway (we don't need to lose this entry if
 		// gps fails or is not available etc.)
 		tripEntry.tripEntryId = mTripStorageMgr.addTripEntry(thisTripId,
 				tripEntry);
 
-		// Now let's ask the gps service to add the best current location to the
+		// now let's ask the gps service to add the best current location to the
 		// entry
 		if (gpsServiceIsBound && (gpsService != null)) {
 			gpsService
