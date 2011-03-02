@@ -14,7 +14,7 @@ public class Util {
 	public static String tripDiaryFileName() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 		Date date = new Date();
-		String mediaFileName = dateFormat.format(date);
+		String mediaFileName = "tripDiary-" + dateFormat.format(date);
 
 		return mediaFileName;
 	}

@@ -96,7 +96,7 @@ public class AudioRecorder extends Activity {
 
 		filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
 				+ "/Sounds" + "/" + DEFAULT_FILE_NAME + "_"
-				+ Util.getMediaFileName() + DEFAULT_FILE_EXTENSION;
+				+ Util.tripDiaryFileName() + DEFAULT_FILE_EXTENSION;
 		try {
 			File mediafile = new File(filePath);
 			if (mediafile.exists()) {
