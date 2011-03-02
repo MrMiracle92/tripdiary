@@ -5,6 +5,7 @@ package com.google.code.p.tripdiary;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Random;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -30,8 +31,9 @@ public class TripStorageManagerFactory {
 		synchronized (TripStorageManagerFactory.class) {
 			if (storageManagerInstance == null) {
 				// TODO:need to use actual TripStorageManager impl when ready
-				storageManagerInstance = new TripStorageManagerImpl(appContext);
-//				storageManagerInstance = new TripStorageManagerFake();
+				// storageManagerInstance = new
+				// TripStorageManagerImpl(appContext);
+				storageManagerInstance = new TripStorageManagerFake();
 			}
 		}
 		return storageManagerInstance;
@@ -57,7 +59,8 @@ public class TripStorageManagerFactory {
 
 					public boolean accept(File dir, String filename) {
 						TripDiaryLogger.logDebug(filename);
-						if (filename.endsWith("jpg") || filename.endsWith("3gp")) {
+						if (filename.endsWith("jpg")
+								|| filename.endsWith("3gp")) {
 							return true;
 						}
 						return false;
@@ -81,18 +84,20 @@ public class TripStorageManagerFactory {
 			Time t = new Time();
 			t.setToNow();
 			td.setCreateTime(t.toMillis(false));
-			td.setDefaultThumbnail( (photos != null && photos.length > 0) ? photos[0].getAbsolutePath() : null );
+			td.setDefaultThumbnail((photos != null && photos.length > 0) ? photos[0]
+					.getAbsolutePath() : null);
 			return td;
 		}
-		
+
 		@Override
 		public TripEntry getTripEntry(long tripEntryId)
 				throws IllegalArgumentException {
 			String media = null;
 			TripEntry.MediaType mediaType = TripEntry.MediaType.NONE;
-			if(photos != null && photos.length > 0) {
-				media = photos[(int) (tripEntryId-TRIP_ENTRY_ID_START)].getAbsolutePath();
-				if(media.endsWith("3gp")) {
+			if (photos != null && photos.length > 0) {
+				media = photos[(int) (tripEntryId - TRIP_ENTRY_ID_START)]
+						.getAbsolutePath();
+				if (media.endsWith("3gp")) {
 					mediaType = TripEntry.MediaType.VIDEO;
 				} else if (media.endsWith("jpg")) {
 					mediaType = TripEntry.MediaType.PHOTO;
@@ -101,8 +106,8 @@ public class TripStorageManagerFactory {
 			Time t = new Time();
 			t.setToNow();
 
-			TripEntry te = new TripEntry(47.465, -122.23, media,
-					mediaType, t.toMillis(false));
+			TripEntry te = new TripEntry(47.465, -122.23, media, mediaType,
+					t.toMillis(false));
 
 			return te;
 		}
@@ -113,18 +118,22 @@ public class TripStorageManagerFactory {
 					TripDetailCols.TRIP_ID, TripDetailCols.CREATE_TIME,
 					TripDetailCols.LAT, TripDetailCols.LON,
 					TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION,
-					TripDetailCols.NOTE};
+					TripDetailCols.NOTE };
 
 			MatrixCursor entryCursor = new MatrixCursor(columnNamesEntry);
-			
-			if(tripId == 9999) {
+
+			if (tripId == 9999) {
 				// new trip, empty cursor
 				return entryCursor;
 			}
-			
+
 			long id2 = TRIP_ENTRY_ID_START;
 
 			String media = null;
+
+			Random randomGen1 = new Random(tripId);
+			Random randomGen2 = new Random(tripId + System.currentTimeMillis());
+
 			for (int j = 0; j < 100; j++) {
 				if (photos != null && j < photos.length) {
 					media = photos[j].getAbsolutePath();
@@ -132,16 +141,23 @@ public class TripStorageManagerFactory {
 
 				Time t = new Time();
 				t.setToNow();
-				
-				MediaType mediaType = MediaType.PHOTO;
-				if(media.endsWith("3gp")) {
-					mediaType = TripEntry.MediaType.VIDEO;
-				} else if (media.endsWith("jpg")) {
-					mediaType = TripEntry.MediaType.PHOTO;
+
+				MediaType mediaType = MediaType.NONE;
+				if (randomGen1.nextBoolean()) {
+					if (media.endsWith("3gp")) {
+						mediaType = TripEntry.MediaType.VIDEO;
+					} else if (media.endsWith("jpg")) {
+						mediaType = TripEntry.MediaType.PHOTO;
+					}
 				}
 
-				TripEntry te = new TripEntry(47.465, -122.23, media,
-						mediaType, t.toMillis(false));
+				int randomIdx = randomGen2.nextInt(primes.length);
+				TripEntry te = new TripEntry(47.465
+						+ (randomGen1.nextBoolean() ? 1 : -1)
+						* (j % primes[randomIdx]) / 107.0, -122.23
+						+ (randomGen1.nextBoolean() ? 1 : -1)
+						* (j % primes[randomIdx]) / 113.0, media, mediaType,
+						t.toMillis(false));
 
 				entryCursor.addRow(new Object[] { id2++, tripId,
 						te.creationTime, te.lat, te.lon, te.mediaType.name(),
@@ -150,7 +166,10 @@ public class TripStorageManagerFactory {
 
 			return entryCursor;
 		}
-		
+
+		private final static int[] primes = { 2, 3, 5, 7, 11, 13, 17, 19, 23,
+				29, 31 };
+
 		private final static long TRIP_ID_START = 3253;
 		private final static long TRIP_ENTRY_ID_START = 7000;
 
@@ -172,9 +191,15 @@ public class TripStorageManagerFactory {
 				if (photos != null && i < photos.length) {
 					photo = photos[i].getAbsolutePath();
 				}
-				allTripsCursor.addRow(new Object[] { id++, "Fake Trip " + id,
-						"Fake Description - " + photo + ". Let's see how a long description shows up. More words here and even more and more and more.", t.toMillis(false),
-						Boolean.toString(false), photo });
+				allTripsCursor
+						.addRow(new Object[] {
+								id++,
+								"Fake Trip " + id,
+								"Fake Description - "
+										+ photo
+										+ ". Let's see how a long description shows up. More words here and even more and more and more.",
+								t.toMillis(false), Boolean.toString(false),
+								photo });
 			}
 			// we'll use this as a new trip
 			id = 9999;
