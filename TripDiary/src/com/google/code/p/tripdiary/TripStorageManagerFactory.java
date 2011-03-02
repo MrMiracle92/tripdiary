@@ -8,6 +8,7 @@ import java.io.FilenameFilter;
 import java.util.Random;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Environment;
@@ -30,10 +31,16 @@ public class TripStorageManagerFactory {
 	public static TripStorageManager getTripStorageManager(Context appContext) {
 		synchronized (TripStorageManagerFactory.class) {
 			if (storageManagerInstance == null) {
-				// TODO:need to use actual TripStorageManager impl when ready
-				// storageManagerInstance = new
-				// TripStorageManagerImpl(appContext);
-				storageManagerInstance = new TripStorageManagerFake();
+				//TODO:need to use only actual TripStorageManager impl when ready
+				//TODO:Just for debugging/test purposes.. to be removed later
+				if (appContext.getSharedPreferences(AppDataDefs.APPDATA_FILE,
+						Context.MODE_PRIVATE).getBoolean(
+						AppDataDefs.USE_FAKE_TRIP_STORAGE, false)) {
+					storageManagerInstance = new TripStorageManagerFake();
+				} else {
+					storageManagerInstance = new TripStorageManagerImpl(
+							appContext);
+				}
 			}
 		}
 		return storageManagerInstance;
