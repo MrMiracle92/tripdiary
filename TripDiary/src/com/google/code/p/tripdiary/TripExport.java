@@ -3,9 +3,6 @@ package com.google.code.p.tripdiary;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +12,7 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
+import com.google.code.p.tripdiary.utils.*;
 
 /**
  * 
@@ -147,7 +145,7 @@ public class TripExport extends Activity {
 		{
 			kmlDir.mkdir();
 		}
-		fileName = "tripDiary-" + getKMLFileName() + ".txt"; // TODO use
+		fileName = "tripDiary-" + Util.tripDiaryFileName() + ".txt"; // TODO use
 																// DEFAULT_FILE_EXTENSION
 		File kmlFile = new File(kmlDir, fileName);
 
@@ -164,13 +162,5 @@ public class TripExport extends Activity {
 		}
 
 		return true;
-	}
-
-	public static String getKMLFileName() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
-		Date date = new Date();
-		String kmlFileName = dateFormat.format(date);
-
-		return kmlFileName;
 	}
 }
