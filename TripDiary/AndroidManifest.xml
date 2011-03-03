@@ -30,6 +30,9 @@
                   android:screenOrientation="sensor"
                   android:configChanges="keyboardHidden|orientation">
         </activity>
+        <activity android:name="TripDiaryInfo"
+                  android:label="@string/trip_info">
+        </activity>   
         
         <service android:enabled="true"
                  android:name=".BackgroundGpsService" 

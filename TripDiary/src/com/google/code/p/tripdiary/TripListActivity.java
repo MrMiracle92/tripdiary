@@ -239,7 +239,6 @@ public class TripListActivity extends ListActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(R.id.home_settings).setEnabled(true);
 		menu.findItem(R.id.home_info).setEnabled(true);
-		menu.findItem(R.id.home_issues).setEnabled(true);
 		menu.findItem(R.id.home_exit).setEnabled(true);
 
 		//TODO:Just for debugging/test purposes.. to be removed later [[
@@ -269,10 +268,10 @@ public class TripListActivity extends ListActivity {
 		}
 		
 		case R.id.home_info: {
-			break;
-		}
-		
-		case R.id.home_issues: {
+			Intent intent = new Intent(getApplicationContext(),
+					TripDiaryInfo.class);
+			startActivityForResult(intent, 1);
+			
 			break;
 		}
 		

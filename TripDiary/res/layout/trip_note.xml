@@ -11,10 +11,15 @@
 	  android:layout_height="wrap_content">
 		<view xmlns:android="http://schemas.android.com/apk/res/android"
 			  class="com.google.code.p.tripdiary.TripNoteEditor$LinedEditText"
-			  android:id="@+id/note" android:layout_width="fill_parent"
-			  android:layout_height="fill_parent" android:background="@android:color/transparent"
-			  android:padding="5dip" android:scrollbars="vertical"
-			  android:fadingEdge="vertical" android:gravity="top" android:textSize="22sp"
+			  android:id="@+id/note" 
+			  android:layout_width="fill_parent"
+			  android:layout_height="fill_parent" 
+			  android:background="@android:color/transparent"
+			  android:padding="5dip" 
+			  android:scrollbars="vertical"
+			  android:fadingEdge="vertical" 
+			  android:gravity="top" 
+			  android:textSize="22sp"
 			  android:capitalize="sentences">
 		</view>
 	</FrameLayout>
