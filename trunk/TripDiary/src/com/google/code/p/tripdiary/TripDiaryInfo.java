@@ -32,7 +32,7 @@ public class TripDiaryInfo extends Activity {
 				(ViewGroup) findViewById(R.id.trip_home_info_popup));
 		// layout.setBackgroundColor(color.darker_gray);
 
-		infoPopupWindow = new PopupWindow(layout, 400, 200, true);
+		infoPopupWindow = new PopupWindow(layout, 400, 500, true);
 		infoPopupWindow.setTouchable(true);
 		infoPopupWindow.setOutsideTouchable(true);
 		infoPopupWindow.setBackgroundDrawable(new BitmapDrawable());

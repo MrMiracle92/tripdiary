@@ -31,6 +31,7 @@
                   android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity android:name="TripDiaryInfo"
+                  android:theme="@android:style/Theme.Translucent"
                   android:label="@string/trip_info">
         </activity>   
         
