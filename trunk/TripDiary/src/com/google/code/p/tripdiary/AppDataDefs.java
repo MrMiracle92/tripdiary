@@ -1,7 +1,7 @@
 package com.google.code.p.tripdiary;
 
 /**
- * Defintions for Application Data SharedPreferences.
+ * Definitions for Application Data SharedPreferences.
  * 
  * @author Ankan Mukherjee
  */
