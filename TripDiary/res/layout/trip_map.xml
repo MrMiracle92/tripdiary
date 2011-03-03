@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.maps.MapView
-	xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:enabled="true" android:clickable="true"
-	android:apiKey="0m2c6bVamZjNcqRasLByG55zxuFiv-NP9ObNgIA" />
+<RelativeLayout android:id="@+id/mapviewmain"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent">
+	<LinearLayout android:id="@+id/mapviewlinear"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<com.google.android.maps.MapView
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			android:id="@+id/mapview" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:enabled="true"
+			android:clickable="true" android:apiKey="0m2c6bVamZjNcqRasLByG55zxuFiv-NP9ObNgIA" />
+	</LinearLayout>
+	<LinearLayout android:id="@+id/ButtonLayout" 
+		android:layout_alignParentBottom="true" android:layout_alignParentRight="true"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:paddingRight="5dp" android:paddingBottom="5dp">
+		<ImageButton android:id="@+id/btnZoomToFit" android:layout_width="wrap_content"
+			android:src="@drawable/zoom_to_fit" android:layout_height="wrap_content"
+			android:adjustViewBounds="true" />
+	</LinearLayout>
+</RelativeLayout>
