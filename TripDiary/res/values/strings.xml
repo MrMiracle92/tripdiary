@@ -19,13 +19,14 @@
 	<string name="menu_share_trip">Export Trip</string>
 	<string name="menu_resume_trip">Resume Trip</string>
 	<string name="menu_stop_trip">Stop Trip</string>
-    <string name="trace_route">Trace Route for this Trip</string>
+    <string name="trace_route">Trace route for this trip (save tracks)</string>
 	<string name="trip_audio">Audio recording</string>
 	<string name="audio_start">Start Audio Recording</string>
 	<string name="audio_stop">Stop Audio Recording</string>
 	<string name="trip_note">Note</string>  
 	<string name="trip_share">Export trip</string>
-
+	<string name="menu_view_entry">See in default viewer</string>
+	<string name="menu_remove_entry">Remove from trip</string>
     <string name="trip_info">Info</string>
     <string name="home_settings">Settings</string>
 	<string name="home_info">Info</string>
