@@ -161,7 +161,7 @@ public class TripViewActivity extends TabActivity {
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost
 				.newTabSpec("gallery")
-				.setIndicator("Gallery",
+				.setIndicator("",
 						res.getDrawable(R.drawable.gallery_res))
 				.setContent(intent);
 		tabHost.addTab(spec);
@@ -170,9 +170,15 @@ public class TripViewActivity extends TabActivity {
 		intent = new Intent().setClass(this, TripMapActivity.class);
 		intent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
 		spec = tabHost.newTabSpec("map")
-				.setIndicator("Map", res.getDrawable(R.drawable.map_res))
+				.setIndicator("", res.getDrawable(R.drawable.map_res))
 				.setContent(intent);
 		tabHost.addTab(spec);
+		
+		// update the tab heights (to less than the default)
+		int tabCount = tabHost.getTabWidget().getChildCount();
+		for (int i = 0; i < tabCount; i++) {
+			tabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 60;
+		}
 
 		// at this point there needs to be a valid thisTripId
 		if (thisTripId == 0) {
@@ -208,7 +214,7 @@ public class TripViewActivity extends TabActivity {
 		SharedPreferences.Editor editPref = getApplicationContext()
 				.getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE)
 				.edit();
-		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, thisTripId);
+		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, tripId);
 		editPref.commit();
 		if (tripId != AppDataDefs.NO_CURRENT_TRIP
 				&& mTripStorageMgr.getTripDetail(tripId).isTraceRouteEnabled()) {

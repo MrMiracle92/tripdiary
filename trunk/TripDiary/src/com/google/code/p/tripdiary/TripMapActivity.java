@@ -13,6 +13,9 @@ import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -30,7 +33,7 @@ import com.google.android.maps.Projection;
  * 
  */
 public class TripMapActivity extends MapActivity {
-//	private MapController mMapController;
+	private MapController mMapController;
 	private MapView mapView;
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 	private TripStorageManager mStorageMgr;
@@ -46,7 +49,7 @@ public class TripMapActivity extends MapActivity {
 		setContentView(R.layout.trip_map);
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
-//		mMapController = mapView.getController();
+		mMapController = mapView.getController();
 		
 		// if the activity is resumed
 		thisTripId = savedInstanceState != null ? savedInstanceState
@@ -80,6 +83,15 @@ public class TripMapActivity extends MapActivity {
 		// create and add overlay to map
 		mItemizedoverlay = new TripOverlay(mMarker, this);
 		mapView.getOverlays().add(mItemizedoverlay);
+		
+		// buttons
+		ImageButton btnZoomTofit = ((ImageButton) findViewById(R.id.btnZoomToFit));
+		btnZoomTofit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				zoomToFitAndCenter();
+			}
+		});
 	}
 
 	@Override
@@ -104,14 +116,30 @@ public class TripMapActivity extends MapActivity {
 	    refreshMap();
 	}
 	
+	private double mMinLat;
+	private double mMaxLat;
+	private double mMinLon;
+	private double mMaxLon;
+	
 	private void refreshMap() {
 		mTripEntries.requery();
 		mTripEntries.moveToFirst();
+		boolean isInited = false;
 		while (!mTripEntries.isAfterLast()) {
 			double lat = mTripEntries.getDouble(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.LAT));
 			double lon = mTripEntries.getDouble(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.LON));
+			if(!isInited) {
+				mMinLat = mMaxLat = lat;
+				mMinLon = mMaxLon = lon;
+				isInited = true;
+			} else {
+				mMinLat = mMinLat < lat ? mMinLat : lat;
+				mMaxLat = mMaxLat > lat ? mMaxLat : lat;
+				mMinLon = mMinLon < lat ? mMinLon : lon;
+				mMaxLon = mMaxLon > lat ? mMaxLon : lon;
+			}
 			String mediaType = mTripEntries.getString(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.MEDIA_TYPE));
 			String title = mTripEntries.getString(mTripEntries
@@ -218,5 +246,10 @@ public class TripMapActivity extends MapActivity {
 		  dialog.show();
 		  return true;
 		}
+	}
+	
+	private void zoomToFitAndCenter() {
+		  mMapController.zoomToSpan((int)((mMaxLat - mMinLat) * 1e6), (int)((mMaxLon - mMinLon) * 1e6));
+		  mMapController.animateTo(new GeoPoint((int)((mMaxLat + mMinLat) * 1e6 / 2), (int)((mMaxLon + mMinLon) * 1e6 / 2)));
 	}
 }
