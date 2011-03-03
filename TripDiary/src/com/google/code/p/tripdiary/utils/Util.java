@@ -12,9 +12,9 @@ import java.util.Date;
  */
 public class Util {
 	public static String tripDiaryFileName() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
 		Date date = new Date();
-		String mediaFileName = "tripDiary-" + dateFormat.format(date);
+		String mediaFileName = dateFormat.format(date);
 
 		return mediaFileName;
 	}
