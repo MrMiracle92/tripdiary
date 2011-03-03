@@ -7,6 +7,8 @@ import static com.google.code.p.tripdiary.AppDataDefs.LAT_UNKNOWN;
 import static com.google.code.p.tripdiary.AppDataDefs.LON_UNKNOWN;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
@@ -32,7 +35,7 @@ import android.widget.Toast;
 
 import com.google.code.p.tripdiary.BackgroundGpsService.GPSBinder;
 import com.google.code.p.tripdiary.TripEntry.MediaType;
-import com.google.code.p.tripdiary.utils.*;
+import com.google.code.p.tripdiary.utils.Util;
 
 /**
  * This activity takes care of showing the tab views of the trips (on the
@@ -159,10 +162,8 @@ public class TripViewActivity extends TabActivity {
 		intent.putExtra(AppDataDefs.KEY_TRIP_ID, thisTripId);
 
 		// Initialize a TabSpec for each tab and add it to the TabHost
-		spec = tabHost
-				.newTabSpec("gallery")
-				.setIndicator("",
-						res.getDrawable(R.drawable.gallery_res))
+		spec = tabHost.newTabSpec("gallery")
+				.setIndicator("", res.getDrawable(R.drawable.gallery_res))
 				.setContent(intent);
 		tabHost.addTab(spec);
 
@@ -173,7 +174,7 @@ public class TripViewActivity extends TabActivity {
 				.setIndicator("", res.getDrawable(R.drawable.map_res))
 				.setContent(intent);
 		tabHost.addTab(spec);
-		
+
 		// update the tab heights (to less than the default)
 		int tabCount = tabHost.getTabWidget().getChildCount();
 		for (int i = 0; i < tabCount; i++) {
@@ -286,8 +287,7 @@ public class TripViewActivity extends TabActivity {
 			mediaFileName = Environment.getExternalStorageDirectory()
 					.getAbsolutePath()
 					+ "/DCIM/Camera/"
-					+ Util.tripDiaryFileName()
-					+ ".jpg";
+					+ Util.tripDiaryFileName() + ".jpg";
 			imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 					Uri.fromFile(new File(mediaFileName)));
 
@@ -449,24 +449,42 @@ public class TripViewActivity extends TabActivity {
 		}
 
 		case REQUEST_VIDEO: {
+			// Activity was canceled
 			if (resultCode == RESULT_CANCELED) {
 				Toast.makeText(getBaseContext(), "Video not captured",
 						Toast.LENGTH_SHORT).show();
 			}
 
 			if (resultCode == RESULT_OK) {
-				Toast.makeText(getBaseContext(),
-						"Video captured and saved in gallery",
-						Toast.LENGTH_SHORT).show();
-
 				try {
-					Uri videoFileURI = dataIntent.getData();
-					Toast.makeText(getBaseContext(),
-							"Video saved in " + videoFileURI.toString(),
-							Toast.LENGTH_SHORT).show();
+					AssetFileDescriptor videoAsset = getContentResolver()
+							.openAssetFileDescriptor(dataIntent.getData(), "r");
+					FileInputStream fis = videoAsset.createInputStream();
+
+					String videoFileName = Environment
+							.getExternalStorageDirectory().getAbsolutePath()
+							+ "/DCIM/Camera/"
+							+ Util.tripDiaryFileName()
+							+ ".3gp";
+					File videoFile = new File(videoFileName);
+					FileOutputStream fos = new FileOutputStream(videoFile);
+
+					byte[] buf = new byte[65535];
+					int len;
+					while ((len = fis.read(buf)) > 0) {
+						fos.write(buf, 0, len);
+					}
+					fis.close();
+					fos.close();
+
+					Toast.makeText(
+							getBaseContext(),
+							"Video saved in new location : "
+									+ videoFile.toString(), Toast.LENGTH_SHORT)
+							.show();
 
 					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN,
-							LON_UNKNOWN, videoFileURI.toString(),
+							LON_UNKNOWN, videoFileName.toString(),
 							MediaType.VIDEO);
 					addEntryToTrip(tripEntry);
 				} catch (Exception e) {
@@ -582,13 +600,14 @@ public class TripViewActivity extends TabActivity {
 		// let's try to get the last known location and add it to entry
 		if (gpsServiceIsBound && (gpsService != null)) {
 			Location lastKnownLocation = gpsService.getLastKnownLocation();
-			if(lastKnownLocation != null) {
+			if (lastKnownLocation != null) {
 				tripEntry.lat = lastKnownLocation.getLatitude();
 				tripEntry.lon = lastKnownLocation.getLongitude();
 			}
 		}
-		
-		// let's now add the trip entry anyway (we don't need to lose this entry if
+
+		// let's now add the trip entry anyway (we don't need to lose this entry
+		// if
 		// GPS fails or is not available etc.)
 		tripEntry.tripEntryId = mTripStorageMgr.addTripEntry(thisTripId,
 				tripEntry);

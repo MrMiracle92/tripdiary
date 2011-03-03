@@ -26,12 +26,12 @@ public class TripHomePreference extends PreferenceActivity {
 					public boolean onPreferenceClick(Preference preference) {
 						SharedPreferences prefs = PreferenceManager
 								.getDefaultSharedPreferences(getBaseContext());
+						
 
 						TripDiaryLogger.logDebug("In Preference");
 						return true;
 					}
 				});
-
 	}
 
 }

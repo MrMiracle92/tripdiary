@@ -22,6 +22,7 @@
 		          android:label="@string/trip_share">
 		</activity>
 		<activity android:name="AudioRecorder" 
+		          android:theme="@android:style/Theme.Translucent"
 		          android:label="@string/trip_audio">
 		</activity>
 		<activity android:name="TripNoteEditor" 
