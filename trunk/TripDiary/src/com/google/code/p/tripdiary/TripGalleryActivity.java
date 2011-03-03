@@ -11,14 +11,20 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.code.p.tripdiary.TripEntry.MediaType;
 
@@ -29,7 +35,7 @@ import com.google.code.p.tripdiary.TripEntry.MediaType;
  * 
  */
 public class TripGalleryActivity extends Activity {
-	private TripStorageManager mStorageMgr;
+	private TripStorageManager mTripStorageMgr;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 	private Cursor mTripEntryCursor = null;
@@ -59,43 +65,23 @@ public class TripGalleryActivity extends Activity {
 		}
 
 		// get the storage manager
-		mStorageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
+		mTripStorageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
 
-		mTripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
+		mTripEntryCursor = mTripStorageMgr.getEntriesForTrip(thisTripId);
 		mTripEntryAdapter = new TripEntryAdapter(getApplicationContext(),
 				mTripEntryCursor, true);
 		GridView gridview = (GridView) findViewById(R.id.gridview);
 		gridview.setAdapter(mTripEntryAdapter);
 
 		gridview.setOnItemClickListener(new OnItemClickListener() {
+			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				TripEntry te = mStorageMgr.getTripEntry(id);
-				if (te.mediaLocation != null) {
-					File file = new File(te.mediaLocation);
-					Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-					switch (te.mediaType) {
-					case PHOTO:
-						intent.setDataAndType(Uri.fromFile(file), "image/*");
-						startActivity(intent);
-						break;
-					case VIDEO:
-						intent.setDataAndType(Uri.fromFile(file), "video/*");
-						startActivity(intent);
-						break;
-					case AUDIO:
-						intent.setDataAndType(Uri.fromFile(file), "audio/*");
-						startActivity(intent);
-					case TEXT:
-						intent.setDataAndType(Uri.fromFile(file), "text/*");
-						startActivity(intent);
-					case NONE:
-					default:
-						break;
-					}
-				}
+				showEntryInDefaultViewer(id);
 			}
 		});
+		
+		registerForContextMenu(gridview);
 	}
 	
 	@Override
@@ -104,6 +90,59 @@ public class TripGalleryActivity extends Activity {
 		mTripEntryCursor.requery();
 		TripDiaryLogger.logDebug("Entries = " + mTripEntryCursor.getCount());
 		mTripEntryAdapter.notifyDataSetInvalidated();
+	}
+	
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.trip_entry_context_menu, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.remove_entry:
+			mTripStorageMgr.deleteTripEntry(info.id);
+			mTripEntryCursor.requery();
+			TripDiaryLogger.logDebug("Entries = " + mTripEntryCursor.getCount());
+			mTripEntryAdapter.notifyDataSetInvalidated();
+			return true;
+		case R.id.view_entry:
+			showEntryInDefaultViewer(info.id);
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+	
+	private void showEntryInDefaultViewer(long tripEntryId) {
+		TripEntry te = mTripStorageMgr.getTripEntry(tripEntryId);
+		if (te.mediaLocation != null) {
+			File file = new File(te.mediaLocation);
+			Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+			switch (te.mediaType) {
+			case PHOTO:
+				intent.setDataAndType(Uri.fromFile(file), "image/*");
+				startActivity(intent);
+				break;
+			case VIDEO:
+				intent.setDataAndType(Uri.fromFile(file), "video/*");
+				startActivity(intent);
+				break;
+			case AUDIO:
+				intent.setDataAndType(Uri.fromFile(file), "audio/*");
+				startActivity(intent);
+			case TEXT:
+				intent.setDataAndType(Uri.fromFile(file), "text/*");
+				startActivity(intent);
+			case NONE:
+			default:
+				break;
+			}
+		}
+
 	}
 
 	private class TripEntryAdapter extends CursorAdapter {
