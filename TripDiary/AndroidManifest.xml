@@ -34,6 +34,9 @@
                   android:theme="@android:style/Theme.Translucent"
                   android:label="@string/trip_info">
         </activity>   
+        <activity android:name="TripHomePreference"
+                  android:label="@string/home_preference">
+        </activity>
         
         <service android:enabled="true"
                  android:name=".BackgroundGpsService" 

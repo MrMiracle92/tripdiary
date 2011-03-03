@@ -263,25 +263,28 @@ public class TripListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		switch (menuItem.getItemId()) {
 		case R.id.home_settings: {
+			Intent prefIntent = new Intent(getApplicationContext(),
+					TripHomePreference.class);
+			startActivityForResult(prefIntent, 0);
 
 			break;
 		}
 
 		case R.id.home_info: {
-			Intent intent = new Intent(getApplicationContext(),
+			Intent infoIntent = new Intent(getApplicationContext(),
 					TripDiaryInfo.class);
-			startActivityForResult(intent, 0);
+			startActivityForResult(infoIntent, 0);
 
 			break;
 		}
 
 		case R.id.home_exit: {
 			finish();
-			
+
 			break;
 		}
 
-			// TODO:Just for debugging/test purposes.. to be removed later 
+			// TODO:Just for debugging/test purposes.. to be removed later
 		case R.id.use_fake_db:
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 			builder1.setMessage(

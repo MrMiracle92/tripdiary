@@ -31,5 +31,6 @@
 	<string name="home_info">Info</string>
 	<string name="home_issues">Questions</string>
 	<string name="home_exit">Exit</string>
+	<string name="home_preference">Preferences</string>
 
 </resources>
