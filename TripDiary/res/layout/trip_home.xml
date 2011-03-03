@@ -4,12 +4,17 @@
     android:id="@+id/trip_home_info_popup"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/transparent"
+    android:background="#ff888888"
     >
 	<TextView
 		android:id="@+id/poptext"
 		android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:paddingTop="10dp" 
+        android:paddingBottom="10dp" 
+        android:paddingLeft="10dp" 
+        android:paddingRight="10dp" 
+        android:background="@android:color/transparent"
 		android:text="About TripDiary - "
 		android:textSize="15sp"
 		android:textColor="#ffffffff"

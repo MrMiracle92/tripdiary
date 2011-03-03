@@ -241,9 +241,9 @@ public class TripListActivity extends ListActivity {
 		menu.findItem(R.id.home_info).setEnabled(true);
 		menu.findItem(R.id.home_exit).setEnabled(true);
 
-		//TODO:Just for debugging/test purposes.. to be removed later [[
-		if(getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
-				Context.MODE_PRIVATE).getBoolean(
+		// TODO:Just for debugging/test purposes.. to be removed later [[
+		if (getApplicationContext().getSharedPreferences(
+				AppDataDefs.APPDATA_FILE, Context.MODE_PRIVATE).getBoolean(
 				AppDataDefs.USE_FAKE_TRIP_STORAGE, false)) {
 			menu.findItem(R.id.use_fake_db).setEnabled(false);
 			menu.findItem(R.id.use_fake_db).setVisible(false);
@@ -251,8 +251,8 @@ public class TripListActivity extends ListActivity {
 			menu.findItem(R.id.use_real_db).setEnabled(false);
 			menu.findItem(R.id.use_real_db).setVisible(false);
 		}
-		//TODO:Just for debugging/test purposes.. to be removed later ]]
-		
+		// TODO:Just for debugging/test purposes.. to be removed later ]]
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -263,24 +263,25 @@ public class TripListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		switch (menuItem.getItemId()) {
 		case R.id.home_settings: {
-			
+
 			break;
 		}
-		
+
 		case R.id.home_info: {
 			Intent intent = new Intent(getApplicationContext(),
 					TripDiaryInfo.class);
-			startActivityForResult(intent, 1);
+			startActivityForResult(intent, 0);
+
+			break;
+		}
+
+		case R.id.home_exit: {
+			finish();
 			
 			break;
 		}
-		
-		case R.id.home_exit: {
-			finish();
-			break;
-		}
-		
-		//TODO:Just for debugging/test purposes.. to be removed later [[
+
+			// TODO:Just for debugging/test purposes.. to be removed later 
 		case R.id.use_fake_db:
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 			builder1.setMessage(
@@ -327,9 +328,9 @@ public class TripListActivity extends ListActivity {
 			AlertDialog alert2 = builder2.create();
 			alert2.show();
 			break;
-		//TODO:Just for debugging/test purposes.. to be removed later ]]
+		// TODO:Just for debugging/test purposes.. to be removed later ]]
 		}
-		
-		return false;
+
+		return true;
 	}
 }
