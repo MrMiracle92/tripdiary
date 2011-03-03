@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="File Storage">
+        android:title="TripDiary Settings"
+        android:summary="TripDiary Settings">
         <EditTextPreference
             android:name="folder"
             android:title="Main Folder"
             android:summary="tripDiary"
             android:defaultValue="tripDiary"
             android:key="folderPref"/>
+        <EditTextPreference
+            android:name="video"
+            android:title="Video"
+            android:summary="Resolution, length"
+            android:key="videoPref"/>
      </PreferenceCategory>
 </PreferenceScreen>

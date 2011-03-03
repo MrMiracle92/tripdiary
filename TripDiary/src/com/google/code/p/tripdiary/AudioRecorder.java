@@ -44,9 +44,8 @@ public class AudioRecorder extends Activity {
 
 		String state = Environment.getExternalStorageState();
 		if (!Environment.MEDIA_MOUNTED.equals(state)) {
-			// Something else is wrong. It may be one of many other states, but
-			// all we need
-			// to know is we can not write
+			// Something else is wrong. It may be one of many other
+			// states, but all we need to know is we can not write
 			Toast.makeText(getBaseContext(),
 					"External storage not available for writing.",
 					Toast.LENGTH_SHORT).show();
@@ -90,7 +89,8 @@ public class AudioRecorder extends Activity {
 			Toast.makeText(getBaseContext(),
 					"SD Card is not mounted.  It is " + state + ".",
 					Toast.LENGTH_SHORT).show();
-			TripDiaryLogger.logDebug( "SD Card is not mounted.  It is " + state + ".");
+			TripDiaryLogger.logDebug("SD Card is not mounted.  It is " + state
+					+ ".");
 			return;
 		}
 
@@ -138,7 +138,8 @@ public class AudioRecorder extends Activity {
 			mediaRecorder.start();
 		} catch (Exception e) { // TODO Change to IllegalStateException ,
 								// IOException
-			TripDiaryLogger.logDebug( "Exception while recording audio " + e.getMessage());
+			TripDiaryLogger.logDebug("Exception while recording audio "
+					+ e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -175,8 +176,8 @@ public class AudioRecorder extends Activity {
 			finish();
 
 		} catch (Exception e) {
-			TripDiaryLogger.logDebug(
-					"Exception while stopping audio recording "
+			TripDiaryLogger
+					.logDebug("Exception while stopping audio recording "
 							+ e.getMessage());
 			e.printStackTrace();
 		}
