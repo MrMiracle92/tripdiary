@@ -279,6 +279,7 @@ public class TripListActivity extends ListActivity {
 		}
 
 		case R.id.home_exit: {
+			// Finish this activity.
 			finish();
 
 			break;
