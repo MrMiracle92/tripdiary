@@ -463,7 +463,7 @@ public class TripViewActivity extends TabActivity {
 
 					String videoFileName = Environment
 							.getExternalStorageDirectory().getAbsolutePath()
-							+ "/DCIM/Camera/"
+							+ "/DCIM/Camera/video-"
 							+ Util.tripDiaryFileName()
 							+ ".3gp";
 					File videoFile = new File(videoFileName);
