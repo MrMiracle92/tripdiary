@@ -22,6 +22,7 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
@@ -39,6 +40,7 @@ public class TripMapActivity extends MapActivity {
 	private TripStorageManager mStorageMgr;
 	private Cursor mTripEntries;
 	private TripOverlay mItemizedoverlay;
+	private MyLocationOverlay mMyLocationOverlay;
 
 
 	/** Called when the activity is first created. */
@@ -84,6 +86,10 @@ public class TripMapActivity extends MapActivity {
 		mItemizedoverlay = new TripOverlay(mMarker, this);
 		mapView.getOverlays().add(mItemizedoverlay);
 		
+		// add the my location overlay and add to map
+		mMyLocationOverlay = new MyLocationOverlay(getBaseContext(), mapView);
+		mapView.getOverlays().add(mMyLocationOverlay);
+		
 		// buttons
 		ImageButton btnZoomTofit = ((ImageButton) findViewById(R.id.btnZoomToFit));
 		btnZoomTofit.setOnClickListener(new OnClickListener() {
@@ -99,20 +105,16 @@ public class TripMapActivity extends MapActivity {
 		return false;
 	}
 	
-	/**
-	 * Turn off the location updates if we're paused
-	 */
 	@Override
 	public void onPause() {
 	    super.onPause();
+	    mMyLocationOverlay.disableMyLocation();
 	}
 
-	/**
-	 * Resume location updates if we're back
-	 */
 	@Override
 	public void onResume() {
 	    super.onResume();
+	    mMyLocationOverlay.enableMyLocation();
 	    refreshMap();
 	}
 	
