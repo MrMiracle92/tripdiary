@@ -118,7 +118,7 @@ public class ImageCache {
 			}
 			if (bm == null) {
 				bm = BitmapFactory.decodeResource(context.getResources(),
-						R.drawable.video);
+						R.drawable.gallery_video);
 			}
 			break;
 		default:

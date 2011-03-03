@@ -180,10 +180,10 @@ public class TripGalleryActivity extends Activity {
 						cursor.getString(mEntryMediaLocIdx), mediaType, ivImg);
 				break;
 			case AUDIO:
-				ivImg.setImageResource(R.drawable.audio);
+				ivImg.setImageResource(R.drawable.gallery_audio);
 				break;
 			case TEXT:
-				ivImg.setImageResource(R.drawable.text);
+				ivImg.setImageResource(R.drawable.gallery_text);
 				break;
 			}
 		}
