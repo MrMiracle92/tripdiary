@@ -52,6 +52,9 @@ public class TripListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		// start GPS logging
+		LocationController.startLocationLogging(getApplicationContext());
 
 		mStorageMgr = TripStorageManagerFactory
 				.getTripStorageManager(getApplicationContext());
