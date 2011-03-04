@@ -249,13 +249,16 @@ public class TripSettingsActivity extends Activity {
 			nameEditText.requestFocus();
 			return;
 		} else {
-			if(mTripDetailFormCopy == null) {
-				// must be a new trip, let's create trip detail for store current form data
+			if (mTripDetailFormCopy == null) {
+				// must be a new trip, let's create trip detail for store
+				// current form data
 				mTripDetailFormCopy = new TripDetail();
 			}
 			loadFormData(mTripDetailFormCopy);
 			if (mIsNewTrip) {
-				mThisTripId = storageMgr.createNewTrip(mTripDetailFormCopy.getName(), mTripDetailFormCopy.getTripDescription(),
+				mThisTripId = storageMgr.createNewTrip(
+						mTripDetailFormCopy.getName(),
+						mTripDetailFormCopy.getTripDescription(),
 						mTripDetailFormCopy.isTraceRouteEnabled());
 				// make new trip current
 				SharedPreferences.Editor editPref = getApplicationContext()
@@ -263,14 +266,17 @@ public class TripSettingsActivity extends Activity {
 								MODE_PRIVATE).edit();
 				editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, mThisTripId);
 				editPref.commit();
-				if(storageMgr.getTripDetail(mThisTripId).isTraceRouteEnabled()) {
-					GpsController.startGpsLogging(getApplicationContext(), mThisTripId);
-				} else {
-					GpsController.stopGpsLogging(getApplicationContext());
-				}
 			} else {
-				storageMgr.updateTrip(mThisTripId, mTripDetailFormCopy.getName(),  mTripDetailFormCopy.getTripDescription(),
-						mTripDetailFormCopy.isTraceRouteEnabled(), mTripDetailFormCopy.getDefaultThumbnail());
+				storageMgr.updateTrip(mThisTripId,
+						mTripDetailFormCopy.getName(),
+						mTripDetailFormCopy.getTripDescription(),
+						mTripDetailFormCopy.isTraceRouteEnabled(),
+						mTripDetailFormCopy.getDefaultThumbnail());
+			}
+			if (storageMgr.getTripDetail(mThisTripId).isTraceRouteEnabled()) {
+				LocationController.startLocationLogging(getApplicationContext());
+			} else {
+				LocationController.stopLocationLogging(getApplicationContext());
 			}
 			// finish with result ok
 			setResult(RESULT_OK);
