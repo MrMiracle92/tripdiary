@@ -105,8 +105,8 @@ public class BackgroundLocationService extends Service implements
 
 		// if current log warning (this is a problem, perhaps the phone is low
 		// on memory)
-		if (getCurrentTripId() != AppDataDefs.NO_CURRENT_TRIP
-				&& mStorageManager.getTripDetail(getCurrentTripId())
+		if (AppDataUtil.getCurrentTripId(getApplicationContext()) != AppDataDefs.NO_CURRENT_TRIP
+				&& mStorageManager.getTripDetail(AppDataUtil.getCurrentTripId(getApplicationContext()))
 						.isTraceRouteEnabled()) {
 			TripDiaryLogger
 					.logWarning("Background Location Service getting destroyed "
@@ -160,9 +160,9 @@ public class BackgroundLocationService extends Service implements
 	}
 
 	private void checkAndStopSelf() {
-		if (!mIsBound && !mEntryQueue.isEmpty()
-				&& (getCurrentTripId() == AppDataDefs.NO_CURRENT_TRIP
-				|| !mStorageManager.getTripDetail(getCurrentTripId())
+		if (!mIsBound && mEntryQueue.isEmpty()
+				&& (AppDataUtil.getCurrentTripId(getApplicationContext()) == AppDataDefs.NO_CURRENT_TRIP
+				|| !mStorageManager.getTripDetail(AppDataUtil.getCurrentTripId(getApplicationContext()))
 						.isTraceRouteEnabled())) {
 			TripDiaryLogger
 					.logDebug("BackgroundLocationService - Stopping Self.");
@@ -201,8 +201,8 @@ public class BackgroundLocationService extends Service implements
 		} else { // add an entry for the route only if trace route is enabled
 					// for current trip and a min distance has passed since the
 					// last updated location
-			if (getCurrentTripId() != AppDataDefs.NO_CURRENT_TRIP
-					&& mStorageManager.getTripDetail(getCurrentTripId())
+			if (AppDataUtil.getCurrentTripId(getApplicationContext()) != AppDataDefs.NO_CURRENT_TRIP
+					&& mStorageManager.getTripDetail(AppDataUtil.getCurrentTripId(getApplicationContext()))
 							.isTraceRouteEnabled()
 					&& (mLastUpdatedLocation == null ? true
 							: mLastUpdatedLocation.distanceTo(location) >= minUpdateDistanceMetres)) {
@@ -231,11 +231,11 @@ public class BackgroundLocationService extends Service implements
 
 	}
 
-	private long getCurrentTripId() {
-		return getApplicationContext().getSharedPreferences(
-				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-	}
+//	private long getCurrentTripId() {
+//		return getApplicationContext().getSharedPreferences(
+//				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
+//				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+//	}
 
 	public Location getLastKnownLocation() {
 		TripDiaryLogger

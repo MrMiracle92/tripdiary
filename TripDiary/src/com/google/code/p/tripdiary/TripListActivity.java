@@ -121,11 +121,11 @@ public class TripListActivity extends ListActivity {
 				mPrefListener);
 	}
 
-	private long getCurrentTripId() {
-		return getApplicationContext().getSharedPreferences(
-				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-	}
+//	private long getCurrentTripId() {
+//		return getApplicationContext().getSharedPreferences(
+//				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
+//				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+//	}
 
 	@Override
 	protected void onResume() {
@@ -143,7 +143,7 @@ public class TripListActivity extends ListActivity {
 			mTripAdapter.notifyDataSetChanged();
 			switch (requestCode) {
 			case SETTINGS_CREATE_NEW_TRIP:
-				long tripId = getCurrentTripId();
+				long tripId = AppDataUtil.getCurrentTripId(getApplicationContext());
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
@@ -219,7 +219,7 @@ public class TripListActivity extends ListActivity {
 			}
 			View currTripIndicator = view
 					.findViewById(R.id.tripDetailCurrIndicator);
-			long currTrip = getCurrentTripId();
+			long currTrip = AppDataUtil.getCurrentTripId(getApplicationContext());
 			boolean isCurrentTrip = (currTrip == tripId)
 					&& (currTrip != AppDataDefs.NO_CURRENT_TRIP) ? true : false;
 			if (isCurrentTrip) {

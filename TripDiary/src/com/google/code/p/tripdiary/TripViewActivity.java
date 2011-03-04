@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -88,7 +87,8 @@ public class TripViewActivity extends TabActivity {
 	private void doBindLocationService() {
 		TripDiaryLogger.logDebug("TripViewActivity - doBindService");
 
-		Intent locationIntent = new Intent(this, BackgroundLocationService.class);
+		Intent locationIntent = new Intent(this,
+				BackgroundLocationService.class);
 		if (bindService(locationIntent, locationServiceConnection,
 				Context.BIND_AUTO_CREATE))
 			locationServiceIsBound = true;
@@ -174,26 +174,26 @@ public class TripViewActivity extends TabActivity {
 		}
 
 		// set the right tab to show
-		if (thisTripId != getCurrentTripId()) {
+		if (thisTripId != AppDataUtil.getCurrentTripId(getApplicationContext())) {
 			tabHost.setCurrentTab(0);
 		} else {
 			tabHost.setCurrentTab(1);
 		}
 	}
 
-	private long getCurrentTripId() {
-		return getApplicationContext().getSharedPreferences(
-				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-	}
+//	private long getCurrentTripId() {
+//		return getApplicationContext().getSharedPreferences(
+//				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
+//				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+//	}
 
-	private void setCurrentTripId(long tripId) {
-		SharedPreferences.Editor editPref = getApplicationContext()
-				.getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE)
-				.edit();
-		editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, tripId);
-		editPref.commit();
-	}
+	// private void setCurrentTripId(long tripId) {
+	// SharedPreferences.Editor editPref = getApplicationContext()
+	// .getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE)
+	// .edit();
+	// editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, tripId);
+	// editPref.commit();
+	// }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -204,7 +204,7 @@ public class TripViewActivity extends TabActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (thisTripId != getCurrentTripId()) {
+		if (thisTripId != AppDataUtil.getCurrentTripId(getApplicationContext())) {
 			menu.findItem(R.id.add_photo).setEnabled(false);
 			menu.findItem(R.id.add_photo).setVisible(false);
 
@@ -313,12 +313,13 @@ public class TripViewActivity extends TabActivity {
 			break;
 
 		case R.id.resume_trip:
-			TripViewActivity.this.setCurrentTripId(thisTripId);
+			AppDataUtil.setCurrentTripId(getApplicationContext(), thisTripId);
 			LocationController.startLocationLogging(getApplicationContext());
 			break;
 
 		case R.id.stop_trip:
-			TripViewActivity.this.setCurrentTripId(AppDataDefs.NO_CURRENT_TRIP);
+			AppDataUtil.setCurrentTripId(getApplicationContext(),
+					AppDataDefs.NO_CURRENT_TRIP);
 			break;
 
 		case R.id.delete_trip:
@@ -354,8 +355,10 @@ public class TripViewActivity extends TabActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
-									if (thisTripId == getCurrentTripId()) {
-										setCurrentTripId(AppDataDefs.NO_CURRENT_TRIP);
+									if (thisTripId == AppDataUtil.getCurrentTripId(getApplicationContext())) {
+										AppDataUtil.setCurrentTripId(
+												getApplicationContext(),
+												AppDataDefs.NO_CURRENT_TRIP);
 									}
 									mTripStorageMgr.deleteTrip(thisTripId);
 									Toast.makeText(getBaseContext(),
@@ -406,9 +409,9 @@ public class TripViewActivity extends TabActivity {
 					e.printStackTrace();
 				}
 			} else {
-					Toast.makeText(getBaseContext(), "Photo not captured.",
-							Toast.LENGTH_SHORT).show();
-					doUnbindLocationService();
+				Toast.makeText(getBaseContext(), "Photo not captured.",
+						Toast.LENGTH_SHORT).show();
+				doUnbindLocationService();
 			}
 			doUnbindLocationService();
 			break;
@@ -558,8 +561,8 @@ public class TripViewActivity extends TabActivity {
 	private void addEntryToTrip(TripEntry tripEntry) {
 		// let's try to delegate this to the location service
 		if (locationServiceIsBound && (locationService != null)) {
-			locationService
-					.updateEntryWithBestCurrentLocation(thisTripId, tripEntry);
+			locationService.updateEntryWithBestCurrentLocation(thisTripId,
+					tripEntry);
 		} else {
 			// let's add the trip entry anyway (we don't need to lose this
 			// entry if Location is not available etc.)
