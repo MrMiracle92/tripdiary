@@ -160,7 +160,7 @@ public class BackgroundLocationService extends Service implements
 	}
 
 	private void checkAndStopSelf() {
-		if (!mIsBound
+		if (!mIsBound && !mEntryQueue.isEmpty()
 				&& (getCurrentTripId() == AppDataDefs.NO_CURRENT_TRIP
 				|| !mStorageManager.getTripDetail(getCurrentTripId())
 						.isTraceRouteEnabled())) {
