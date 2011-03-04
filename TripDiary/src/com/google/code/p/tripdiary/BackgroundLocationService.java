@@ -29,6 +29,7 @@ public class BackgroundLocationService extends Service implements
 	private TripStorageManager mStorageManager;
 	private Location mLastUpdatedLocation;
 	private Location mLastKnownLocation;
+	private boolean mIsBound;
 	private long currentTripId = AppDataDefs.NO_CURRENT_TRIP;
 
 	private final float minUpdateDistanceMetres = 100.0f;
@@ -54,8 +55,14 @@ public class BackgroundLocationService extends Service implements
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		mIsBound = true;
 		requestLocationUpdates();
 		return locationBinder;
+	}
+
+	public boolean onUnbind(Intent intent) {
+		mIsBound = false;
+		return super.onUnbind(intent);
 	}
 
 	@Override
@@ -153,10 +160,12 @@ public class BackgroundLocationService extends Service implements
 	}
 
 	private void checkAndStopSelf() {
-		if (getCurrentTripId() == AppDataDefs.NO_CURRENT_TRIP
+		if (!mIsBound
+				&& (getCurrentTripId() == AppDataDefs.NO_CURRENT_TRIP
 				|| !mStorageManager.getTripDetail(getCurrentTripId())
-						.isTraceRouteEnabled()) {
-			TripDiaryLogger.logDebug("BackgroundLocationService - Stopping Self.");
+						.isTraceRouteEnabled())) {
+			TripDiaryLogger
+					.logDebug("BackgroundLocationService - Stopping Self.");
 			stopSelf();
 		}
 	}
@@ -229,7 +238,8 @@ public class BackgroundLocationService extends Service implements
 	}
 
 	public Location getLastKnownLocation() {
-		TripDiaryLogger.logDebug("BackgroundLocationService - getLastKnownLocation");
+		TripDiaryLogger
+				.logDebug("BackgroundLocationService - getLastKnownLocation");
 		return mLastKnownLocation;
 	}
 
