@@ -141,12 +141,14 @@ public class TripGalleryActivity extends Activity {
 			case AUDIO:
 				intent.setDataAndType(Uri.fromFile(file), "audio/*");
 				startActivity(intent);
+				break;
 			case TEXT:
 				AlertDialog.Builder noteDialog = new AlertDialog.Builder(
 						TripGalleryActivity.this);
 				noteDialog.setMessage(te.noteText);
 				noteDialog.setTitle("Text");
 				noteDialog.show();
+				break;
 			case NONE:
 			default:
 				break;
