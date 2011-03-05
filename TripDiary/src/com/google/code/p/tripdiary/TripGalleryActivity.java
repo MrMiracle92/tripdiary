@@ -151,8 +151,7 @@ public class TripGalleryActivity extends Activity {
 				AlertDialog.Builder noteDialog = new AlertDialog.Builder(
 						TripGalleryActivity.this);
 				noteDialog.setMessage(te.noteText);
-//				noteDialog.
-				noteDialog.setTitle("Note");
+				noteDialog.setTitle("Text");
 				noteDialog.show();
 			case NONE:
 			default:
