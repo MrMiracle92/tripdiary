@@ -8,7 +8,7 @@ package com.google.code.p.tripdiary;
  */
 public class TripEntry {
 	public enum MediaType {
-		NONE, PHOTO, AUDIO, VIDEO, TEXT, LOCATION_ONLY
+		NONE, PHOTO, AUDIO, VIDEO, TEXT
 	}
 
 	/** Internally used id. */
@@ -91,7 +91,7 @@ public class TripEntry {
 		this.lat = lat;
 		this.lon = lon;
 		this.creationTime = System.currentTimeMillis();
-		this.mediaType = MediaType.LOCATION_ONLY;
+		this.mediaType = MediaType.NONE;
 		this.mediaLocation = "";
 		this.noteText = "";
 	}
