@@ -117,6 +117,10 @@ public class TripGalleryActivity extends Activity {
 			TripEntry te = mTripStorageMgr.getTripEntry(info.id);
 			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 			dialogBuilder.setMessage(te.toStringMultiline());
+			if (te.mediaType == MediaType.NONE)
+				dialogBuilder.setTitle("Location");
+			else
+				dialogBuilder.setTitle(te.mediaType.name());
 			dialogBuilder.show();
 			return true;
 		default:
@@ -154,7 +158,6 @@ public class TripGalleryActivity extends Activity {
 				break;
 			}
 		}
-
 	}
 
 	private class TripEntryAdapter extends CursorAdapter {
