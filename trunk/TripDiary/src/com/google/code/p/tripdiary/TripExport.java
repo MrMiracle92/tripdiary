@@ -56,13 +56,14 @@ public class TripExport extends Activity {
 			thisTripId = extras != null ? extras
 					.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
 
-			// by now there should be a trip id
 			if (thisTripId == 0) {
 				TripDiaryLogger.logError("Could not find trip.");
 				setResult(RESULT_CANCELED);
 				finish();
 				return;
 			}
+			
+			TripDiaryLogger.logDebug("Exporting trip " + thisTripId);
 		}
 
 		// Storage manager
@@ -95,12 +96,15 @@ public class TripExport extends Activity {
 
 		// Cursor to the trip entries
 		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
+		TripDiaryLogger.logDebug("Number of entries to be exported : " + tripEntryCursor.getCount());
 		tripEntryCursor.moveToFirst();
 
 		while (tripEntryCursor.isAfterLast() == false) {
 			// Create the <Placemark> element
 			sb.append("<Placemark>");
 
+			TripDiaryLogger.logDebug("Exporting entry " + tripEntryCursor.getString(
+					tripEntryCursor.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
 			if (tripEntryCursor.getString(
 					tripEntryCursor.getColumnIndex(TripDetailCols.MEDIA_TYPE))
 					.equalsIgnoreCase("TEXT")) {

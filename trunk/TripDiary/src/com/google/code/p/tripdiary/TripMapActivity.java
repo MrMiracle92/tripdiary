@@ -26,6 +26,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * This activity manages the mapView
@@ -99,7 +100,7 @@ public class TripMapActivity extends MapActivity {
 				toggleOrShowCurrentLocation();
 			}
 		});
-		
+
 		final ImageButton btnZoomToFit = ((ImageButton) findViewById(R.id.btnZoomToFit));
 		final ImageButton btnZoomOut = ((ImageButton) findViewById(R.id.btnZoomOut));
 		final ImageButton btnZoomIn = ((ImageButton) findViewById(R.id.btnZoomIn));
@@ -111,7 +112,7 @@ public class TripMapActivity extends MapActivity {
 				btnZoomIn.setEnabled(true);
 			}
 		});
-		
+
 		btnZoomIn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -120,7 +121,7 @@ public class TripMapActivity extends MapActivity {
 				btnZoomOut.setEnabled(true);
 			}
 		});
-		
+
 		btnZoomToFit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -128,7 +129,7 @@ public class TripMapActivity extends MapActivity {
 				btnZoomIn.setEnabled(true);
 				btnZoomOut.setEnabled(true);
 			}
-		});		
+		});
 	}
 
 	@Override
@@ -139,7 +140,7 @@ public class TripMapActivity extends MapActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		if(mMyLocationOverlay.isMyLocationEnabled()) {
+		if (mMyLocationOverlay.isMyLocationEnabled()) {
 			mMyLocationOverlay.disableMyLocation();
 		}
 	}
@@ -149,7 +150,7 @@ public class TripMapActivity extends MapActivity {
 		super.onResume();
 		refreshMap();
 	}
-	
+
 	private double mMinLat;
 	private double mMaxLat;
 	private double mMinLon;
@@ -293,13 +294,23 @@ public class TripMapActivity extends MapActivity {
 		@Override
 		protected boolean onTap(int index) {
 			OverlayItem item = mOverlays.get(index);
+			TripDiaryLogger.logDebug("Tapped item number" + item.getSnippet());
 			TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item
 					.getSnippet()));
 			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
 					TripMapActivity.this);
-			dialogBuilder.setMessage(String.format(
-					"Type: %s \nLat: %f \nLon: %f \nFile: %s",
-					te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
+
+			// Display the text
+			if (te.mediaType == MediaType.TEXT) {
+				TripDiaryLogger.logDebug("About to display on map " + te.lat + " " + te.lon + " " + te.noteText);
+				dialogBuilder.setMessage(String.format(
+						"Type: %s \nLat: %.5f \nLon: %.5f \nNote: %s",
+						te.mediaType.name(), te.lat, te.lon, te.noteText));
+			} else { // Display the path for other media types
+				dialogBuilder.setMessage(String.format(
+						"Type: %s \nLat: %.5f \nLon: %.5f \nFile: %s",
+						te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
+			}
 			dialogBuilder.show();
 			return true;
 		}
@@ -339,13 +350,15 @@ public class TripMapActivity extends MapActivity {
 		} else {
 			mMyLocationOverlay.enableMyLocation();
 			mMyLocationOverlay.runOnFirstFix(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					Location lastFix = mMyLocationOverlay.getLastFix();
-					GeoPoint point = new GeoPoint((int) (lastFix.getLatitude() * 1e6), (int) (lastFix.getLongitude() * 1e6));
+					GeoPoint point = new GeoPoint(
+							(int) (lastFix.getLatitude() * 1e6), (int) (lastFix
+									.getLongitude() * 1e6));
 					TripMapActivity.this.mMapController.animateTo(point);
-					
+
 				}
 			});
 		}
