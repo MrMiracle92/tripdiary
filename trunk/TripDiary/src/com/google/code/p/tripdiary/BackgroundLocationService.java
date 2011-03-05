@@ -214,6 +214,7 @@ public class BackgroundLocationService extends Service implements
 		// use it if it's better than the last known
 		if (isBetterLocation(location, mLastKnownLocation)) {
 			mLastKnownLocation = location;
+			LocationController.setLastKnownLocation(location);
 		}
 
 		if (!mEntryQueue.isEmpty()) { // if there are entries to update
@@ -275,11 +276,11 @@ public class BackgroundLocationService extends Service implements
 
 	}
 
-	public Location getLastKnownLocation() {
-		TripDiaryLogger
-				.logDebug("BackgroundLocationService - getLastKnownLocation");
-		return mLastKnownLocation;
-	}
+//	public Location getLastKnownLocation() {
+//		TripDiaryLogger
+//				.logDebug("BackgroundLocationService - getLastKnownLocation");
+//		return mLastKnownLocation;
+//	}
 
 	private class QueueItem {
 		long tripId;

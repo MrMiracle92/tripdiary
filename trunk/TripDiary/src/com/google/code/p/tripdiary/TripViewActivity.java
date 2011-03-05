@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -387,13 +388,17 @@ public class TripViewActivity extends TabActivity {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent dataIntent) {
 		super.onActivityResult(requestCode, resultCode, dataIntent);
+		
+		Location bestGuess = LocationController.getLastKnownLocation();
+		double bestGuessLat = bestGuess == null ? LAT_UNKNOWN : bestGuess.getLatitude();
+		double bestGuessLon = bestGuess == null ? LON_UNKNOWN : bestGuess.getLongitude();
 
 		switch (requestCode) {
 		case REQUEST_PICTURE: {
 			if (resultCode == RESULT_OK) {
 				try {
-					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN,
-							LON_UNKNOWN, mediaFileName, MediaType.PHOTO);
+					TripEntry tripEntry = new TripEntry(bestGuessLat,
+							bestGuessLon, mediaFileName, MediaType.PHOTO);
 					addEntryToTrip(tripEntry);
 
 					TripDiaryLogger
@@ -446,8 +451,8 @@ public class TripViewActivity extends TabActivity {
 									+ videoFile.toString(), Toast.LENGTH_SHORT)
 							.show();
 
-					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN,
-							LON_UNKNOWN, videoFileName.toString(),
+					TripEntry tripEntry = new TripEntry(bestGuessLat,
+							bestGuessLon, videoFileName.toString(),
 							MediaType.VIDEO);
 					addEntryToTrip(tripEntry);
 				} catch (Exception e) {
@@ -472,8 +477,8 @@ public class TripViewActivity extends TabActivity {
 							"Audio captured and saved in " + filePath,
 							Toast.LENGTH_SHORT).show();
 
-					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN,
-							LON_UNKNOWN, filePath, MediaType.AUDIO);
+					TripEntry tripEntry = new TripEntry(bestGuessLat,
+							bestGuessLon, filePath, MediaType.AUDIO);
 					addEntryToTrip(tripEntry);
 				} catch (Exception e) {
 					if (dataIntent == null)
@@ -499,8 +504,8 @@ public class TripViewActivity extends TabActivity {
 					Toast.makeText(getBaseContext(), "Text captured " + text,
 							Toast.LENGTH_SHORT).show(); // TODO delete
 
-					TripEntry tripEntry = new TripEntry(LAT_UNKNOWN,
-							LON_UNKNOWN, text);
+					TripEntry tripEntry = new TripEntry(bestGuessLat,
+							bestGuessLon, text);
 					addEntryToTrip(tripEntry);
 				} catch (Exception e) {
 					if (dataIntent == null)

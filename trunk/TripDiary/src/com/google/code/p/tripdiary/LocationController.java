@@ -2,6 +2,7 @@ package com.google.code.p.tripdiary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 
 /**
  * Class used to control and communicate with the background Location task.
@@ -26,5 +27,15 @@ public class LocationController {
 		TripDiaryLogger.logDebug("LocationController - StopLocationLogging");		
 		Intent intent = new Intent(context, BackgroundLocationService.class);
 		context.stopService(intent);
+	}
+	
+	private static Location lastKnownLocation;
+	
+	public static synchronized Location getLastKnownLocation() {
+		return lastKnownLocation;
+	}
+	
+	public static synchronized void setLastKnownLocation(Location location) {
+		lastKnownLocation = location;
 	}
 }
