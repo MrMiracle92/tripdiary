@@ -25,8 +25,9 @@
 	<string name="audio_stop">Stop Audio Recording</string>
 	<string name="trip_note">Note</string>  
 	<string name="trip_share">Export trip</string>
-	<string name="menu_view_entry">See in default viewer</string>
-	<string name="menu_remove_entry">Remove from trip</string>
+	<string name="menu_view_entry">View</string>
+	<string name="menu_remove_entry">Remove</string>
+	<string name="show_details_entry">Details</string>
     <string name="trip_info">Info</string>
     <string name="home_settings">Settings</string>
 	<string name="home_info">Info</string>

@@ -6,6 +6,7 @@ package com.google.code.p.tripdiary;
 import java.io.File;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -64,7 +65,8 @@ public class TripGalleryActivity extends Activity {
 		}
 
 		// get the storage manager
-		mTripStorageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
+		mTripStorageMgr = TripStorageManagerFactory
+				.getTripStorageManager(getApplicationContext());
 
 		mTripEntryCursor = mTripStorageMgr.getEntriesForTrip(thisTripId);
 		mTripEntryAdapter = new TripEntryAdapter(getApplicationContext(),
@@ -79,10 +81,10 @@ public class TripGalleryActivity extends Activity {
 				showEntryInDefaultViewer(id);
 			}
 		});
-		
+
 		registerForContextMenu(gridview);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -90,7 +92,7 @@ public class TripGalleryActivity extends Activity {
 		TripDiaryLogger.logDebug("Entries = " + mTripEntryCursor.getCount());
 		mTripEntryAdapter.notifyDataSetInvalidated();
 	}
-	
+
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -103,19 +105,29 @@ public class TripGalleryActivity extends Activity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		switch (item.getItemId()) {
+		case R.id.view_entry:
+			showEntryInDefaultViewer(info.id);
+			return true;
 		case R.id.remove_entry:
 			mTripStorageMgr.deleteTripEntry(info.id);
 			mTripEntryCursor.requery();
-			TripDiaryLogger.logDebug("Entries = " + mTripEntryCursor.getCount());
+			TripDiaryLogger
+					.logDebug("Entries = " + mTripEntryCursor.getCount());
 			mTripEntryAdapter.notifyDataSetInvalidated();
 			return true;
-		case R.id.view_entry:
-			showEntryInDefaultViewer(info.id);
+		case R.id.show_details_entry:
+			TripEntry te = mTripStorageMgr.getTripEntry(info.id);
+			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+			dialogBuilder.setMessage(String.format(
+					"Type: %s \nLat: %f \nLon: %f \nFile: %s",
+					te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
+			dialogBuilder.show();
+			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
 	}
-	
+
 	private void showEntryInDefaultViewer(long tripEntryId) {
 		TripEntry te = mTripStorageMgr.getTripEntry(tripEntryId);
 		if (te.mediaLocation != null) {
