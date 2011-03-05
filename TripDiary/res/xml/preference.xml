@@ -6,8 +6,8 @@
         <EditTextPreference
             android:name="folder"
             android:title="Main Folder"
-            android:summary="tripDiary"
-            android:defaultValue="tripDiary"
+            android:summary="tripdiary"
+            android:defaultValue="tripdiary"
             android:key="folderPref"/>
         <EditTextPreference
             android:name="video"
