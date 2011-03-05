@@ -32,7 +32,7 @@ public final class AppDataDefs {
 	public final static String KEY_PATH_TO_TRIP_IMAGE = "com.google.code.p.tripdiary.PathToTripImage";
 	public final static String KEY_SETTINGS_TRIPDETAIL = "com.google.code.p.tripdiary.TripSettingsActivity.TripDetail";
 	
-	//TODO:Just for debugging/test purposes.. to be removed later [[
-	public final static String USE_FAKE_TRIP_STORAGE = "com.google.code.p.tripdiary.testing.use.TripStorageManagerFake";
-	//TODO:Just for debugging/test purposes.. to be removed later ]]
+//	//TODO:Just for debugging/test purposes.. to be removed later [[
+//	public final static String USE_FAKE_TRIP_STORAGE = "com.google.code.p.tripdiary.testing.use.TripStorageManagerFake";
+//	//TODO:Just for debugging/test purposes.. to be removed later ]]
 }

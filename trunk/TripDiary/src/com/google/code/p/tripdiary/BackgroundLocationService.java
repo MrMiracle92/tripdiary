@@ -286,12 +286,6 @@ public class BackgroundLocationService extends Service implements
 
 	}
 
-	// public Location getLastKnownLocation() {
-	// TripDiaryLogger
-	// .logDebug("BackgroundLocationService - getLastKnownLocation");
-	// return mLastKnownLocation;
-	// }
-
 	private class QueueItem {
 		long tripId;
 		TripEntry tripEntry;
