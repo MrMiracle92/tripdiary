@@ -154,7 +154,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 				TripDetailCols.MEDIA_LOCATION, insertValues);
 		TripDiaryLogger.logDebug("Adding a new entry " + tripNum + " : "
 				+ tripEntry.lat + " " + tripEntry.lon + " "
-				+ tripEntry.mediaType);
+				+ tripEntry.mediaType + " for tripID : " + tripId);
 
 		if (tripEntry.mediaType == MediaType.TEXT)
 			TripDiaryLogger.logDebug("Added entry has text : "
@@ -271,9 +271,9 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	@Override
 	public void deleteTrip(long tripId) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
+
 		TripDiaryLogger.logDebug("Deleting trip : " + tripId);
-		
+
 		// delete trip from trip details
 		db.delete(TRIP_DETAIL_TABLE,
 				String.format("%s=?", TripDetailCols.TRIP_ID),

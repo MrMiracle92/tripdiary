@@ -51,7 +51,7 @@ public class TripExport extends Activity {
 		}
 
 		// Get the tripId
-		if (thisTripId == 0) {
+		if (thisTripId == AppDataDefs.NO_CURRENT_TRIP) {
 			Bundle extras = getIntent().getExtras();
 			thisTripId = extras != null ? extras
 					.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
@@ -98,7 +98,7 @@ public class TripExport extends Activity {
 		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
 		TripDiaryLogger.logDebug("Number of entries to be exported : "
 				+ tripEntryCursor.getCount());
-		tripEntryCursor.moveToFirst();
+		tripEntryCursor.moveToPosition(0);
 
 		while (tripEntryCursor.isAfterLast() == false) {
 			// Create the <Placemark> element
