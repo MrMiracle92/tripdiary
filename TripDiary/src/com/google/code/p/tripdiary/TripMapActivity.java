@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,7 +43,6 @@ public class TripMapActivity extends MapActivity {
 	private TripOverlay mItemizedoverlay;
 	private MyLocationOverlay mMyLocationOverlay;
 
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,8 @@ public class TripMapActivity extends MapActivity {
 
 		setContentView(R.layout.trip_map);
 		mapView = (MapView) findViewById(R.id.mapview);
-		mapView.setBuiltInZoomControls(true);
 		mMapController = mapView.getController();
-		
+
 		// if the activity is resumed
 		thisTripId = savedInstanceState != null ? savedInstanceState
 				.getLong(AppDataDefs.KEY_TRIP_ID) : 0;
@@ -73,29 +72,61 @@ public class TripMapActivity extends MapActivity {
 		}
 
 		// get the storage manager
-		mStorageMgr = TripStorageManagerFactory.getTripStorageManager(getApplicationContext());
-		
+		mStorageMgr = TripStorageManagerFactory
+				.getTripStorageManager(getApplicationContext());
+
 		// create the cursor
 		mTripEntries = mStorageMgr.getEntriesForTrip(thisTripId);
-		
+
 		mStartMarker = getResources().getDrawable(R.drawable.marker_start);
 		mEndMarker = getResources().getDrawable(R.drawable.marker_end);
 		mMarker = getResources().getDrawable(R.drawable.marker);
-		
+
 		// create and add overlay to map
 		mItemizedoverlay = new TripOverlay(mMarker, this);
 		mapView.getOverlays().add(mItemizedoverlay);
-		
+
 		// add the my location overlay and add to map
 		mMyLocationOverlay = new MyLocationOverlay(getBaseContext(), mapView);
 		mapView.getOverlays().add(mMyLocationOverlay);
-		
+
 		// buttons
-		ImageButton btnZoomTofit = ((ImageButton) findViewById(R.id.btnZoomToFit));
-		btnZoomTofit.setOnClickListener(new OnClickListener() {
+		ImageButton btnCurrLoc = ((ImageButton) findViewById(R.id.btnCurrLoc));
+		btnCurrLoc.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				toggleOrShowCurrentLocation();
+			}
+		});
+		
+		final ImageButton btnZoomToFit = ((ImageButton) findViewById(R.id.btnZoomToFit));
+		final ImageButton btnZoomOut = ((ImageButton) findViewById(R.id.btnZoomOut));
+		final ImageButton btnZoomIn = ((ImageButton) findViewById(R.id.btnZoomIn));
+		btnZoomOut.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				boolean isLimit = mMapController.zoomOut();
+				btnZoomOut.setEnabled(isLimit);
+				btnZoomIn.setEnabled(true);
+			}
+		});
+		
+		btnZoomIn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				boolean isLimit = mMapController.zoomIn();
+				btnZoomIn.setEnabled(isLimit);
+				btnZoomOut.setEnabled(true);
+			}
+		});
+		
+		btnZoomToFit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				zoomToFitAndCenter();
+				btnZoomIn.setEnabled(true);
+				btnZoomOut.setEnabled(true);
 			}
 		});
 	}
@@ -104,45 +135,50 @@ public class TripMapActivity extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
-	
+
 	@Override
 	public void onPause() {
-	    super.onPause();
-	    mMyLocationOverlay.disableMyLocation();
+		super.onPause();
+		if(mMyLocationOverlay.isMyLocationEnabled()) {
+			mMyLocationOverlay.disableMyLocation();
+		}
 	}
 
 	@Override
 	public void onResume() {
-	    super.onResume();
-	    mMyLocationOverlay.enableMyLocation();
-	    refreshMap();
+		super.onResume();
+		refreshMap();
 	}
-	
+
 	private double mMinLat;
 	private double mMaxLat;
 	private double mMinLon;
 	private double mMaxLon;
-	
+	private boolean mIsInited = false;
+
 	private void refreshMap() {
 		mTripEntries.requery();
 		mTripEntries.moveToFirst();
-		boolean isInited = false;
 		mItemizedoverlay.clear();
+		mIsInited = false;
 		while (mTripEntries.getCount() > 0 && !mTripEntries.isAfterLast()) {
 			double lat = mTripEntries.getDouble(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.LAT));
 			double lon = mTripEntries.getDouble(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.LON));
-			if(lat == AppDataDefs.LAT_UNKNOWN || lon == AppDataDefs.LON_UNKNOWN) {
+			if (lat == AppDataDefs.LAT_UNKNOWN
+					|| lon == AppDataDefs.LON_UNKNOWN) {
 				// let's skip and log
 				mTripEntries.moveToNext();
-				TripDiaryLogger.logWarning("Skipped on map for unknown location: [" + lat + ", " + lon + "]");
+				TripDiaryLogger
+						.logWarning("Skipped on map for unknown location: ["
+								+ lat + ", " + lon + "]");
 				continue;
 			}
-			if(!isInited) {
+			if (!mIsInited) {
 				mMinLat = mMaxLat = lat;
 				mMinLon = mMaxLon = lon;
-				isInited = true;
+				mIsInited = true;
 			} else {
 				mMinLat = mMinLat < lat ? mMinLat : lat;
 				mMaxLat = mMaxLat > lat ? mMaxLat : lat;
@@ -160,13 +196,14 @@ public class TripMapActivity extends MapActivity {
 					+ point.getLongitudeE6());
 			OverlayItem o = new OverlayItem(point, title == null ? "" : title,
 					snippet == null ? "" : snippet);
-			
+
 			// don't draw marker for non media points
-			boolean drawMarker = mediaType.equals(TripEntry.MediaType.NONE.name())? false : true;
-			if(mTripEntries.isFirst()) {
+			boolean drawMarker = mediaType.equals(TripEntry.MediaType.NONE
+					.name()) ? false : true;
+			if (mTripEntries.isFirst()) {
 				o.setMarker(mStartMarker);
 				drawMarker = true; // draw anyway
-			} else if(mTripEntries.isLast()) {
+			} else if (mTripEntries.isLast()) {
 				o.setMarker(mEndMarker);
 				drawMarker = true; // draw anyway
 			}
@@ -174,33 +211,34 @@ public class TripMapActivity extends MapActivity {
 			mTripEntries.moveToNext();
 		}
 	}
-	
+
 	private Drawable mStartMarker;
 	private Drawable mEndMarker;
 	private Drawable mMarker;
 	static final private int PATH_COLOR = Color.rgb(139, 69, 19);
-	
+
 	class TripOverlay extends ItemizedOverlay<OverlayItem> {
 
 		Context mContext = null;
+
 		public TripOverlay(Drawable drawable, Context context) {
 			super(boundCenterBottom(drawable));
 			boundCenterBottom(mStartMarker);
 			boundCenterBottom(mEndMarker);
 			mContext = context;
 		}
-		
+
 		private List<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 		private List<OverlayItem> mOverlaysMarkers = new ArrayList<OverlayItem>();
-		
+
 		public void addOverlay(OverlayItem overlay, boolean drawMarker) {
 			mOverlays.add(overlay);
-			if(drawMarker) {
+			if (drawMarker) {
 				mOverlaysMarkers.add(overlay);
 			}
 			populate();
 		}
-		
+
 		public void clear() {
 			mOverlays.clear();
 			mOverlaysMarkers.clear();
@@ -216,11 +254,11 @@ public class TripMapActivity extends MapActivity {
 		public int size() {
 			return mOverlaysMarkers.size();
 		}
-		
+
 		@Override
 		public boolean draw(Canvas canvas, MapView mapView, boolean shadow,
 				long when) {
-			
+
 			// draw the track first...
 			Paint paint;
 			paint = new Paint();
@@ -231,7 +269,7 @@ public class TripMapActivity extends MapActivity {
 			GeoPoint lastGp = null;
 			GeoPoint currGp = null;
 			for (OverlayItem item : mOverlays) {
-				if(currGp == null) {
+				if (currGp == null) {
 					// this is the first point, so save and skip
 					currGp = item.getPoint();
 					continue;
@@ -245,28 +283,72 @@ public class TripMapActivity extends MapActivity {
 				projection.toPixels(currGp, pt2);
 				canvas.drawLine(pt1.x, pt1.y, pt2.x, pt2.y, paint);
 			}
-			
+
 			// ... and now draw the markers (default behavior)
 			super.draw(canvas, mapView, shadow);
-			
+
 			return false;
 		}
 
 		@Override
 		protected boolean onTap(int index) {
-		  OverlayItem item = mOverlays.get(index);
-		  TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item.getSnippet()));
-			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TripMapActivity.this);
+			OverlayItem item = mOverlays.get(index);
+			TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item
+					.getSnippet()));
+			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
+					TripMapActivity.this);
 			dialogBuilder.setMessage(String.format(
 					"Type: %s \nLat: %f \nLon: %f \nFile: %s",
 					te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
 			dialogBuilder.show();
-		  return true;
+			return true;
 		}
 	}
-	
+
 	private void zoomToFitAndCenter() {
-		  mMapController.zoomToSpan((int)((mMaxLat - mMinLat) * 1e6), (int)((mMaxLon - mMinLon) * 1e6));
-		  mMapController.animateTo(new GeoPoint((int)((mMaxLat + mMinLat) * 1e6 / 2), (int)((mMaxLon + mMinLon) * 1e6 / 2)));
+		if (mIsInited) {
+			mMapController.zoomToSpan((int) ((mMaxLat - mMinLat) * 1e6),
+					(int) ((mMaxLon - mMinLon) * 1e6));
+			mMapController.animateTo(new GeoPoint(
+					(int) ((mMaxLat + mMinLat) * 1e6 / 2),
+					(int) ((mMaxLon + mMinLon) * 1e6 / 2)));
+		}
+	}
+
+	private void toggleOrShowCurrentLocation() {
+		if (mMyLocationOverlay.isMyLocationEnabled()) {
+			GeoPoint point = mMyLocationOverlay.getMyLocation();
+			int minLat = mapView.getMapCenter().getLatitudeE6()
+					- mapView.getLatitudeSpan() / 2;
+			int maxLat = mapView.getMapCenter().getLatitudeE6()
+					+ mapView.getLatitudeSpan() / 2;
+			int minLon = mapView.getMapCenter().getLongitudeE6()
+					- mapView.getLongitudeSpan() / 2;
+			int maxLon = mapView.getMapCenter().getLongitudeE6()
+					+ mapView.getLongitudeSpan() / 2;
+			if (point.getLatitudeE6() < minLat
+					|| point.getLatitudeE6() > maxLat
+					|| point.getLatitudeE6() < minLon
+					|| point.getLongitudeE6() > maxLon) {
+				// current location is not visible, so animate to it
+				mMapController.animateTo(point);
+			} else {
+				// current location is in visible area, so disable it
+				mMyLocationOverlay.disableMyLocation();
+			}
+		} else {
+			mMyLocationOverlay.enableMyLocation();
+			mMyLocationOverlay.runOnFirstFix(new Runnable() {
+				
+				@Override
+				public void run() {
+					Location lastFix = mMyLocationOverlay.getLastFix();
+					GeoPoint point = new GeoPoint((int) (lastFix.getLatitude() * 1e6), (int) (lastFix.getLongitude() * 1e6));
+					TripMapActivity.this.mMapController.animateTo(point);
+					
+				}
+			});
+		}
+
 	}
 }
