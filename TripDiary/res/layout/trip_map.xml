@@ -11,12 +11,28 @@
 			android:layout_height="fill_parent" android:enabled="true"
 			android:clickable="true" android:apiKey="0m2c6bVamZjNcqRasLByG55zxuFiv-NP9ObNgIA" />
 	</LinearLayout>
-	<LinearLayout android:id="@+id/ButtonLayout" 
-		android:layout_alignParentBottom="true" android:layout_alignParentRight="true"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:paddingRight="5dp" android:paddingBottom="5dp">
-		<ImageButton android:id="@+id/btnZoomToFit" android:layout_width="wrap_content"
-			android:src="@drawable/zoom_to_fit" android:layout_height="wrap_content"
+	<LinearLayout android:id="@+id/ButtonLayout"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:orientation="vertical"
+		android:paddingRight="5dp">
+		<ImageButton android:id="@+id/btnCurrLoc"
+			android:layout_width="wrap_content" android:src="@drawable/curr_loc"
+			android:layout_height="wrap_content" android:layout_gravity="right"
 			android:adjustViewBounds="true" />
+		<LinearLayout android:layout_alignParentBottom="true"
+			android:layout_alignParentRight="true" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:paddingBottom="5dp">
+			<ImageButton android:id="@+id/btnZoomOut"
+				android:layout_width="wrap_content" android:src="@drawable/zoom_out"
+				android:layout_height="wrap_content" android:adjustViewBounds="true" />
+			<ImageButton android:id="@+id/btnZoomIn"
+				android:layout_width="wrap_content" android:src="@drawable/zoom_in"
+				android:layout_height="wrap_content" android:adjustViewBounds="true" />
+			<ImageButton android:id="@+id/btnZoomToFit"
+				android:layout_width="wrap_content" android:src="@drawable/zoom_to_fit"
+				android:layout_height="wrap_content" android:adjustViewBounds="true" />
+		</LinearLayout>
 	</LinearLayout>
 </RelativeLayout>
