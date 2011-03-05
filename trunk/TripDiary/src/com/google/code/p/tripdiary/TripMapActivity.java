@@ -299,18 +299,7 @@ public class TripMapActivity extends MapActivity {
 					.getSnippet()));
 			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
 					TripMapActivity.this);
-
-			// Display the text
-			if (te.mediaType == MediaType.TEXT) {
-				TripDiaryLogger.logDebug("About to display on map " + te.lat + " " + te.lon + " " + te.noteText);
-				dialogBuilder.setMessage(String.format(
-						"Type: %s \nLat: %.5f \nLon: %.5f \nNote: %s",
-						te.mediaType.name(), te.lat, te.lon, te.noteText));
-			} else { // Display the path for other media types
-				dialogBuilder.setMessage(String.format(
-						"Type: %s \nLat: %.5f \nLon: %.5f \nFile: %s",
-						te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
-			}
+			dialogBuilder.setMessage(te.toStringMultiline());
 			dialogBuilder.show();
 			return true;
 		}

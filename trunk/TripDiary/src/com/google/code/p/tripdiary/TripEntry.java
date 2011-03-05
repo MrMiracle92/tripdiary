@@ -104,4 +104,21 @@ public class TripEntry {
 		return String.format("%d,%d,%d,%s,%s,%d", tripEntryId, lat, lon,
 				mediaLocation, mediaType, creationTime);
 	}
+	
+	public String toStringMultiline() {
+		switch (mediaType) {
+		case PHOTO:
+		case VIDEO:
+		case AUDIO:
+			return String.format("Type: %s \nLat: %.6f \nLon: %.6f \nFile: %s",
+					mediaType.name(), lat, lon, mediaLocation);
+		case TEXT:
+			return String.format("Type: %s \nLat: %.6f \nLon: %.6f \nText: %s",
+					mediaType.name(), lat, lon, noteText);
+		case NONE:
+			return String.format("Lat: %.6f \nLon: %.6f",
+					lat, lon);
+		}
+		return "Unknown Type!";
+	}
 }
