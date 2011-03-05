@@ -111,11 +111,11 @@ public class TripEntry {
 		case PHOTO:
 		case VIDEO:
 		case AUDIO:
-			return String.format("Type: %s \nLat: %.6f \nLon: %.6f \nFile: %s",
-					mediaType.name(), lat, lon, mediaLocation);
+			return String.format("Lat: %.6f \nLon: %.6f \nFile: %s",
+					lat, lon, mediaLocation);
 		case TEXT:
-			return String.format("Type: %s \nLat: %.6f \nLon: %.6f \nText: %s",
-					mediaType.name(), lat, lon, noteText);
+			return String.format("Lat: %.6f \nLon: %.6f \nText: %s",
+					lat, lon, noteText);
 		case NONE:
 			return String.format("Lat: %.6f \nLon: %.6f",
 					lat, lon);

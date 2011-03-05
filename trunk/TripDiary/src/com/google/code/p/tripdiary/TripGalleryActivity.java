@@ -10,13 +10,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnTouchListener;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -144,8 +147,13 @@ public class TripGalleryActivity extends Activity {
 				intent.setDataAndType(Uri.fromFile(file), "audio/*");
 				startActivity(intent);
 			case TEXT:
-				intent.setDataAndType(Uri.fromFile(file), "text/*");
-				startActivity(intent);
+				TripDiaryLogger.logDebug("Notes : " + te.noteText);
+				AlertDialog.Builder noteDialog = new AlertDialog.Builder(
+						TripGalleryActivity.this);
+				noteDialog.setMessage(te.noteText);
+//				noteDialog.
+				noteDialog.setTitle("Note");
+				noteDialog.show();
 			case NONE:
 			default:
 				break;
