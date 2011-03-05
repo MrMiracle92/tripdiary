@@ -194,8 +194,12 @@ public class TripListActivity extends ListActivity {
 				tvId.setText(Long.toString(tripId));
 			}
 			if (tvText != null) {
-				tvText.setText(cursor.getString(mTripNameIdx) + " - "
-						+ cursor.getString(mTripDescriptionIdx));
+				StringBuffer buffer = new StringBuffer(cursor.getString(mTripNameIdx));
+				String desc = cursor.getString(mTripDescriptionIdx);
+				if(desc.length() > 0) {
+					buffer.append(" - ").append(desc);
+				}
+				tvText.setText(buffer.toString());
 			}
 			if (tvItemDate != null) {
 				long createTime = cursor.getLong(mTripCreateTimeIdx);
