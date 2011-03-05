@@ -3,6 +3,8 @@ package com.google.code.p.tripdiary;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.google.code.p.tripdiary.TripEntry.MediaType;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -115,6 +117,13 @@ public class BackgroundLocationService extends Service implements
 					.logWarning("Background Location Service getting destroyed "
 							+ "even when current trip has save track on! :-(");
 		}
+		
+		if (!mEntryQueue.isEmpty()) {
+			TripDiaryLogger
+					.logWarning("Background Location Service getting destroyed "
+							+ "even when current trip has some data in queue to be updated! :-(");
+		}
+		
 
 		// unsubscribe to shared preferences updates
 		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
@@ -213,15 +222,23 @@ public class BackgroundLocationService extends Service implements
 				if (!item.hasLastKnownLocation
 						|| !((location.getTime() - item.requestedAt) >= TOO_LATE_TO_UPDATE_INTERVAL)) {
 					if (item.tripEntry.tripEntryId > 0) {
+						TripDiaryLogger.logDebug("Deleting an entry because we can update with its new location : " + item.tripEntry.tripEntryId);
 						mStorageManager
 								.deleteTripEntry(item.tripEntry.tripEntryId);
 					}
 					item.tripEntry.lat = location.getLatitude();
 					item.tripEntry.lon = location.getLongitude();
+					TripDiaryLogger.logDebug("Updating an already entered " + item.tripEntry.mediaType + " entry with latest location." );
+					
+					if (item.tripEntry.mediaType == MediaType.TEXT)
+						TripDiaryLogger.logDebug("Entered text is : " + item.tripEntry.noteText);
+					
 					item.tripEntry.tripEntryId = mStorageManager.addTripEntry(
 							item.tripId, item.tripEntry);
 					mLastUpdatedLocation = location;
 				}
+				else
+					TripDiaryLogger.logDebug("Entry " + item.tripEntry.mediaType + "had last known location or it is too late to update :-( ");
 			}
 		} else { // add an entry for the route only if trace route is enabled
 					// for current trip and a min distance has passed since the
@@ -286,12 +303,17 @@ public class BackgroundLocationService extends Service implements
 			tripEntry.lat = mLastKnownLocation.getLatitude();
 			tripEntry.lon = mLastKnownLocation.getLongitude();
 			hasLastKnownLocation = true;
+			TripDiaryLogger.logDebug("updateEntryWithBestCurrentLocation - lastKnownLocation is true");
 		} else {
 			hasLastKnownLocation = false;
-
+			TripDiaryLogger.logDebug("updateEntryWithBestCurrentLocation - lastKnownLocation is false");
 		}
 		requestLocationUpdates();
 		tripEntry.tripEntryId = mStorageManager.addTripEntry(tripId, tripEntry);
+		
+		TripDiaryLogger.logDebug("updateEntryWithBestCurrentLocation - adding an entry " + tripEntry.mediaType + " Lat : " + tripEntry.lat + " Lon : " + tripEntry.lon);
+		if (tripEntry.mediaType == MediaType.TEXT)
+			TripDiaryLogger.logDebug("updateEntryWithBestCurrentLocation - added entry's text is : " + tripEntry.noteText);
 
 		// add entry to queue and request location
 		mEntryQueue.add(new QueueItem(tripId, tripEntry, hasLastKnownLocation));

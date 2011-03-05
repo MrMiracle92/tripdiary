@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.code.p.tripdiary.DbDefs.TripCols;
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * Implementation of {@code TripStorageManager}
@@ -32,9 +33,9 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 	private static final String TRIP_DETAIL_TABLE_CREATOR = String.format(
 			"CREATE TABLE %s (%s INTEGER PRIMARY KEY, %s INTEGER, %s TEXT, %s TEXT, "
-					+ "%s TEXT, %s TEXT, %s TEXT, %s TEXT);", TRIP_DETAIL_TABLE,
-			TripDetailCols._ID, TripDetailCols.TRIP_ID, TripDetailCols.LAT,
-			TripDetailCols.LON, TripDetailCols.CREATE_TIME,
+					+ "%s TEXT, %s TEXT, %s TEXT, %s TEXT);",
+			TRIP_DETAIL_TABLE, TripDetailCols._ID, TripDetailCols.TRIP_ID,
+			TripDetailCols.LAT, TripDetailCols.LON, TripDetailCols.CREATE_TIME,
 			TripDetailCols.MEDIA_TYPE, TripDetailCols.MEDIA_LOCATION,
 			TripDetailCols.NOTE);
 
@@ -46,15 +47,17 @@ public class TripStorageManagerImpl implements TripStorageManager {
 	private static final String GET_TRIP_ENTRIES = String.format(
 			"SELECT * FROM %s WHERE %s=?", TRIP_DETAIL_TABLE,
 			TripDetailCols.TRIP_ID);
-	
+
 	/** Query to select all trip entries for a given trip. */
 	private static final String GET_TRIP_MEDIA_ENTRIES = String.format(
 			"SELECT * FROM %s WHERE %s=? AND %s=%s", TRIP_DETAIL_TABLE,
-			TripDetailCols.TRIP_ID, TripDetailCols.MEDIA_TYPE, TripEntry.MediaType.NONE.name());
-	
+			TripDetailCols.TRIP_ID, TripDetailCols.MEDIA_TYPE,
+			TripEntry.MediaType.NONE.name());
+
 	/** Query to select all trips. */
 	private static final String GET_ALL_TRIPS = String.format(
-			"SELECT * FROM %s ORDER BY %s DESC", TRIP_METADATA_TABLE, TripCols.CREATE_TIME);
+			"SELECT * FROM %s ORDER BY %s DESC", TRIP_METADATA_TABLE,
+			TripCols.CREATE_TIME);
 
 	/** Query to select a given trip entry. */
 	private static final String GET_TRIP_ENTRY = String.format(
@@ -62,8 +65,9 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 	/** Query to select the latest entry in the given trip. */
 	private static final String GET_TRIP_ENTRY_TIME_DESC = String.format(
-			"SELECT %s FROM %s WHERE %s=? ORDER BY %s DESC", TripDetailCols.CREATE_TIME,
-			TRIP_DETAIL_TABLE, TripDetailCols.TRIP_ID, TripDetailCols.CREATE_TIME);
+			"SELECT %s FROM %s WHERE %s=? ORDER BY %s DESC",
+			TripDetailCols.CREATE_TIME, TRIP_DETAIL_TABLE,
+			TripDetailCols.TRIP_ID, TripDetailCols.CREATE_TIME);
 
 	/** Where clause to select a given trip. */
 	private static final String TRIP_SELECTOR = String.format("%s=?",
@@ -83,8 +87,9 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			TripDiaryLogger.logWarning("Upgrading database from version " + oldVersion + " to "
-					+ newVersion + ", which will destroy all old data");
+			TripDiaryLogger.logWarning("Upgrading database from version "
+					+ oldVersion + " to " + newVersion
+					+ ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + TRIP_METADATA_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRIP_DETAIL_TABLE);
 			onCreate(db);
@@ -144,10 +149,19 @@ public class TripStorageManagerImpl implements TripStorageManager {
 				.put(TripDetailCols.MEDIA_LOCATION, tripEntry.mediaLocation);
 		insertValues.put(TripDetailCols.MEDIA_TYPE, tripEntry.mediaType.name());
 		insertValues.put(TripDetailCols.NOTE, tripEntry.noteText);
-		return db.insertOrThrow(TRIP_DETAIL_TABLE,
+
+		long tripNum = db.insertOrThrow(TRIP_DETAIL_TABLE,
 				TripDetailCols.MEDIA_LOCATION, insertValues);
+		TripDiaryLogger.logDebug("Adding a new entry " + tripNum + " : "
+				+ tripEntry.lat + " " + tripEntry.lon + " "
+				+ tripEntry.mediaType);
+
+		if (tripEntry.mediaType == MediaType.TEXT)
+			TripDiaryLogger.logDebug("Added entry has text : "
+					+ tripEntry.noteText);
+		return tripNum;
 	}
-	
+
 	@Override
 	public Cursor getMediaEntriesForTrip(long tripId)
 			throws IllegalArgumentException {
@@ -223,8 +237,8 @@ public class TripStorageManagerImpl implements TripStorageManager {
 					.getColumnIndex(TripDetailCols.LON));
 			tripEntry.mediaLocation = result.getString(result
 					.getColumnIndex(TripDetailCols.MEDIA_LOCATION));
-			tripEntry.mediaType = TripEntry.MediaType.valueOf(result
-					.getString(result
+			tripEntry.mediaType = TripEntry.MediaType
+					.valueOf(result.getString(result
 							.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
 			tripEntry.creationTime = result.getLong(result
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
@@ -245,7 +259,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
 		}
 	}
-	
+
 	@Override
 	public void deleteTrip(long tripId) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();

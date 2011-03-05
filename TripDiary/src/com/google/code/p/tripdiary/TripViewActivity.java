@@ -327,7 +327,7 @@ public class TripViewActivity extends TabActivity {
 			break;
 
 		case R.id.share_trip:
-			TripDiaryLogger.logDebug("Start exporting trip");
+			TripDiaryLogger.logDebug("Start exporting trip for " + thisTripId);
 
 			Intent shareIntent = new Intent(getApplicationContext(),
 					TripExport.class);
@@ -561,11 +561,13 @@ public class TripViewActivity extends TabActivity {
 	private void addEntryToTrip(TripEntry tripEntry) {
 		// let's try to delegate this to the location service
 		if (locationServiceIsBound && (locationService != null)) {
+			TripDiaryLogger.logDebug("addEntryToTrip - updateEntryWithBestCurrentLocation");
 			locationService.updateEntryWithBestCurrentLocation(thisTripId,
 					tripEntry);
 		} else {
 			// let's add the trip entry anyway (we don't need to lose this
 			// entry if Location is not available etc.)
+			TripDiaryLogger.logDebug("addEntryToTrip - addTripEntry");
 			tripEntry.tripEntryId = mTripStorageMgr.addTripEntry(thisTripId,
 					tripEntry);
 		}
