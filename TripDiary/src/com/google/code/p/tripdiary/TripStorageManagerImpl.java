@@ -191,6 +191,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 		Cursor result = db.rawQuery(GET_TRIP_DETAIL,
 				new String[] { String.format("%d", tripId) });
 		if (result.getCount() <= 0) {
+			result.close();
 			return null;
 		} else {
 			result.moveToFirst();
@@ -225,6 +226,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 		Cursor result = db.rawQuery(GET_TRIP_ENTRY,
 				new String[] { String.format("%d", tripEntryId) });
 		if (result.getCount() <= 0) {
+			result.close();
 			return null;
 		} else {
 			result.moveToFirst();
@@ -244,27 +246,34 @@ public class TripStorageManagerImpl implements TripStorageManager {
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
 			tripEntry.noteText = result.getString(result
 					.getColumnIndex(TripDetailCols.NOTE));
+			result.close();
 			return tripEntry;
 		}
 	}
 
 	@Override
 	public long getLastUpdatedTime(long tripId) {
+		long retval;
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor result = db.rawQuery(GET_TRIP_ENTRY_TIME_DESC,
 				new String[] { String.format("%d", tripId) });
 		if (result.getCount() <= 0) {
-			return -1;
+			retval = -1;
 		} else {
 			result.moveToFirst();
-			return result.getLong(result
+			retval = result.getLong(result
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
 		}
+		result.close();
+		return retval;
 	}
 
 	@Override
 	public void deleteTrip(long tripId) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		TripDiaryLogger.logDebug("Deleting trip : " + tripId);
+		
 		// delete trip from trip details
 		db.delete(TRIP_DETAIL_TABLE,
 				String.format("%s=?", TripDetailCols.TRIP_ID),
