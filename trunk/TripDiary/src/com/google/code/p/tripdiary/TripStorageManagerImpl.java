@@ -50,7 +50,7 @@ public class TripStorageManagerImpl implements TripStorageManager {
 
 	/** Query to select all trip entries for a given trip. */
 	private static final String GET_TRIP_MEDIA_ENTRIES = String.format(
-			"SELECT * FROM %s WHERE %s=? AND %s<>%s", TRIP_DETAIL_TABLE,
+			"SELECT * FROM %s WHERE %s=? AND %s<>'%s'", TRIP_DETAIL_TABLE,
 			TripDetailCols.TRIP_ID, TripDetailCols.MEDIA_TYPE,
 			TripEntry.MediaType.NONE.name());
 

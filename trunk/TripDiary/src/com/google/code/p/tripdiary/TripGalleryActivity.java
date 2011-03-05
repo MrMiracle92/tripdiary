@@ -68,7 +68,7 @@ public class TripGalleryActivity extends Activity {
 		mTripStorageMgr = TripStorageManagerFactory
 				.getTripStorageManager(getApplicationContext());
 
-		mTripEntryCursor = mTripStorageMgr.getEntriesForTrip(thisTripId);
+		mTripEntryCursor = mTripStorageMgr.getMediaEntriesForTrip(thisTripId);
 		mTripEntryAdapter = new TripEntryAdapter(getApplicationContext(),
 				mTripEntryCursor, true);
 		GridView gridview = (GridView) findViewById(R.id.gridview);
