@@ -294,12 +294,15 @@ public class TripMapActivity extends MapActivity {
 		@Override
 		protected boolean onTap(int index) {
 			OverlayItem item = mOverlays.get(index);
-			TripDiaryLogger.logDebug("Tapped item number" + item.getSnippet());
 			TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item
 					.getSnippet()));
 			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
 					TripMapActivity.this);
 			dialogBuilder.setMessage(te.toStringMultiline());
+			if (te.mediaType == MediaType.NONE)
+				dialogBuilder.setTitle("Location");
+			else
+				dialogBuilder.setTitle(te.mediaType.name());
 			dialogBuilder.show();
 			return true;
 		}

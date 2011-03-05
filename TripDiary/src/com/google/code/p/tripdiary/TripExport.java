@@ -98,7 +98,8 @@ public class TripExport extends Activity {
 		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
 		TripDiaryLogger.logDebug("Number of entries to be exported : "
 				+ tripEntryCursor.getCount());
-		tripEntryCursor.moveToPosition(0);
+		
+		tripEntryCursor.moveToFirst();
 
 		while (tripEntryCursor.isAfterLast() == false) {
 			// Create the <Placemark> element
