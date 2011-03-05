@@ -101,11 +101,12 @@ public class TripEntry {
 
 	@Override
 	public String toString() {
-		return String.format("%d,%d,%d,%s,%s,%d", tripEntryId, lat, lon,
+		return String.format("%d,%f,%f,%s,%s,%d", tripEntryId, lat, lon,
 				mediaLocation, mediaType, creationTime);
 	}
 	
 	public String toStringMultiline() {
+		TripDiaryLogger.logDebug("Lat: " + lat + ", Lon: " + lon);
 		switch (mediaType) {
 		case PHOTO:
 		case VIDEO:
