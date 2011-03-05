@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.google.code.p.tripdiary;
 
 import static com.google.code.p.tripdiary.AppDataDefs.LAT_UNKNOWN;
@@ -182,11 +179,11 @@ public class TripViewActivity extends TabActivity {
 		}
 	}
 
-//	private long getCurrentTripId() {
-//		return getApplicationContext().getSharedPreferences(
-//				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-//				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-//	}
+	// private long getCurrentTripId() {
+	// return getApplicationContext().getSharedPreferences(
+	// AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
+	// AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+	// }
 
 	// private void setCurrentTripId(long tripId) {
 	// SharedPreferences.Editor editPref = getApplicationContext()
@@ -356,7 +353,8 @@ public class TripViewActivity extends TabActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
-									if (thisTripId == AppDataUtil.getCurrentTripId(getApplicationContext())) {
+									if (thisTripId == AppDataUtil
+											.getCurrentTripId(getApplicationContext())) {
 										AppDataUtil.setCurrentTripId(
 												getApplicationContext(),
 												AppDataDefs.NO_CURRENT_TRIP);
@@ -388,10 +386,12 @@ public class TripViewActivity extends TabActivity {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent dataIntent) {
 		super.onActivityResult(requestCode, resultCode, dataIntent);
-		
+
 		Location bestGuess = LocationController.getLastKnownLocation();
-		double bestGuessLat = bestGuess == null ? LAT_UNKNOWN : bestGuess.getLatitude();
-		double bestGuessLon = bestGuess == null ? LON_UNKNOWN : bestGuess.getLongitude();
+		double bestGuessLat = bestGuess == null ? LAT_UNKNOWN : bestGuess
+				.getLatitude();
+		double bestGuessLon = bestGuess == null ? LON_UNKNOWN : bestGuess
+				.getLongitude();
 
 		switch (requestCode) {
 		case REQUEST_PICTURE: {
@@ -566,7 +566,8 @@ public class TripViewActivity extends TabActivity {
 	private void addEntryToTrip(TripEntry tripEntry) {
 		// let's try to delegate this to the location service
 		if (locationServiceIsBound && (locationService != null)) {
-			TripDiaryLogger.logDebug("addEntryToTrip - updateEntryWithBestCurrentLocation");
+			TripDiaryLogger
+					.logDebug("addEntryToTrip - updateEntryWithBestCurrentLocation");
 			locationService.updateEntryWithBestCurrentLocation(thisTripId,
 					tripEntry);
 		} else {

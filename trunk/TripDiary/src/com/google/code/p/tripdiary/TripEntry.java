@@ -33,8 +33,8 @@ public class TripEntry {
 	public String noteText;
 
 	/**
-	 * Method called to insert notes with time specified. MediaType is set by the
-	 * method
+	 * Method called to insert notes with time specified. MediaType is set by
+	 * the method
 	 */
 	public TripEntry(double lat, double lon, long creationTime, String noteText) {
 		this.lat = lat;
@@ -104,21 +104,20 @@ public class TripEntry {
 		return String.format("%d,%f,%f,%s,%s,%d", tripEntryId, lat, lon,
 				mediaLocation, mediaType, creationTime);
 	}
-	
+
 	public String toStringMultiline() {
 		TripDiaryLogger.logDebug("Lat: " + lat + ", Lon: " + lon);
 		switch (mediaType) {
 		case PHOTO:
 		case VIDEO:
 		case AUDIO:
-			return String.format("Lat: %.6f \nLon: %.6f \nFile: %s",
-					lat, lon, mediaLocation);
+			return String.format("Lat: %.6f \nLon: %.6f \nFile: %s", lat, lon,
+					mediaLocation);
 		case TEXT:
-			return String.format("Lat: %.6f \nLon: %.6f \nText: %s",
-					lat, lon, noteText);
+			return String.format("Lat: %.6f \nLon: %.6f \nText: %s", lat, lon,
+					noteText);
 		case NONE:
-			return String.format("Lat: %.6f \nLon: %.6f",
-					lat, lon);
+			return String.format("Lat: %.6f \nLon: %.6f", lat, lon);
 		}
 		return "Unknown Type!";
 	}

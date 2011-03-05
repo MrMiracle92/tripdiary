@@ -50,7 +50,7 @@ public class TripListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		// start GPS logging
 		LocationController.startLocationLogging(getApplicationContext());
 
@@ -119,11 +119,11 @@ public class TripListActivity extends ListActivity {
 				mPrefListener);
 	}
 
-//	private long getCurrentTripId() {
-//		return getApplicationContext().getSharedPreferences(
-//				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-//				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-//	}
+	// private long getCurrentTripId() {
+	// return getApplicationContext().getSharedPreferences(
+	// AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
+	// AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
+	// }
 
 	@Override
 	protected void onResume() {
@@ -141,7 +141,8 @@ public class TripListActivity extends ListActivity {
 			mTripAdapter.notifyDataSetChanged();
 			switch (requestCode) {
 			case SETTINGS_CREATE_NEW_TRIP:
-				long tripId = AppDataUtil.getCurrentTripId(getApplicationContext());
+				long tripId = AppDataUtil
+						.getCurrentTripId(getApplicationContext());
 				Intent intent = new Intent(getApplicationContext(),
 						TripViewActivity.class);
 				intent.putExtra(AppDataDefs.KEY_TRIP_ID, tripId);
@@ -192,9 +193,10 @@ public class TripListActivity extends ListActivity {
 				tvId.setText(Long.toString(tripId));
 			}
 			if (tvText != null) {
-				StringBuffer buffer = new StringBuffer(cursor.getString(mTripNameIdx));
+				StringBuffer buffer = new StringBuffer(
+						cursor.getString(mTripNameIdx));
 				String desc = cursor.getString(mTripDescriptionIdx);
-				if(desc.length() > 0) {
+				if (desc.length() > 0) {
 					buffer.append(" - ").append(desc);
 				}
 				tvText.setText(buffer.toString());
@@ -221,7 +223,8 @@ public class TripListActivity extends ListActivity {
 			}
 			View currTripIndicator = view
 					.findViewById(R.id.tripDetailCurrIndicator);
-			long currTrip = AppDataUtil.getCurrentTripId(getApplicationContext());
+			long currTrip = AppDataUtil
+					.getCurrentTripId(getApplicationContext());
 			boolean isCurrentTrip = (currTrip == tripId)
 					&& (currTrip != AppDataDefs.NO_CURRENT_TRIP) ? true : false;
 			if (isCurrentTrip) {
@@ -246,17 +249,17 @@ public class TripListActivity extends ListActivity {
 		menu.findItem(R.id.home_info).setEnabled(true);
 		menu.findItem(R.id.home_exit).setEnabled(true);
 
-//		// TODO:Just for debugging/test purposes.. to be removed later [[
-//		if (getApplicationContext().getSharedPreferences(
-//				AppDataDefs.APPDATA_FILE, Context.MODE_PRIVATE).getBoolean(
-//				AppDataDefs.USE_FAKE_TRIP_STORAGE, false)) {
-//			menu.findItem(R.id.use_fake_db).setEnabled(false);
-//			menu.findItem(R.id.use_fake_db).setVisible(false);
-//		} else {
-//			menu.findItem(R.id.use_real_db).setEnabled(false);
-//			menu.findItem(R.id.use_real_db).setVisible(false);
-//		}
-//		// TODO:Just for debugging/test purposes.. to be removed later ]]
+		// // TODO:Just for debugging/test purposes.. to be removed later [[
+		// if (getApplicationContext().getSharedPreferences(
+		// AppDataDefs.APPDATA_FILE, Context.MODE_PRIVATE).getBoolean(
+		// AppDataDefs.USE_FAKE_TRIP_STORAGE, false)) {
+		// menu.findItem(R.id.use_fake_db).setEnabled(false);
+		// menu.findItem(R.id.use_fake_db).setVisible(false);
+		// } else {
+		// menu.findItem(R.id.use_real_db).setEnabled(false);
+		// menu.findItem(R.id.use_real_db).setVisible(false);
+		// }
+		// // TODO:Just for debugging/test purposes.. to be removed later ]]
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -290,55 +293,55 @@ public class TripListActivity extends ListActivity {
 			break;
 		}
 
-//			// TODO:Just for debugging/test purposes.. to be removed later
-//		case R.id.use_fake_db:
-//			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-//			builder1.setMessage(
-//					"Will switch to fake DB on restart. You will have to restart the app.")
-//					.setCancelable(false)
-//					.setPositiveButton("Ok",
-//							new DialogInterface.OnClickListener() {
-//								public void onClick(DialogInterface dialog,
-//										int id) {
-//									SharedPreferences.Editor editPref = getApplicationContext()
-//											.getSharedPreferences(
-//													AppDataDefs.APPDATA_FILE,
-//													MODE_PRIVATE).edit();
-//									editPref.putBoolean(
-//											AppDataDefs.USE_FAKE_TRIP_STORAGE,
-//											true);
-//									editPref.commit();
-//									System.exit(0);
-//								}
-//							});
-//			AlertDialog alert1 = builder1.create();
-//			alert1.show();
-//			break;
-//		case R.id.use_real_db:
-//			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-//			builder2.setMessage(
-//					"Will switch to real DB on restart. You will have to restart the app.")
-//					.setCancelable(false)
-//					.setPositiveButton("Ok",
-//							new DialogInterface.OnClickListener() {
-//								public void onClick(DialogInterface dialog,
-//										int id) {
-//									SharedPreferences.Editor editPref = getApplicationContext()
-//											.getSharedPreferences(
-//													AppDataDefs.APPDATA_FILE,
-//													MODE_PRIVATE).edit();
-//									editPref.putBoolean(
-//											AppDataDefs.USE_FAKE_TRIP_STORAGE,
-//											false);
-//									editPref.commit();
-//									System.exit(0);
-//								}
-//							});
-//			AlertDialog alert2 = builder2.create();
-//			alert2.show();
-//			break;
-//		// TODO:Just for debugging/test purposes.. to be removed later ]]
-			
+			// // TODO:Just for debugging/test purposes.. to be removed later
+			// case R.id.use_fake_db:
+			// AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+			// builder1.setMessage(
+			// "Will switch to fake DB on restart. You will have to restart the app.")
+			// .setCancelable(false)
+			// .setPositiveButton("Ok",
+			// new DialogInterface.OnClickListener() {
+			// public void onClick(DialogInterface dialog,
+			// int id) {
+			// SharedPreferences.Editor editPref = getApplicationContext()
+			// .getSharedPreferences(
+			// AppDataDefs.APPDATA_FILE,
+			// MODE_PRIVATE).edit();
+			// editPref.putBoolean(
+			// AppDataDefs.USE_FAKE_TRIP_STORAGE,
+			// true);
+			// editPref.commit();
+			// System.exit(0);
+			// }
+			// });
+			// AlertDialog alert1 = builder1.create();
+			// alert1.show();
+			// break;
+			// case R.id.use_real_db:
+			// AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+			// builder2.setMessage(
+			// "Will switch to real DB on restart. You will have to restart the app.")
+			// .setCancelable(false)
+			// .setPositiveButton("Ok",
+			// new DialogInterface.OnClickListener() {
+			// public void onClick(DialogInterface dialog,
+			// int id) {
+			// SharedPreferences.Editor editPref = getApplicationContext()
+			// .getSharedPreferences(
+			// AppDataDefs.APPDATA_FILE,
+			// MODE_PRIVATE).edit();
+			// editPref.putBoolean(
+			// AppDataDefs.USE_FAKE_TRIP_STORAGE,
+			// false);
+			// editPref.commit();
+			// System.exit(0);
+			// }
+			// });
+			// AlertDialog alert2 = builder2.create();
+			// alert2.show();
+			// break;
+			// // TODO:Just for debugging/test purposes.. to be removed later ]]
+
 		}
 
 		return true;

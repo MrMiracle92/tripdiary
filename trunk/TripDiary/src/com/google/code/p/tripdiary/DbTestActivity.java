@@ -15,16 +15,19 @@ public class DbTestActivity extends Activity {
 		impl = new TripStorageManagerImpl(this);
 	}
 
-	public long testCreateTrip(String name, String tripDescription, boolean traceRouteEnabled,
-			long currentTime) {
-		return impl.createNewTrip(name, tripDescription, traceRouteEnabled, currentTime);
+	public long testCreateTrip(String name, String tripDescription,
+			boolean traceRouteEnabled, long currentTime) {
+		return impl.createNewTrip(name, tripDescription, traceRouteEnabled,
+				currentTime);
 	}
 
-	public void testUpdateTrip(long tripId, String name, String tripDescription,
-			boolean traceRouteEnabled, String thumbnailLocation) {
-		impl.updateTrip(tripId, name, tripDescription, traceRouteEnabled, thumbnailLocation);
+	public void testUpdateTrip(long tripId, String name,
+			String tripDescription, boolean traceRouteEnabled,
+			String thumbnailLocation) {
+		impl.updateTrip(tripId, name, tripDescription, traceRouteEnabled,
+				thumbnailLocation);
 	}
-	
+
 	public void testDeleteTrip(long tripId) {
 		impl.deleteTrip(tripId);
 	}

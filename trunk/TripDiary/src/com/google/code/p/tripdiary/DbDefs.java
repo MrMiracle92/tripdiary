@@ -1,6 +1,5 @@
 package com.google.code.p.tripdiary;
 
-import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
