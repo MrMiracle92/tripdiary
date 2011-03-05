@@ -24,17 +24,17 @@ public class LocationController {
 	}
 
 	public static void stopLocationLogging(Context context) {
-		TripDiaryLogger.logDebug("LocationController - StopLocationLogging");		
+		TripDiaryLogger.logDebug("LocationController - StopLocationLogging");
 		Intent intent = new Intent(context, BackgroundLocationService.class);
 		context.stopService(intent);
 	}
-	
+
 	private static Location lastKnownLocation;
-	
+
 	public static synchronized Location getLastKnownLocation() {
 		return lastKnownLocation;
 	}
-	
+
 	public static synchronized void setLastKnownLocation(Location location) {
 		lastKnownLocation = location;
 	}

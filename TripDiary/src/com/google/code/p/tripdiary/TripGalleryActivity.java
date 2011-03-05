@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.google.code.p.tripdiary;
 
 import java.io.File;
@@ -10,16 +7,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnTouchListener;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,6 +29,7 @@ import com.google.code.p.tripdiary.TripEntry.MediaType;
  * This is the activity that shows the recorded trip media in a gallery view.
  * 
  * @author Ankan Mukherjee
+ * @author Arpita Saha
  * 
  */
 public class TripGalleryActivity extends Activity {
@@ -147,7 +142,6 @@ public class TripGalleryActivity extends Activity {
 				intent.setDataAndType(Uri.fromFile(file), "audio/*");
 				startActivity(intent);
 			case TEXT:
-				TripDiaryLogger.logDebug("Notes : " + te.noteText);
 				AlertDialog.Builder noteDialog = new AlertDialog.Builder(
 						TripGalleryActivity.this);
 				noteDialog.setMessage(te.noteText);

@@ -27,18 +27,18 @@ public class TripHomePreference extends PreferenceActivity {
 						SharedPreferences prefs = PreferenceManager
 								.getDefaultSharedPreferences(getBaseContext());
 						SharedPreferences.Editor editor = prefs.edit();
-						
-						String temp = prefs.getString("folderPref", "tripDiary");
+
+						String temp = prefs
+								.getString("folderPref", "tripDiary");
 						TripDiaryLogger.logDebug("temp is " + temp);
 						editor.putString("folderPref", "arpita");
 						editor.commit();
-						
-						
+
 						TripDiaryLogger.logDebug("In Preference");
 						return true;
 					}
 				});
-		
-//		folderPreference.
+
+		// folderPreference.
 	}
 }

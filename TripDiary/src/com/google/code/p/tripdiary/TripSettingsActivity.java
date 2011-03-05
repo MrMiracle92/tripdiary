@@ -60,7 +60,8 @@ public class TripSettingsActivity extends Activity {
 			mThisTripId = savedInstanceState.getLong(KEY_TRIP_ID,
 					AppDataDefs.NO_CURRENT_TRIP);
 			mIsNewTrip = savedInstanceState.getBoolean(KEY_IS_NEW_TRIP, false);
-			mTripDetailFormCopy = savedInstanceState.getParcelable(KEY_SETTINGS_TRIPDETAIL);
+			mTripDetailFormCopy = savedInstanceState
+					.getParcelable(KEY_SETTINGS_TRIPDETAIL);
 		} else {
 			// if there is a bundle get details from there
 			Bundle extras = getIntent().getExtras();
@@ -121,13 +122,14 @@ public class TripSettingsActivity extends Activity {
 
 	private void populateContent() {
 		if (!mIsNewTrip) {
-			if(mTripDetailFormCopy == null) {
+			if (mTripDetailFormCopy == null) {
 				// load from db
 				mTripDetailFormCopy = storageMgr.getTripDetail(mThisTripId);
 			}
-			
+
 			long created = mTripDetailFormCopy.getCreateTime();
-			long updated = storageMgr.getLastUpdatedTime(mTripDetailFormCopy.getTripId());
+			long updated = storageMgr.getLastUpdatedTime(mTripDetailFormCopy
+					.getTripId());
 
 			DateFormat df = DateFormat.getDateInstance();
 			((TextView) findViewById(R.id.tvCreated)).setText(df
@@ -135,18 +137,21 @@ public class TripSettingsActivity extends Activity {
 			((TextView) findViewById(R.id.tvLastUpdated))
 					.setText(updated < 0 ? "Never" : df
 							.format(new Date(updated)));
-			((TextView) findViewById(R.id.edName)).setText(mTripDetailFormCopy.getName());
-			((TextView) findViewById(R.id.edDescription)).setText(mTripDetailFormCopy
-					.getTripDescription());
-			((CheckBox) findViewById(R.id.cbTraceRoute)).setChecked(mTripDetailFormCopy
-					.isTraceRouteEnabled());
-			((TextView) findViewById(R.id.tvSettingsTripImage)).setText(mTripDetailFormCopy.getDefaultThumbnail());
-			
+			((TextView) findViewById(R.id.edName)).setText(mTripDetailFormCopy
+					.getName());
+			((TextView) findViewById(R.id.edDescription))
+					.setText(mTripDetailFormCopy.getTripDescription());
+			((CheckBox) findViewById(R.id.cbTraceRoute))
+					.setChecked(mTripDetailFormCopy.isTraceRouteEnabled());
+			((TextView) findViewById(R.id.tvSettingsTripImage))
+					.setText(mTripDetailFormCopy.getDefaultThumbnail());
+
 			((ImageView) findViewById(R.id.settingsTripImage))
 					.setImageBitmap(mTripDetailFormCopy.getDefaultThumbnail() == null ? BitmapFactory
 							.decodeResource(getResources(),
 									R.drawable.image_pick) : ImageCache
-							.getInstance().getBitmap(mTripDetailFormCopy.getDefaultThumbnail(),
+							.getInstance().getBitmap(
+									mTripDetailFormCopy.getDefaultThumbnail(),
 									MediaType.PHOTO, getApplicationContext()));
 		}
 	}
@@ -167,11 +172,12 @@ public class TripSettingsActivity extends Activity {
 						: selectedImagePath;
 
 				if (!mIsNewTrip && pathToTripImage != null) {
-					((TextView) findViewById(R.id.tvSettingsTripImage)).setText(pathToTripImage);
+					((TextView) findViewById(R.id.tvSettingsTripImage))
+							.setText(pathToTripImage);
 					((ImageView) findViewById(R.id.settingsTripImage))
-					.setImageBitmap(ImageCache.getInstance().getBitmap(
-							pathToTripImage, MediaType.PHOTO,
-							getApplicationContext()));
+							.setImageBitmap(ImageCache.getInstance().getBitmap(
+									pathToTripImage, MediaType.PHOTO,
+									getApplicationContext()));
 				}
 			}
 		}
@@ -222,17 +228,18 @@ public class TripSettingsActivity extends Activity {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		savedInstanceState.putLong(KEY_TRIP_ID, mThisTripId);
 		savedInstanceState.putBoolean(KEY_IS_NEW_TRIP, mIsNewTrip);
-		if(mTripDetailFormCopy == null) {
-			// must be a new trip, let's create trip detail for store current form data
+		if (mTripDetailFormCopy == null) {
+			// must be a new trip, let's create trip detail for store current
+			// form data
 			mTripDetailFormCopy = new TripDetail();
 		}
 		loadFormData(mTripDetailFormCopy);
-		savedInstanceState.putParcelable(KEY_SETTINGS_TRIPDETAIL, mTripDetailFormCopy);
+		savedInstanceState.putParcelable(KEY_SETTINGS_TRIPDETAIL,
+				mTripDetailFormCopy);
 	}
-	
+
 	private void loadFormData(TripDetail td) {
-		td.setName(((EditText) findViewById(R.id.edName))
-				.getText().toString());
+		td.setName(((EditText) findViewById(R.id.edName)).getText().toString());
 		td.setTripDescription(((EditText) findViewById(R.id.edDescription))
 				.getText().toString());
 		td.setTraceRouteEnabled(((CheckBox) findViewById(R.id.cbTraceRoute))
@@ -274,7 +281,8 @@ public class TripSettingsActivity extends Activity {
 						mTripDetailFormCopy.getDefaultThumbnail());
 			}
 			if (storageMgr.getTripDetail(mThisTripId).isTraceRouteEnabled()) {
-				LocationController.startLocationLogging(getApplicationContext());
+				LocationController
+						.startLocationLogging(getApplicationContext());
 			} else {
 				LocationController.stopLocationLogging(getApplicationContext());
 			}

@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
-import com.google.code.p.tripdiary.utils.*;
+import com.google.code.p.tripdiary.utils.Util;
 
 /**
  * 
@@ -98,7 +98,7 @@ public class TripExport extends Activity {
 		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
 		TripDiaryLogger.logDebug("Number of entries to be exported : "
 				+ tripEntryCursor.getCount());
-		
+
 		tripEntryCursor.moveToFirst();
 
 		while (tripEntryCursor.isAfterLast() == false) {

@@ -28,10 +28,11 @@ public class TripDetail implements Parcelable {
 	/** The location of the default thumbnail of the trip */
 	public String defaultThumbnail;
 
-//	public boolean isCurrent = false;
+	// public boolean isCurrent = false;
 
-	public TripDetail(String name, long tripId, long createTime, String tripDescription,
-			boolean traceRouteEnabled, String defaultThumbnail) {
+	public TripDetail(String name, long tripId, long createTime,
+			String tripDescription, boolean traceRouteEnabled,
+			String defaultThumbnail) {
 		this.name = name;
 		this.tripId = tripId;
 		this.createTime = createTime;
@@ -40,12 +41,13 @@ public class TripDetail implements Parcelable {
 		this.defaultThumbnail = defaultThumbnail;
 	}
 
-	public TripDetail() {}
+	public TripDetail() {
+	}
 
 	@Override
 	public String toString() {
-		return String.format("%s,%d,%d,%s,%s,%s", name, tripId, createTime, tripDescription,
-				traceRouteEnabled, defaultThumbnail);
+		return String.format("%s,%d,%d,%s,%s,%s", name, tripId, createTime,
+				tripDescription, traceRouteEnabled, defaultThumbnail);
 	}
 
 	public String getName() {
@@ -96,15 +98,15 @@ public class TripDetail implements Parcelable {
 		this.defaultThumbnail = defaultThumbnail;
 	}
 
-//	public boolean isCurrent() {
-//		return isCurrent;
-//	}
-//
-//	public void setCurrent(boolean isCurrent) {
-//		this.isCurrent = isCurrent;
-//	}
+	// public boolean isCurrent() {
+	// return isCurrent;
+	// }
+	//
+	// public void setCurrent(boolean isCurrent) {
+	// this.isCurrent = isCurrent;
+	// }
 
-	// Parcelable impl follows 
+	// Parcelable impl follows
 
 	@Override
 	public int describeContents() {
@@ -112,15 +114,15 @@ public class TripDetail implements Parcelable {
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags) {		
+	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeLong(tripId);
 		dest.writeLong(createTime);
 		dest.writeString(name);
 		dest.writeString(tripDescription);
 		dest.writeString(defaultThumbnail);
-		dest.writeBooleanArray(new boolean[] {traceRouteEnabled});
+		dest.writeBooleanArray(new boolean[] { traceRouteEnabled });
 	}
-	
+
 	private TripDetail(Parcel in) {
 		tripId = in.readLong();
 		createTime = in.readLong();
@@ -132,8 +134,7 @@ public class TripDetail implements Parcelable {
 		traceRouteEnabled = bool[0];
 	}
 
-	public static final Parcelable.Creator<TripDetail> CREATOR 
-		= new Parcelable.Creator<TripDetail>() {
+	public static final Parcelable.Creator<TripDetail> CREATOR = new Parcelable.Creator<TripDetail>() {
 
 		@Override
 		public TripDetail createFromParcel(Parcel source) {

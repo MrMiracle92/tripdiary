@@ -14,8 +14,9 @@ import android.widget.PopupWindow;
 
 /**
  * Display a pop-up window with information regarding the application.
+ * 
  * @author Arpita Saha
- *
+ * 
  */
 public class TripDiaryInfo extends Activity {
 	private PopupWindow infoPopupWindow;
