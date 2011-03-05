@@ -233,9 +233,9 @@ public class TripStorageManagerImpl implements TripStorageManager {
 			TripEntry tripEntry = new TripEntry();
 			tripEntry.tripEntryId = result.getLong(result
 					.getColumnIndex(TripDetailCols._ID));
-			tripEntry.lat = result.getLong(result
+			tripEntry.lat = result.getDouble(result
 					.getColumnIndex(TripDetailCols.LAT));
-			tripEntry.lon = result.getLong(result
+			tripEntry.lon = result.getDouble(result
 					.getColumnIndex(TripDetailCols.LON));
 			tripEntry.mediaLocation = result.getString(result
 					.getColumnIndex(TripDetailCols.MEDIA_LOCATION));
