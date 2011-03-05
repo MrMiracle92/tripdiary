@@ -128,7 +128,7 @@ public class TripMapActivity extends MapActivity {
 				btnZoomIn.setEnabled(true);
 				btnZoomOut.setEnabled(true);
 			}
-		});
+		});		
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class TripMapActivity extends MapActivity {
 		super.onResume();
 		refreshMap();
 	}
-
+	
 	private double mMinLat;
 	private double mMaxLat;
 	private double mMinLon;
