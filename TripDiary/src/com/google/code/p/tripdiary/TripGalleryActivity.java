@@ -118,9 +118,7 @@ public class TripGalleryActivity extends Activity {
 		case R.id.show_details_entry:
 			TripEntry te = mTripStorageMgr.getTripEntry(info.id);
 			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-			dialogBuilder.setMessage(String.format(
-					"Type: %s \nLat: %f \nLon: %f \nFile: %s",
-					te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
+			dialogBuilder.setMessage(te.toStringMultiline());
 			dialogBuilder.show();
 			return true;
 		default:

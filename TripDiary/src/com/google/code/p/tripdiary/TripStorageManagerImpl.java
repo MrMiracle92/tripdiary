@@ -242,6 +242,8 @@ public class TripStorageManagerImpl implements TripStorageManager {
 							.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
 			tripEntry.creationTime = result.getLong(result
 					.getColumnIndex(TripDetailCols.CREATE_TIME));
+			tripEntry.noteText = result.getString(result
+					.getColumnIndex(TripDetailCols.NOTE));
 			return tripEntry;
 		}
 	}
