@@ -62,7 +62,7 @@ public class TripExport extends Activity {
 				finish();
 				return;
 			}
-			
+
 			TripDiaryLogger.logDebug("Exporting trip " + thisTripId);
 		}
 
@@ -96,21 +96,26 @@ public class TripExport extends Activity {
 
 		// Cursor to the trip entries
 		Cursor tripEntryCursor = mStorageMgr.getEntriesForTrip(thisTripId);
-		TripDiaryLogger.logDebug("Number of entries to be exported : " + tripEntryCursor.getCount());
+		TripDiaryLogger.logDebug("Number of entries to be exported : "
+				+ tripEntryCursor.getCount());
 		tripEntryCursor.moveToFirst();
 
 		while (tripEntryCursor.isAfterLast() == false) {
 			// Create the <Placemark> element
 			sb.append("<Placemark>");
 
-			TripDiaryLogger.logDebug("Exporting entry " + tripEntryCursor.getString(
-					tripEntryCursor.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
+			TripDiaryLogger.logDebug("Exporting entry "
+					+ tripEntryCursor.getString(tripEntryCursor
+							.getColumnIndex(TripDetailCols._ID))
+					+ " Content : "
+					+ tripEntryCursor.getString(tripEntryCursor
+							.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
 			if (tripEntryCursor.getString(
 					tripEntryCursor.getColumnIndex(TripDetailCols.MEDIA_TYPE))
 					.equalsIgnoreCase("TEXT")) {
 				sb.append("<description>");
-				String noteText = tripEntryCursor.getString(
-						tripEntryCursor.getColumnIndex(TripDetailCols.NOTE));
+				String noteText = tripEntryCursor.getString(tripEntryCursor
+						.getColumnIndex(TripDetailCols.NOTE));
 				sb.append(noteText);
 				sb.append("</description>");
 			} else {
@@ -150,7 +155,7 @@ public class TripExport extends Activity {
 			kmlDir.mkdir();
 		}
 		fileName = Util.tripDiaryFileName() + ".txt"; // TODO use
-																// DEFAULT_FILE_EXTENSION
+														// DEFAULT_FILE_EXTENSION
 		File kmlFile = new File(kmlDir, fileName);
 
 		// Write to disk
@@ -161,7 +166,8 @@ public class TripExport extends Activity {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			TripDiaryLogger.logError("Error writing " + kmlFile + e.getMessage());
+			TripDiaryLogger.logError("Error writing " + kmlFile
+					+ e.getMessage());
 			return false;
 		}
 
