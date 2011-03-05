@@ -127,11 +127,18 @@ public class TripMapActivity extends MapActivity {
 		mTripEntries.requery();
 		mTripEntries.moveToFirst();
 		boolean isInited = false;
-		while (!mTripEntries.isAfterLast()) {
+		mItemizedoverlay.clear();
+		while (mTripEntries.getCount() > 0 && !mTripEntries.isAfterLast()) {
 			double lat = mTripEntries.getDouble(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.LAT));
 			double lon = mTripEntries.getDouble(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.LON));
+			if(lat == AppDataDefs.LAT_UNKNOWN || lon == AppDataDefs.LON_UNKNOWN) {
+				// let's skip and log
+				mTripEntries.moveToNext();
+				TripDiaryLogger.logWarning("Skipped on map for unknown location: [" + lat + ", " + lon + "]");
+				continue;
+			}
 			if(!isInited) {
 				mMinLat = mMaxLat = lat;
 				mMinLon = mMaxLon = lon;
@@ -147,7 +154,7 @@ public class TripMapActivity extends MapActivity {
 			String title = mTripEntries.getString(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols.NOTE));
 			String snippet = mTripEntries.getString(mTripEntries
-					.getColumnIndex(DbDefs.TripDetailCols.MEDIA_TYPE));
+					.getColumnIndex(DbDefs.TripDetailCols._ID));
 			GeoPoint point = new GeoPoint((int) (lat * 1e6), (int) (lon * 1e6));
 			TripDiaryLogger.logDebug("Point: " + point.getLatitudeE6() + ", "
 					+ point.getLongitudeE6());
@@ -191,6 +198,12 @@ public class TripMapActivity extends MapActivity {
 			if(drawMarker) {
 				mOverlaysMarkers.add(overlay);
 			}
+			populate();
+		}
+		
+		public void clear() {
+			mOverlays.clear();
+			mOverlaysMarkers.clear();
 			populate();
 		}
 
@@ -242,10 +255,12 @@ public class TripMapActivity extends MapActivity {
 		@Override
 		protected boolean onTap(int index) {
 		  OverlayItem item = mOverlays.get(index);
-		  AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-		  dialog.setTitle(item.getTitle());
-		  dialog.setMessage(item.getPoint().getLatitudeE6() + ", " + item.getPoint().getLongitudeE6());
-		  dialog.show();
+		  TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item.getSnippet()));
+			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TripMapActivity.this);
+			dialogBuilder.setMessage(String.format(
+					"Type: %s \nLat: %f \nLon: %f \nFile: %s",
+					te.mediaType.name(), te.lat, te.lon, te.mediaLocation));
+			dialogBuilder.show();
 		  return true;
 		}
 	}

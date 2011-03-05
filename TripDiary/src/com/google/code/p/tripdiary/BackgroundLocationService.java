@@ -30,6 +30,7 @@ public class BackgroundLocationService extends Service implements
 	private Location mLastUpdatedLocation;
 	private Location mLastKnownLocation;
 	private boolean mIsBound;
+	private long mLastBindTime;
 	private long currentTripId = AppDataDefs.NO_CURRENT_TRIP;
 
 	private final float minUpdateDistanceMetres = 100.0f;
@@ -57,6 +58,7 @@ public class BackgroundLocationService extends Service implements
 	public IBinder onBind(Intent intent) {
 		mIsBound = true;
 		requestLocationUpdates();
+		mLastBindTime = System.currentTimeMillis();
 		return locationBinder;
 	}
 
@@ -106,7 +108,8 @@ public class BackgroundLocationService extends Service implements
 		// if current log warning (this is a problem, perhaps the phone is low
 		// on memory)
 		if (AppDataUtil.getCurrentTripId(getApplicationContext()) != AppDataDefs.NO_CURRENT_TRIP
-				&& mStorageManager.getTripDetail(AppDataUtil.getCurrentTripId(getApplicationContext()))
+				&& mStorageManager.getTripDetail(
+						AppDataUtil.getCurrentTripId(getApplicationContext()))
 						.isTraceRouteEnabled()) {
 			TripDiaryLogger
 					.logWarning("Background Location Service getting destroyed "
@@ -129,9 +132,6 @@ public class BackgroundLocationService extends Service implements
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		TripDiaryLogger.logDebug("BackgroundLocationService - onStartCommand");
 
-		// Request location updates
-		requestLocationUpdates();
-
 		/**
 		 * We want this service to continue running until it is explicitly
 		 * stopped, so return sticky.
@@ -139,6 +139,10 @@ public class BackgroundLocationService extends Service implements
 		return Service.START_STICKY;
 	}
 
+	/**
+	 * If the last known location older than this much time, we'll consider it
+	 * unknown
+	 */
 	private static int TOO_OLD_A_LOCATION_INTERVAL = 1000 * 60 * 60; // 1 hr
 
 	private void requestLocationUpdates() {
@@ -159,17 +163,38 @@ public class BackgroundLocationService extends Service implements
 		}
 	}
 
+	/**
+	 * We'll not stop the service if the last bind happened less than this much
+	 * time ago
+	 **/
+	private static int TOO_EARLY_TO_STOP_INTERVAL = 1000 * 60 * 2; // 2 mins
+
+	/** Checks and if possible, stops self **/
 	private void checkAndStopSelf() {
-		if (!mIsBound && mEntryQueue.isEmpty()
-				&& (AppDataUtil.getCurrentTripId(getApplicationContext()) == AppDataDefs.NO_CURRENT_TRIP
-				|| !mStorageManager.getTripDetail(AppDataUtil.getCurrentTripId(getApplicationContext()))
-						.isTraceRouteEnabled())) {
+
+		// let's not stop if other activies are bound or entry queue has items
+		// or the last bind happened just a little while ago
+		if (mIsBound
+				|| !mEntryQueue.isEmpty()
+				|| System.currentTimeMillis() - mLastBindTime <= TOO_EARLY_TO_STOP_INTERVAL) {
+			return;
+		}
+
+		// if the current trip does not have trace route enabled, let's stop
+		if (AppDataUtil.getCurrentTripId(getApplicationContext()) == AppDataDefs.NO_CURRENT_TRIP
+				|| !mStorageManager.getTripDetail(
+						AppDataUtil.getCurrentTripId(getApplicationContext()))
+						.isTraceRouteEnabled()) {
 			TripDiaryLogger
 					.logDebug("BackgroundLocationService - Stopping Self.");
 			stopSelf();
 		}
 	}
 
+	/**
+	 * We'll not update the entry location the request to update was earlier
+	 * than this much time ago
+	 */
 	private static int TOO_LATE_TO_UPDATE_INTERVAL = 1000 * 60 * 5; // 5 mins
 
 	@Override
@@ -202,7 +227,9 @@ public class BackgroundLocationService extends Service implements
 					// for current trip and a min distance has passed since the
 					// last updated location
 			if (AppDataUtil.getCurrentTripId(getApplicationContext()) != AppDataDefs.NO_CURRENT_TRIP
-					&& mStorageManager.getTripDetail(AppDataUtil.getCurrentTripId(getApplicationContext()))
+					&& mStorageManager.getTripDetail(
+							AppDataUtil
+									.getCurrentTripId(getApplicationContext()))
 							.isTraceRouteEnabled()
 					&& (mLastUpdatedLocation == null ? true
 							: mLastUpdatedLocation.distanceTo(location) >= minUpdateDistanceMetres)) {
@@ -230,12 +257,6 @@ public class BackgroundLocationService extends Service implements
 		// TODO Auto-generated method stub
 
 	}
-
-//	private long getCurrentTripId() {
-//		return getApplicationContext().getSharedPreferences(
-//				AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-//				AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-//	}
 
 	public Location getLastKnownLocation() {
 		TripDiaryLogger
@@ -276,7 +297,13 @@ public class BackgroundLocationService extends Service implements
 		mEntryQueue.add(new QueueItem(tripId, tripEntry, hasLastKnownLocation));
 	}
 
-	private static final int TWO_MINUTES = 1000 * 60 * 2;
+	/*
+	 * The logic to determine better location below is from -
+	 * http://developer.android.
+	 * com/guide/topics/location/obtaining-user-location.html
+	 */
+
+	private static final int SIGNIFICANTLY_NEWER_INTERVAL = 1000 * 60 * 2;
 
 	/**
 	 * Determines whether one Location reading is better than the current
@@ -297,8 +324,8 @@ public class BackgroundLocationService extends Service implements
 
 		// Check whether the new location fix is newer or older
 		long timeDelta = location.getTime() - currentBestLocation.getTime();
-		boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-		boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+		boolean isSignificantlyNewer = timeDelta > SIGNIFICANTLY_NEWER_INTERVAL;
+		boolean isSignificantlyOlder = timeDelta < -SIGNIFICANTLY_NEWER_INTERVAL;
 		boolean isNewer = timeDelta > 0;
 
 		// If it's been more than two minutes since the current location, use

@@ -20,8 +20,8 @@ public final class AppDataDefs {
 	public final static long NO_CURRENT_TRIP = -1;
 	
 	/* Unknown Lat and Unknown Lon */
-	public final static long LAT_UNKNOWN = -1;
-	public final static long LON_UNKNOWN = -1;
+	public final static double LAT_UNKNOWN = -9999.9999;
+	public final static double LON_UNKNOWN = -9999.9999;
 	
 	/* Defaults */
 	public final static boolean DEFAULT_TRACE_ROUTE_ENABLED = false;
