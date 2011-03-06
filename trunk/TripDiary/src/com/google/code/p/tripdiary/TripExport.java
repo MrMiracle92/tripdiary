@@ -6,9 +6,11 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.google.code.p.tripdiary.DbDefs.TripDetailCols;
@@ -28,6 +30,7 @@ public class TripExport extends Activity {
 	private final String DEFAULT_FILE_EXTENSION = ".kml";
 
 	private String fileName;
+	private String returnKey;
 
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 	private TripStorageManager mStorageMgr;
@@ -79,7 +82,7 @@ public class TripExport extends Activity {
 
 		if (genAndWriteToDisk()) {
 			Intent data = new Intent();
-			data.putExtra("returnKey", fileName);
+			data.putExtra("returnKey", returnKey);
 			this.setResult(RESULT_OK, data);
 		} else
 			this.setResult(RESULT_CANCELED);
@@ -147,16 +150,22 @@ public class TripExport extends Activity {
 	private boolean genAndWriteToDisk() {
 		// Generate
 		String kmlStr = toXMLString();
+		
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String folderNameFromPref = sp.getString("folderPref", "tripdiary"); // Default is tripdiary
+		TripDiaryLogger.logDebug("KML dir is : " + folderNameFromPref);
+		
 
 		// Create the default file storage path
 		File kmlDir = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/tripDiary");
+				.getAbsolutePath() + "/" + folderNameFromPref);
 		if (!kmlDir.exists()) // first time
 		{
 			kmlDir.mkdir();
 		}
 		fileName = Util.tripDiaryFileName() + ".txt"; // TODO use
 														// DEFAULT_FILE_EXTENSION
+		returnKey = folderNameFromPref + "/" + fileName;
 		File kmlFile = new File(kmlDir, fileName);
 
 		// Write to disk

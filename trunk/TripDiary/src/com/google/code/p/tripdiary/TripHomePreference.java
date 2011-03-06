@@ -14,13 +14,16 @@ import android.preference.PreferenceManager;
  * 
  */
 public class TripHomePreference extends PreferenceActivity {
+	Preference folderPreference;
+	Preference videoLengthPreference;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		addPreferencesFromResource(R.xml.preference);
 
-		Preference folderPreference = (Preference) findPreference("folderPref");
+		folderPreference = (Preference) findPreference("folderPref");
 		folderPreference
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					public boolean onPreferenceClick(Preference preference) {
@@ -28,17 +31,42 @@ public class TripHomePreference extends PreferenceActivity {
 								.getDefaultSharedPreferences(getBaseContext());
 						SharedPreferences.Editor editor = prefs.edit();
 
-						String temp = prefs
-								.getString("folderPref", "tripDiary");
-						TripDiaryLogger.logDebug("temp is " + temp);
-						editor.putString("folderPref", "arpita");
+						String changedName = prefs.getString("folderPref",
+								"tripDiary");
+						TripDiaryLogger.logDebug("Changed folder name is "
+								+ changedName);
+						editor.putString("folderPref", changedName);
 						editor.commit();
-
-						TripDiaryLogger.logDebug("In Preference");
 						return true;
 					}
 				});
 
-		// folderPreference.
+		videoLengthPreference = (Preference) findPreference("videoLengthPref");
+		videoLengthPreference
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					public boolean onPreferenceClick(Preference preference) {
+						SharedPreferences prefs = PreferenceManager
+								.getDefaultSharedPreferences(getBaseContext());
+						SharedPreferences.Editor editor = prefs.edit();
+
+						String changedLength = prefs.getString(
+								"videoLengthPref", "10");
+						Integer changedLengthVal = 10;
+						try {
+							changedLengthVal = Integer.parseInt(changedLength);
+						} catch (NumberFormatException e) {
+							TripDiaryLogger
+									.logError("Number format exception while configuring trip max. length"
+											+ e.getMessage());
+							changedLengthVal = 10;
+						}
+
+						TripDiaryLogger.logDebug("Changed duration is "
+								+ changedLengthVal);
+						editor.putString("videoLengthPref", changedLengthVal.toString());
+						editor.commit();
+						return true;
+					}
+				});
 	}
 }
