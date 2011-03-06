@@ -14,6 +14,7 @@ import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 
 import com.google.code.p.tripdiary.TripEntry.MediaType;
 
@@ -36,7 +37,7 @@ public class BackgroundLocationService extends Service implements
 	private boolean mIsBound;
 	private long mLastBindTime;
 
-	private final float minUpdateDistanceMetres = 1.0f;
+	private float minUpdateDistanceMetres = 1.0f;
 	private final long minUpdateIntervalMillis = 600000;
 
 	private Queue<QueueItem> mEntryQueue = null;
@@ -45,6 +46,7 @@ public class BackgroundLocationService extends Service implements
 	// this member for the preferences to get called. For details see
 	// http://stackoverflow.com/questions/2542938/sharedpreferences-onsharedpreferencechangelistener-not-being-called-consistently/3104265#3104265
 	SharedPreferences.OnSharedPreferenceChangeListener mPrefListener;
+	SharedPreferences.OnSharedPreferenceChangeListener mTrackPrefListener;
 
 	private final IBinder locationBinder = new LocationBinder();
 
@@ -80,9 +82,9 @@ public class BackgroundLocationService extends Service implements
 				.getTripStorageManager(getBaseContext());
 		// create the entry queue
 		mEntryQueue = new ConcurrentLinkedQueue<QueueItem>();
-		
+
 		// init the location provider
-		if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+		if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			mLocationCurrentProvider = LocationManager.GPS_PROVIDER;
 		} else {
 			mLocationCurrentProvider = LocationManager.NETWORK_PROVIDER;
@@ -107,6 +109,20 @@ public class BackgroundLocationService extends Service implements
 		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
 				MODE_PRIVATE).registerOnSharedPreferenceChangeListener(
 				mPrefListener);
+
+		readTrackPreference();
+		// subscribe to track preference updates
+		mTrackPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+			@Override
+			public void onSharedPreferenceChanged(
+					SharedPreferences sharedPreferences, String key) {
+				if (key == "trackMinDistancePref") {
+					readTrackPreference();
+				}
+			}
+		};
+		PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+				.registerOnSharedPreferenceChangeListener(mTrackPrefListener);
 	}
 
 	@Override
@@ -136,6 +152,10 @@ public class BackgroundLocationService extends Service implements
 		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
 				MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(
 				mPrefListener);
+
+		// unsubscribe to track preferences updates
+		PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+				.unregisterOnSharedPreferenceChangeListener(mTrackPrefListener);
 
 		// unsubscribe to location changes
 		mLocationManager.removeUpdates(this);
@@ -230,7 +250,7 @@ public class BackgroundLocationService extends Service implements
 	public void onLocationChanged(Location location) {
 		TripDiaryLogger.logDebug(String.format("Location changed lat: "
 				+ location.getLatitude() + " lon: " + location.getLongitude()));
-		
+
 		// if gps is available, let's ignore locations from network
 		if (mLocationCurrentProvider.equals(LocationManager.GPS_PROVIDER)
 				&& !location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
@@ -289,9 +309,11 @@ public class BackgroundLocationService extends Service implements
 						location.getLongitude());
 				mStorageManager.addTripEntry(currentTripId, tripEntry);
 				mLastUpdatedLocation = location;
-				TripDiaryLogger.logDebug("Location entry made for trip: "
-						+ currentTripId + " [Lat: " + tripEntry.lat + ", Lon: "
-						+ tripEntry.lon + "]. Current Trip is " + currentTripId);
+				TripDiaryLogger
+						.logDebug("Location entry made for trip: "
+								+ currentTripId + " [Lat: " + tripEntry.lat
+								+ ", Lon: " + tripEntry.lon
+								+ "]. Current Trip is " + currentTripId);
 			}
 		}
 		checkAndStopSelf();
@@ -326,7 +348,7 @@ public class BackgroundLocationService extends Service implements
 		// we don't care if other providers are enabled.
 		// as long as GPS is available, we'll use it
 	}
-	
+
 	private void switchToRequestUpdates(String locationProvider) {
 		// switch
 		mLocationCurrentProvider = LocationManager.GPS_PROVIDER;
@@ -340,10 +362,11 @@ public class BackgroundLocationService extends Service implements
 		if (mLocationCurrentProvider.equals(provider)) {
 			switch (status) {
 			case LocationProvider.AVAILABLE:
-				if(provider.equals(LocationManager.GPS_PROVIDER)) {
+				if (provider.equals(LocationManager.GPS_PROVIDER)) {
 					// let's switch to using GPS
 					switchToRequestUpdates(LocationManager.GPS_PROVIDER);
-				} else if(mLocationCurrentProvider.equals(LocationManager.NETWORK_PROVIDER)){
+				} else if (mLocationCurrentProvider
+						.equals(LocationManager.NETWORK_PROVIDER)) {
 					requestLocationUpdates();
 				}
 				break;
@@ -355,11 +378,13 @@ public class BackgroundLocationService extends Service implements
 								+ ") out of service or temporarily unavailable. Locations may not be accurate.");
 
 				// no switching/updating because:
-				// if gps: 
-				//	this may be temporary until (say in a tunnel) it's available again
-				//	this may not be temporary (say in a building) - but then we should already have a fair last known location
+				// if gps:
+				// this may be temporary until (say in a tunnel) it's available
+				// again
+				// this may not be temporary (say in a building) - but then we
+				// should already have a fair last known location
 				// if network:
-				//	gps is likely disabled (as that is our first choice anyway)
+				// gps is likely disabled (as that is our first choice anyway)
 				// let's revisit this if needed
 			}
 		}
@@ -410,6 +435,22 @@ public class BackgroundLocationService extends Service implements
 
 		// add entry to queue and request location
 		mEntryQueue.add(new QueueItem(tripId, tripEntry, hasLastKnownLocation));
+	}
+
+	private void readTrackPreference() {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+		String trackMinDistancePref = sp.getString("trackMinDistancePref", "1");
+		minUpdateDistanceMetres = 1;
+		try {
+			minUpdateDistanceMetres = Float.parseFloat(trackMinDistancePref);
+		} catch (NumberFormatException e) {
+			TripDiaryLogger
+					.logError("Number format exception while configuring min distance"
+							+ e.getMessage());
+			minUpdateDistanceMetres = 1;
+		}
+		TripDiaryLogger.logDebug("minUpdateDistanceMetres is " + minUpdateDistanceMetres);
 	}
 
 	/*

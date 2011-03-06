@@ -27,4 +27,14 @@
             android:entryValues="@array/listValues" 
             android:key="videoQualityPref"/>
 	</PreferenceCategory>
+		<PreferenceCategory 
+	    android:title="Tracks Settings"
+		android:summary="Tracks Settings">
+		<EditTextPreference
+		    android:title="Minimum Distance"
+		    android:summary="Default: 1 meters"
+		    android:inputType="numberDecimal"
+		    android:defaultValue="1"
+		    android:key="trackMinDistancePref"/>
+	</PreferenceCategory>
 </PreferenceScreen>
