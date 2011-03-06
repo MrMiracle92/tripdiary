@@ -314,7 +314,7 @@ public class TripMapActivity extends MapActivity {
 			paint.setColor(PATH_COLOR);
 			paint.setAntiAlias(true);
 			paint.setStyle(Style.STROKE);
-			paint.setStrokeWidth(2);
+			paint.setStrokeWidth(4);
 			GeoPoint lastGp = null;
 			GeoPoint currGp = null;
 			for (GeoPoint point : mOverlayItems) {
