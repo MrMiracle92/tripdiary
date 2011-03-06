@@ -165,12 +165,13 @@ public class TripExport extends Activity {
 			tripEntryCursor.moveToNext();
 		}
 
-		// Add the LineString element now
-		sb.append("<Style id=\"yellowLineGreenPoly\"><LineStyle>");
-        sb.append("<color>7f00ffff</color><width>4</width>");
-        sb.append("</LineStyle><PolyStyle><color>7f00ff00</color></PolyStyle></Style>");
+		// Create a path
+		// Define a style
+		sb.append("<Style id=\"yellowLineGreenPoly\">");
+        sb.append("<LineStyle><color>7f00ffff</color><width>20</width></LineStyle>");
+        sb.append("<PolyStyle><color>7f00ff00</color></PolyStyle></Style>");
 		
-		
+		// Add the Linestring for path
 		sb.append("<Placemark><name>");
 		sb.append("</name>");
 		sb.append("<description>" + " Created by tripdiary application"
