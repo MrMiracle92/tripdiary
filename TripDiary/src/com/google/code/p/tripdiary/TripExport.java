@@ -129,10 +129,10 @@ public class TripExport extends Activity {
 			sb.append("<Point>");
 
 			String latlon = tripEntryCursor.getString(tripEntryCursor
-					.getColumnIndex(TripDetailCols.LAT))
+					.getColumnIndex(TripDetailCols.LON))
 					+ ","
 					+ tripEntryCursor.getString(tripEntryCursor
-							.getColumnIndex(TripDetailCols.LON)) + ",0";
+							.getColumnIndex(TripDetailCols.LAT));
 			sb.append("<coordinates>" + latlon + "</coordinates>");
 			sb.append("</Point>");
 			sb.append("</Placemark>");
@@ -140,7 +140,7 @@ public class TripExport extends Activity {
 			tripEntryCursor.moveToNext();
 		}
 
-		String xmlEnd = "</Document> </kml>";
+		String xmlEnd = "</Document></kml>";
 		sb.append(xmlEnd);
 
 		tripEntryCursor.close();
@@ -163,8 +163,7 @@ public class TripExport extends Activity {
 		{
 			kmlDir.mkdir();
 		}
-		fileName = Util.tripDiaryFileName() + ".txt"; // TODO use
-														// DEFAULT_FILE_EXTENSION
+		fileName = Util.tripDiaryFileName() + DEFAULT_FILE_EXTENSION;
 		returnKey = folderNameFromPref + "/" + fileName;
 		File kmlFile = new File(kmlDir, fileName);
 
