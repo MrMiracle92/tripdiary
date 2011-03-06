@@ -170,7 +170,6 @@ public class TripListActivity extends ListActivity {
 	}
 
 	private class TripAdapter extends CursorAdapter {
-
 		private int mTripIdIdx;
 		private int mTripNameIdx;
 		private int mTripDescriptionIdx;
