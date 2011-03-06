@@ -589,10 +589,7 @@ public class TripViewActivity extends TabActivity {
 				try {
 					String filePath = (String) dataIntent.getExtras().get(
 							"returnKey");
-					Toast.makeText(getBaseContext(),
-							"Copy the kml file from " + filePath,
-							Toast.LENGTH_SHORT).show();
-
+					eMailFile(filePath);
 					break;
 
 				} catch (Exception e) {
@@ -633,5 +630,27 @@ public class TripViewActivity extends TabActivity {
 			tripEntry.tripEntryId = mTripStorageMgr.addTripEntry(thisTripId,
 					tripEntry);
 		}
+	}
+	
+	private void eMailFile(String filePath) {
+		TripDetail trip = mTripStorageMgr.getTripDetail(thisTripId);
+		StringBuffer subject = new StringBuffer("My trip");
+		StringBuffer message = new StringBuffer("Hi\n\nAttached is a trip I saved using tripdiary.");
+		if(trip != null) {
+			subject.append(" - ").append(trip.getName());
+			String desc = trip.getTripDescription();
+			if(desc != null && !desc.isEmpty()) {
+				message.append("\n\n").append(desc);
+			}
+		}
+		message.append("\n\nYou may use Google Earth to open and view it.\n\nIt was created using the android " +
+				"application called tripdiary (at this point available only to a select few!)");
+		
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("message/rfc822"); 
+		intent.putExtra(Intent.EXTRA_SUBJECT, subject.toString());
+		intent.putExtra(Intent.EXTRA_TEXT, message.toString());
+		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filePath));
+		startActivity(Intent.createChooser(intent, "Send Email"));
 	}
 }
