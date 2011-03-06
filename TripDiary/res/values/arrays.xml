@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listArray">
+        <item>Low resolution</item>
+        <item>High resolution</item>
+    </string-array>
+ 
+    <string-array name="listValues">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+</resources>

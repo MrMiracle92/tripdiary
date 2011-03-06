@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 public class TripHomePreference extends PreferenceActivity {
 	Preference folderPreference;
 	Preference videoLengthPreference;
+	Preference videoQualityPreference;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class TripHomePreference extends PreferenceActivity {
 							changedLengthVal = Integer.parseInt(changedLength);
 						} catch (NumberFormatException e) {
 							TripDiaryLogger
-									.logError("Number format exception while configuring trip max. length"
+									.logError("Number format exception while configuring trip video max. length"
 											+ e.getMessage());
 							changedLengthVal = 10;
 						}
@@ -64,6 +65,35 @@ public class TripHomePreference extends PreferenceActivity {
 						TripDiaryLogger.logDebug("Changed duration is "
 								+ changedLengthVal);
 						editor.putString("videoLengthPref", changedLengthVal.toString());
+						editor.commit();
+						return true;
+					}
+				});
+		
+		
+		videoQualityPreference = (Preference) findPreference("videoQualityPref");
+		videoLengthPreference
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					public boolean onPreferenceClick(Preference preference) {
+						SharedPreferences prefs = PreferenceManager
+								.getDefaultSharedPreferences(getBaseContext());
+						SharedPreferences.Editor editor = prefs.edit();
+
+						String quality = prefs.getString(
+								"videoQualityPref", "0");
+						Integer qualityVal = 10;
+						try {
+							qualityVal = Integer.parseInt(quality);
+						} catch (NumberFormatException e) {
+							TripDiaryLogger
+									.logError("Number format exception while configuring video quality"
+											+ e.getMessage());
+							qualityVal = 0;
+						}
+
+						TripDiaryLogger.logDebug("Changed duration is "
+								+ qualityVal);
+						editor.putString("videoLengthPref", qualityVal.toString());
 						editor.commit();
 						return true;
 					}

@@ -276,10 +276,27 @@ public class TripViewActivity extends TabActivity {
 
 			TripDiaryLogger.logDebug("Configured max duration for video : "
 					+ videoLengthPref);
-
 			videoIntent.putExtra("android.intent.extra.durationLimit",
 					videoLengthVal);
-			videoIntent.putExtra("EXTRA_VIDEO_QUALITY", 0);
+
+			// Adding video quality for video clips - get the configured value
+			// from preferences
+			String videoQualityPref = sp.getString("videoQualityPref", "10");
+
+			Integer videoQualityVal = 0; // low resolution
+			try {
+				videoQualityVal = Integer.parseInt(videoQualityPref);
+			} catch (NumberFormatException e) {
+				TripDiaryLogger
+						.logError("Number format exception while configuring trip max. length"
+								+ e.getMessage());
+				videoQualityVal = 0;
+			}
+
+			TripDiaryLogger.logDebug("Configured resolution for video : "
+					+ videoQualityVal);
+
+			videoIntent.putExtra("EXTRA_VIDEO_QUALITY", videoQualityVal);
 
 			startActivityForResult(videoIntent, REQUEST_VIDEO);
 
