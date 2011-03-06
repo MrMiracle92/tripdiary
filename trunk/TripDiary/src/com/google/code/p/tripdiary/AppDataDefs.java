@@ -4,6 +4,7 @@ package com.google.code.p.tripdiary;
  * Definitions for Application Data SharedPreferences.
  * 
  * @author Ankan Mukherjee
+ * @author Arpita Saha
  */
 public final class AppDataDefs {
 	
@@ -34,6 +35,12 @@ public final class AppDataDefs {
 	public final static String KEY_PATH_TO_TRIP_IMAGE = "com.google.code.p.tripdiary.PathToTripImage";
 	public final static String KEY_SETTINGS_TRIPDETAIL = "com.google.code.p.tripdiary.TripSettingsActivity.TripDetail";
 	public final static String KEY_HAVE_ASKED_FOR_GPS = "com.google.code.p.tripdiary.HaveAskedForGPS";
+	
+	/* Keys for preferences */
+	public static final String PREF_KEY_FOLDER = "folderPref";
+	public static final String PREF_KEY_VIDEOLEN = "videoLengthPref";
+	public static final String PREF_KEY_VIDEOQUALITY = "videoQualityPref";
+	public static final String PREF_KEY_TRACKMINDIST = "trackMinDistancePref";
 	
 //	//TODO:Just for debugging/test purposes.. to be removed later [[
 //	public final static String USE_FAKE_TRIP_STORAGE = "com.google.code.p.tripdiary.testing.use.TripStorageManagerFake";

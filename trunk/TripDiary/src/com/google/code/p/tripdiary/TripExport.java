@@ -194,7 +194,7 @@ public class TripExport extends Activity {
 
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
-		String folderNameFromPref = sp.getString("folderPref", "tripdiary"); // Default
+		String folderNameFromPref = sp.getString(AppDataDefs.PREF_KEY_FOLDER, "tripdiary"); // Default
 																				// is
 																				// tripdiary
 		TripDiaryLogger.logDebug("KML dir is : " + folderNameFromPref);

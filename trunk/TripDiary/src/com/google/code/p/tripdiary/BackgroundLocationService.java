@@ -440,7 +440,8 @@ public class BackgroundLocationService extends Service implements
 	private void readTrackPreference() {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
-		String trackMinDistancePref = sp.getString("trackMinDistancePref", "1");
+		String trackMinDistancePref = sp.getString(
+				AppDataDefs.PREF_KEY_TRACKMINDIST, "1");
 		minUpdateDistanceMetres = 1;
 		try {
 			minUpdateDistanceMetres = Float.parseFloat(trackMinDistancePref);
@@ -450,7 +451,8 @@ public class BackgroundLocationService extends Service implements
 							+ e.getMessage());
 			minUpdateDistanceMetres = 1;
 		}
-		TripDiaryLogger.logDebug("minUpdateDistanceMetres is " + minUpdateDistanceMetres);
+		TripDiaryLogger.logDebug("minUpdateDistanceMetres is "
+				+ minUpdateDistanceMetres);
 	}
 
 	/*

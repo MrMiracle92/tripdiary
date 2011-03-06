@@ -14,10 +14,10 @@ import android.preference.PreferenceManager;
  * 
  */
 public class TripHomePreference extends PreferenceActivity {
-	Preference folderPreference;
-	Preference videoLengthPreference;
-	Preference videoQualityPreference;
-	Preference trackMinDistancePreference;
+	private Preference folderPreference;
+	private Preference videoLengthPreference;
+	private Preference videoQualityPreference;
+	private Preference trackMinDistancePreference;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class TripHomePreference extends PreferenceActivity {
 
 		addPreferencesFromResource(R.xml.preference);
 
-		folderPreference = (Preference) findPreference("folderPref");
+		folderPreference = (Preference) findPreference(AppDataDefs.PREF_KEY_FOLDER);
 		folderPreference
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					public boolean onPreferenceClick(Preference preference) {
@@ -33,17 +33,17 @@ public class TripHomePreference extends PreferenceActivity {
 								.getDefaultSharedPreferences(getBaseContext());
 						SharedPreferences.Editor editor = prefs.edit();
 
-						String changedName = prefs.getString("folderPref",
+						String changedName = prefs.getString(AppDataDefs.PREF_KEY_FOLDER,
 								"tripDiary");
 						TripDiaryLogger.logDebug("Changed folder name is "
 								+ changedName);
-						editor.putString("folderPref", changedName);
+						editor.putString(AppDataDefs.PREF_KEY_FOLDER, changedName);
 						editor.commit();
 						return true;
 					}
 				});
 
-		videoLengthPreference = (Preference) findPreference("videoLengthPref");
+		videoLengthPreference = (Preference) findPreference(AppDataDefs.PREF_KEY_VIDEOLEN);
 		videoLengthPreference
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					public boolean onPreferenceClick(Preference preference) {
@@ -52,7 +52,7 @@ public class TripHomePreference extends PreferenceActivity {
 						SharedPreferences.Editor editor = prefs.edit();
 
 						String changedLength = prefs.getString(
-								"videoLengthPref", "10");
+								AppDataDefs.PREF_KEY_VIDEOLEN, "10");
 						Integer changedLengthVal = 10;
 						try {
 							changedLengthVal = Integer.parseInt(changedLength);
@@ -65,15 +65,15 @@ public class TripHomePreference extends PreferenceActivity {
 
 						TripDiaryLogger.logDebug("Changed duration is "
 								+ changedLengthVal);
-						editor.putString("videoLengthPref", changedLengthVal.toString());
+						editor.putString(AppDataDefs.PREF_KEY_VIDEOLEN, changedLengthVal.toString());
 						editor.commit();
 						return true;
 					}
 				});
 		
 		
-		videoQualityPreference = (Preference) findPreference("videoQualityPref");
-		videoLengthPreference
+		videoQualityPreference = (Preference) findPreference(AppDataDefs.PREF_KEY_VIDEOQUALITY);
+		videoQualityPreference
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					public boolean onPreferenceClick(Preference preference) {
 						SharedPreferences prefs = PreferenceManager
@@ -81,7 +81,7 @@ public class TripHomePreference extends PreferenceActivity {
 						SharedPreferences.Editor editor = prefs.edit();
 
 						String quality = prefs.getString(
-								"videoQualityPref", "0");
+								AppDataDefs.PREF_KEY_VIDEOQUALITY, "0");
 						Integer qualityVal = 10;
 						try {
 							qualityVal = Integer.parseInt(quality);
@@ -94,13 +94,13 @@ public class TripHomePreference extends PreferenceActivity {
 
 						TripDiaryLogger.logDebug("Changed duration is "
 								+ qualityVal);
-						editor.putString("videoLengthPref", qualityVal.toString());
+						editor.putString(AppDataDefs.PREF_KEY_VIDEOQUALITY, qualityVal.toString());
 						editor.commit();
 						return true;
 					}
 				});
 		
-		trackMinDistancePreference = (Preference) findPreference("trackMinDistancePref");
+		trackMinDistancePreference = (Preference) findPreference(AppDataDefs.PREF_KEY_TRACKMINDIST);
 		trackMinDistancePreference
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					public boolean onPreferenceClick(Preference preference) {
@@ -109,7 +109,7 @@ public class TripHomePreference extends PreferenceActivity {
 						SharedPreferences.Editor editor = prefs.edit();
 
 						String minDist = prefs.getString(
-								"trackMinDistancePref", "1");
+								AppDataDefs.PREF_KEY_TRACKMINDIST, "1");
 						Integer minDistVal = 1;
 						try {
 							minDistVal = Integer.parseInt(minDist);
@@ -122,7 +122,7 @@ public class TripHomePreference extends PreferenceActivity {
 
 						TripDiaryLogger.logDebug("Changed minimum distance is "
 								+ minDistVal);
-						editor.putString("trackMinDistancePref", minDistVal.toString());
+						editor.putString(AppDataDefs.PREF_KEY_TRACKMINDIST, minDistVal.toString());
 						editor.commit();
 						return true;
 					}

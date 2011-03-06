@@ -293,7 +293,8 @@ public class TripViewActivity extends TabActivity {
 			// from preferences
 			SharedPreferences sp = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
-			String videoLengthPref = sp.getString("videoLengthPref", "10");
+			String videoLengthPref = sp.getString(
+					AppDataDefs.PREF_KEY_VIDEOLEN, "10");
 
 			Integer videoLengthVal = 10;
 			try {
@@ -312,7 +313,8 @@ public class TripViewActivity extends TabActivity {
 
 			// Adding video quality for video clips - get the configured value
 			// from preferences
-			String videoQualityPref = sp.getString("videoQualityPref", "10");
+			String videoQualityPref = sp.getString(
+					AppDataDefs.PREF_KEY_VIDEOQUALITY, "10");
 
 			Integer videoQualityVal = 0; // low resolution
 			try {
