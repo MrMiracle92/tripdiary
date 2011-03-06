@@ -36,8 +36,8 @@ public class BackgroundLocationService extends Service implements
 	private boolean mIsBound;
 	private long mLastBindTime;
 
-	private final float minUpdateDistanceMetres = 10.0f;
-	private final long minUpdateIntervalMillis = 60000l;
+	private final float minUpdateDistanceMetres = 1.0f;
+	private final long minUpdateIntervalMillis = 600000;
 
 	private Queue<QueueItem> mEntryQueue = null;
 
@@ -291,7 +291,7 @@ public class BackgroundLocationService extends Service implements
 				mLastUpdatedLocation = location;
 				TripDiaryLogger.logDebug("Location entry made for trip: "
 						+ currentTripId + " [Lat: " + tripEntry.lat + ", Lon: "
-						+ tripEntry.lon + "]");
+						+ tripEntry.lon + "]. Current Trip is " + currentTripId);
 			}
 		}
 		checkAndStopSelf();
