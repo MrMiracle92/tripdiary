@@ -117,7 +117,7 @@ public class TripHomePreference extends PreferenceActivity {
 							TripDiaryLogger
 									.logError("Number format exception while configuring track minimum distance"
 											+ e.getMessage());
-							minDistVal = 0;
+							minDistVal = 1;
 						}
 
 						TripDiaryLogger.logDebug("Changed minimum distance is "
