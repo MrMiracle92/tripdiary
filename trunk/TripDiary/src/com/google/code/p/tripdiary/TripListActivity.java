@@ -246,7 +246,7 @@ public class TripListActivity extends ListActivity {
 				currTripIndicator
 						.setBackgroundResource(R.drawable.currtripbackground);
 			} else {
-				currTripIndicator.setBackgroundResource(0);
+				currTripIndicator.setBackgroundResource(R.drawable.noncurrtripbackground);
 			}
 		}
 	}
@@ -263,19 +263,6 @@ public class TripListActivity extends ListActivity {
 		menu.findItem(R.id.home_settings).setEnabled(true);
 		menu.findItem(R.id.home_info).setEnabled(true);
 		menu.findItem(R.id.home_exit).setEnabled(true);
-
-		// // TODO:Just for debugging/test purposes.. to be removed later [[
-		// if (getApplicationContext().getSharedPreferences(
-		// AppDataDefs.APPDATA_FILE, Context.MODE_PRIVATE).getBoolean(
-		// AppDataDefs.USE_FAKE_TRIP_STORAGE, false)) {
-		// menu.findItem(R.id.use_fake_db).setEnabled(false);
-		// menu.findItem(R.id.use_fake_db).setVisible(false);
-		// } else {
-		// menu.findItem(R.id.use_real_db).setEnabled(false);
-		// menu.findItem(R.id.use_real_db).setVisible(false);
-		// }
-		// // TODO:Just for debugging/test purposes.. to be removed later ]]
-
 		return super.onPrepareOptionsMenu(menu);
 	}
 
