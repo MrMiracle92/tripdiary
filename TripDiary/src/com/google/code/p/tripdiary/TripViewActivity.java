@@ -639,7 +639,7 @@ public class TripViewActivity extends TabActivity {
 		if(trip != null) {
 			subject.append(" - ").append(trip.getName());
 			String desc = trip.getTripDescription();
-			if(desc != null && !desc.isEmpty()) {
+			if(desc != null && desc.length()!=0) {
 				message.append("\n\n").append(desc);
 			}
 		}
