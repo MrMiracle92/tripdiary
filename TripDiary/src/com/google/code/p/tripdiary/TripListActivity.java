@@ -80,7 +80,7 @@ public class TripListActivity extends ListActivity {
 		setListAdapter(mTripAdapter);
 
 		// set listeners for new trips and list items
-		findViewById(R.id.tvStartNewTrip).setOnClickListener(
+		findViewById(R.id.laStartNewTrip).setOnClickListener(
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
