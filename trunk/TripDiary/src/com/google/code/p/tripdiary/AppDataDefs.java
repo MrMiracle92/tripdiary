@@ -10,8 +10,10 @@ public final class AppDataDefs {
 	// Prevent instantiation.
 	private AppDataDefs() {}
 	
-	/** The application data preferences file name */
-	public final static String APPDATA_FILE = "TripDiaryAppData";
+	/** The application data preferences file name.
+	 *  Warning: changing this will mean users will lose their existing app prefs 
+	 *  (it will be like starting a new app.) */
+	public final static String APPDATA_FILE = "TripDiaryAppData"; 
 	
 	/** Key to store the current trip id */
 	public final static String CURRENT_TRIP_ID_KEY = "com.google.code.p.tripdiary.CurrentTripId";
@@ -31,6 +33,7 @@ public final class AppDataDefs {
 	public final static String KEY_IS_NEW_TRIP = "com.google.code.p.tripdiary.IsNewTrip";
 	public final static String KEY_PATH_TO_TRIP_IMAGE = "com.google.code.p.tripdiary.PathToTripImage";
 	public final static String KEY_SETTINGS_TRIPDETAIL = "com.google.code.p.tripdiary.TripSettingsActivity.TripDetail";
+	public final static String KEY_HAVE_ASKED_FOR_GPS = "com.google.code.p.tripdiary.HaveAskedForGPS";
 	
 //	//TODO:Just for debugging/test purposes.. to be removed later [[
 //	public final static String USE_FAKE_TRIP_STORAGE = "com.google.code.p.tripdiary.testing.use.TripStorageManagerFake";
