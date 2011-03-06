@@ -643,8 +643,10 @@ public class TripViewActivity extends TabActivity {
 				message.append("\n\n").append(desc);
 			}
 		}
-		message.append("\n\nYou may use Google Earth to open and view it.\n\nIt was created using an android " +
-				"application called tripdiary (at this point available only to a select few!)");
+		message.append("\n\nTo view it, you may import it into Google Maps, or open with " +
+				"the Google Earth application or use any application that supports KML.\n\n" +
+				"This file was created using an android application called " +
+				"tripdiary (at this point available only to a select few!)");
 		
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("message/rfc822"); 
