@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.location.Location;
@@ -22,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -256,8 +258,27 @@ public class TripViewActivity extends TabActivity {
 			Intent videoIntent = new Intent(
 					android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
-			// Adding a max duration for video clips
-			videoIntent.putExtra("android.intent.extra.durationLimit", 30000);
+			// Adding a max duration for video clips - get the configured value
+			// from preferences
+			SharedPreferences sp = PreferenceManager
+					.getDefaultSharedPreferences(getBaseContext());
+			String videoLengthPref = sp.getString("videoLengthPref", "10");
+
+			Integer videoLengthVal = 10;
+			try {
+				videoLengthVal = Integer.parseInt(videoLengthPref);
+			} catch (NumberFormatException e) {
+				TripDiaryLogger
+						.logError("Number format exception while configuring trip max. length"
+								+ e.getMessage());
+				videoLengthVal = 10;
+			}
+
+			TripDiaryLogger.logDebug("Configured max duration for video : "
+					+ videoLengthPref);
+
+			videoIntent.putExtra("android.intent.extra.durationLimit",
+					videoLengthVal);
 			videoIntent.putExtra("EXTRA_VIDEO_QUALITY", 0);
 
 			startActivityForResult(videoIntent, REQUEST_VIDEO);
@@ -556,9 +577,10 @@ public class TripViewActivity extends TabActivity {
 					.logDebug("addEntryToTrip - updateEntryWithBestCurrentLocation");
 			locationService.addEntryWithBestCurrentLocation(thisTripId,
 					tripEntry);
-			
+
 			// let's also ask the controller to start the service explicitly
-			// this will prevent the service from stopping when unbinding happens
+			// this will prevent the service from stopping when unbinding
+			// happens
 			LocationController.startLocationLogging(getApplicationContext());
 		} else {
 			// let's add the trip entry anyway (we don't need to lose this

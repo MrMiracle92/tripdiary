@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="TripDiary Settings"
-        android:summary="TripDiary Settings">
-        <EditTextPreference
-            android:name="folder"
-            android:title="Main Folder"
-            android:summary="tripdiary"
-            android:defaultValue="tripdiary"
-            android:key="folderPref"/>
-        <EditTextPreference
-            android:name="video"
-            android:title="Video"
-            android:summary="Resolution, length"
-            android:key="videoPref"/>
-     </PreferenceCategory>
+	<PreferenceCategory 
+	    android:title="Folder Settings"
+		android:summary="Folder Settings">
+		<EditTextPreference android:name="folder"
+			android:title="Application data folder" 
+			android:summary="Default: tripdiary"
+			android:defaultValue="tripdiary" 
+			android:key="folderPref" />
+	</PreferenceCategory>
+	<PreferenceCategory 
+	    android:title="Video Settings"
+		android:summary="Video Settings">
+		<EditTextPreference
+		    android:title="Maximum video length"
+		    android:summary="Default: 10 secs"
+		    android:inputType="numberDecimal"
+		    android:defaultValue="10"
+		    android:key="videoLengthPref">
+		</EditTextPreference>
+	</PreferenceCategory>
 </PreferenceScreen>
