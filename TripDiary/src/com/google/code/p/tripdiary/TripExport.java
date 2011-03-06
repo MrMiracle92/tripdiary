@@ -114,23 +114,10 @@ public class TripExport extends Activity {
 					+ tripEntryCursor.getString(tripEntryCursor
 							.getColumnIndex(TripDetailCols.MEDIA_TYPE)));
 
-			// For mediatype none, add to lineString : to draw the path.
-			if (tripEntryCursor.getString(
+			// For valid media type, add a marker
+			if (!tripEntryCursor.getString(
 					tripEntryCursor.getColumnIndex(TripDetailCols.MEDIA_TYPE))
 					.equalsIgnoreCase("NONE")) {
-
-				if (isFirst == true)
-					isFirst = false;
-				else
-					lineString.append(",");
-
-				String latlon = tripEntryCursor.getString(tripEntryCursor
-						.getColumnIndex(TripDetailCols.LON))
-						+ ","
-						+ tripEntryCursor.getString(tripEntryCursor
-								.getColumnIndex(TripDetailCols.LAT)) + ",0";
-				lineString.append(latlon);
-			} else {
 				// Create the <Placemark> element
 				sb.append("<Placemark>");
 
@@ -160,6 +147,20 @@ public class TripExport extends Activity {
 				sb.append("</Point>");
 				sb.append("</Placemark>");
 			}
+
+			// Add to the lineString for all entries
+			if (isFirst == true)
+				isFirst = false;
+			else
+				lineString.append(",");
+
+			String latlonForLinestring = tripEntryCursor
+					.getString(tripEntryCursor
+							.getColumnIndex(TripDetailCols.LON))
+					+ ","
+					+ tripEntryCursor.getString(tripEntryCursor
+							.getColumnIndex(TripDetailCols.LAT)) + ",0";
+			lineString.append(latlonForLinestring);
 
 			tripEntryCursor.moveToNext();
 		}
