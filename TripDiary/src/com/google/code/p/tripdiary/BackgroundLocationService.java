@@ -158,15 +158,15 @@ public class BackgroundLocationService extends Service implements
 			// get location ASAP as we don't have a good one
 			mLocationManager.requestLocationUpdates(
 					LocationManager.GPS_PROVIDER, 0, 0, this);
-			mLocationManager.requestLocationUpdates(
-					LocationManager.NETWORK_PROVIDER, 0, 0, this);
+//			mLocationManager.requestLocationUpdates(
+//					LocationManager.NETWORK_PROVIDER, 0, 0, this);
 		} else {
 			mLocationManager.requestLocationUpdates(
 					LocationManager.GPS_PROVIDER, minUpdateIntervalMillis,
 					minUpdateDistanceMetres, this);
-			mLocationManager.requestLocationUpdates(
-					LocationManager.NETWORK_PROVIDER, minUpdateIntervalMillis,
-					minUpdateDistanceMetres, this);
+//			mLocationManager.requestLocationUpdates(
+//					LocationManager.NETWORK_PROVIDER, minUpdateIntervalMillis,
+//					minUpdateDistanceMetres, this);
 		}
 	}
 
@@ -193,7 +193,7 @@ public class BackgroundLocationService extends Service implements
 						AppDataUtil.getCurrentTripId(getApplicationContext()))
 						.isTraceRouteEnabled()) {
 			TripDiaryLogger
-					.logDebug("BackgroundLocationService - Stopping Self.");
+					.logDebug("BackgroundLocationService - Stopping Self. Entry queue has " + mEntryQueue.size() + " items.");
 			stopSelf();
 		}
 	}
@@ -271,18 +271,18 @@ public class BackgroundLocationService extends Service implements
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
+		// nothing for now
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
+		// nothing for now
 
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
+		// nothing for now
 
 	}
 
@@ -301,7 +301,7 @@ public class BackgroundLocationService extends Service implements
 		}
 	}
 
-	public void updateEntryWithBestCurrentLocation(long tripId,
+	public void addEntryWithBestCurrentLocation(long tripId,
 			TripEntry tripEntry) {
 		boolean hasLastKnownLocation = false;
 		if (mLastKnownLocation != null) {
