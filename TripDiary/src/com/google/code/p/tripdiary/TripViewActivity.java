@@ -28,6 +28,7 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -56,6 +57,8 @@ public class TripViewActivity extends TabActivity {
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 
 	private TripStorageManager mTripStorageMgr = null;
+	private SharedPreferences.OnSharedPreferenceChangeListener mPrefListener;
+	private ImageView mCurrTripIndicator;
 
 	private String mediaFileName = "";
 
@@ -107,17 +110,11 @@ public class TripViewActivity extends TabActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		TripDiaryLogger.logDebug("TripViewActivity - onDestroy");
-	}
-
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		TripDiaryLogger.logDebug("TripViewActivity - onCreate");
 
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.trip_view);
 
 		mTripStorageMgr = TripStorageManagerFactory
@@ -173,14 +170,44 @@ public class TripViewActivity extends TabActivity {
 			finish();
 		}
 
+		mCurrTripIndicator = (ImageView) findViewById(R.id.tripViewCurrIndicator);
 		// set the right tab to show
 		if (thisTripId != AppDataUtil.getCurrentTripId(getApplicationContext())) {
+			mCurrTripIndicator.setBackgroundResource(R.drawable.noncurrtripbackground);
 			tabHost.setCurrentTab(0);
 		} else {
+			mCurrTripIndicator.setBackgroundResource(R.drawable.currtripbackground);
 			tabHost.setCurrentTab(1);
 		}
+		
+		// subscribe to changes to current trip
+		// listen for changes to current trip
+		mPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+			@Override
+			public void onSharedPreferenceChanged(
+					SharedPreferences sharedPreferences, String key) {
+				if (key == AppDataDefs.CURRENT_TRIP_ID_KEY) {
+					if (thisTripId != AppDataUtil.getCurrentTripId(getApplicationContext())) {
+						mCurrTripIndicator.setBackgroundResource(R.drawable.noncurrtripbackground);
+					} else
+					{
+						mCurrTripIndicator.setBackgroundResource(R.drawable.currtripbackground);
+					}
+				}
+			}
+		};
+		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
+				MODE_PRIVATE).registerOnSharedPreferenceChangeListener(
+				mPrefListener);
 	}
-
+	
+	protected void onDestroy() {
+		super.onDestroy();
+		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
+				MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(
+				mPrefListener);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
