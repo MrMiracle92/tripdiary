@@ -114,7 +114,7 @@ public class TripViewActivity extends TabActivity {
 		TripDiaryLogger.logDebug("TripViewActivity - onCreate");
 
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.trip_view);
 
 		mTripStorageMgr = TripStorageManagerFactory
@@ -173,13 +173,15 @@ public class TripViewActivity extends TabActivity {
 		mCurrTripIndicator = (ImageView) findViewById(R.id.tripViewCurrIndicator);
 		// set the right tab to show
 		if (thisTripId != AppDataUtil.getCurrentTripId(getApplicationContext())) {
-			mCurrTripIndicator.setBackgroundResource(R.drawable.noncurrtripbackground);
+			mCurrTripIndicator
+					.setBackgroundResource(R.drawable.noncurrtripbackground);
 			tabHost.setCurrentTab(0);
 		} else {
-			mCurrTripIndicator.setBackgroundResource(R.drawable.currtripbackground);
+			mCurrTripIndicator
+					.setBackgroundResource(R.drawable.currtripbackground);
 			tabHost.setCurrentTab(1);
 		}
-		
+
 		// subscribe to changes to current trip
 		// listen for changes to current trip
 		mPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -187,11 +189,13 @@ public class TripViewActivity extends TabActivity {
 			public void onSharedPreferenceChanged(
 					SharedPreferences sharedPreferences, String key) {
 				if (key == AppDataDefs.CURRENT_TRIP_ID_KEY) {
-					if (thisTripId != AppDataUtil.getCurrentTripId(getApplicationContext())) {
-						mCurrTripIndicator.setBackgroundResource(R.drawable.noncurrtripbackground);
-					} else
-					{
-						mCurrTripIndicator.setBackgroundResource(R.drawable.currtripbackground);
+					if (thisTripId != AppDataUtil
+							.getCurrentTripId(getApplicationContext())) {
+						mCurrTripIndicator
+								.setBackgroundResource(R.drawable.noncurrtripbackground);
+					} else {
+						mCurrTripIndicator
+								.setBackgroundResource(R.drawable.currtripbackground);
 					}
 				}
 			}
@@ -200,14 +204,14 @@ public class TripViewActivity extends TabActivity {
 				MODE_PRIVATE).registerOnSharedPreferenceChangeListener(
 				mPrefListener);
 	}
-	
+
 	protected void onDestroy() {
 		super.onDestroy();
 		getApplicationContext().getSharedPreferences(AppDataDefs.APPDATA_FILE,
 				MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(
 				mPrefListener);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -631,25 +635,26 @@ public class TripViewActivity extends TabActivity {
 					tripEntry);
 		}
 	}
-	
+
 	private void eMailFile(String filePath) {
 		TripDetail trip = mTripStorageMgr.getTripDetail(thisTripId);
 		StringBuffer subject = new StringBuffer("My trip");
-		StringBuffer message = new StringBuffer("Hi\n\nAttached is a trip I saved using tripdiary.");
-		if(trip != null) {
+		StringBuffer message = new StringBuffer(
+				"Hi\n\nAttached is a trip I saved using tripdiary.");
+		if (trip != null) {
 			subject.append(" - ").append(trip.getName());
 			String desc = trip.getTripDescription();
-			if(desc != null && desc.length()!=0) {
+			if (desc != null && desc.length() != 0) {
 				message.append("\n\n").append(desc);
 			}
 		}
-		message.append("\n\nTo view it, you may import it into Google Maps, or open with " +
-				"the Google Earth application or use any application that supports KML.\n\n" +
-				"This file was created using an android application called " +
-				"tripdiary (at this point available only to a select few!)");
-		
+		message.append("\n\nTo view it, you may import it into Google Maps, or open with "
+				+ "the Google Earth application or use any application that supports KML.\n\n"
+				+ "This file was created using an android application called "
+				+ "tripdiary (at this point available only to a select few!)");
+
 		Intent intent = new Intent(Intent.ACTION_SEND);
-		intent.setType("message/rfc822"); 
+		intent.setType("message/rfc822");
 		intent.putExtra(Intent.EXTRA_SUBJECT, subject.toString());
 		intent.putExtra(Intent.EXTRA_TEXT, message.toString());
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filePath));
