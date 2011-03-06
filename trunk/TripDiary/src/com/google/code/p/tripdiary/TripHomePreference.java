@@ -17,6 +17,7 @@ public class TripHomePreference extends PreferenceActivity {
 	Preference folderPreference;
 	Preference videoLengthPreference;
 	Preference videoQualityPreference;
+	Preference trackMinDistancePreference;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,34 @@ public class TripHomePreference extends PreferenceActivity {
 						TripDiaryLogger.logDebug("Changed duration is "
 								+ qualityVal);
 						editor.putString("videoLengthPref", qualityVal.toString());
+						editor.commit();
+						return true;
+					}
+				});
+		
+		trackMinDistancePreference = (Preference) findPreference("trackMinDistancePref");
+		trackMinDistancePreference
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					public boolean onPreferenceClick(Preference preference) {
+						SharedPreferences prefs = PreferenceManager
+								.getDefaultSharedPreferences(getBaseContext());
+						SharedPreferences.Editor editor = prefs.edit();
+
+						String minDist = prefs.getString(
+								"trackMinDistancePref", "1");
+						Integer minDistVal = 1;
+						try {
+							minDistVal = Integer.parseInt(minDist);
+						} catch (NumberFormatException e) {
+							TripDiaryLogger
+									.logError("Number format exception while configuring track minimum distance"
+											+ e.getMessage());
+							minDistVal = 0;
+						}
+
+						TripDiaryLogger.logDebug("Changed minimum distance is "
+								+ minDistVal);
+						editor.putString("trackMinDistancePref", minDistVal.toString());
 						editor.commit();
 						return true;
 					}
