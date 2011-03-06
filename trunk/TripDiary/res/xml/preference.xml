@@ -32,7 +32,7 @@
 		android:summary="Tracks Settings">
 		<EditTextPreference
 		    android:title="Minimum Distance"
-		    android:summary="Default: 1 meters"
+		    android:summary="Default: 1 meter"
 		    android:inputType="numberDecimal"
 		    android:defaultValue="1"
 		    android:key="trackMinDistancePref"/>
