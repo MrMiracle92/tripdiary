@@ -3,12 +3,17 @@ package com.google.code.p.tripdiary;
 import java.text.DateFormat;
 import java.util.Date;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,8 +55,11 @@ public class TripListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		// check for GPS
+		checkForGPS();
 
-		// start GPS logging
+		// start location logging
 		LocationController.startLocationLogging(getApplicationContext());
 
 		mStorageMgr = TripStorageManagerFactory
@@ -345,5 +353,44 @@ public class TripListActivity extends ListActivity {
 		}
 
 		return true;
+	}
+	
+	private void checkForGPS() {
+		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+		// check if GPS is enabled
+		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(
+					"GPS is needed for accurate locations. Do you want to enable GPS?")
+					.setCancelable(false)
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									launchGPSSettings();
+								}
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
+	}
+
+	private void launchGPSSettings() {
+		final ComponentName toLaunch = new ComponentName(
+				"com.android.settings", "com.android.settings.SecuritySettings");
+		final Intent intent = new Intent(
+				Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		intent.setComponent(toLaunch);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivityForResult(intent, 0);
 	}
 }
