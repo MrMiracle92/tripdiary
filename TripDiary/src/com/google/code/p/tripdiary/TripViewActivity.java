@@ -642,7 +642,7 @@ public class TripViewActivity extends TabActivity {
 		TripDetail trip = mTripStorageMgr.getTripDetail(thisTripId);
 		StringBuffer subject = new StringBuffer("My trip");
 		StringBuffer message = new StringBuffer(
-				"Hi\n\nAttached is a trip I saved using tripdiary.");
+				"Hi,\n\nAttached is a trip I saved using tripdiary.");
 		if (trip != null) {
 			subject.append(" - ").append(trip.getName());
 			String desc = trip.getTripDescription();
