@@ -3,8 +3,6 @@ package com.google.code.p.tripdiary;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.google.code.p.tripdiary.TripEntry.MediaType;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +10,12 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+
+import com.google.code.p.tripdiary.TripEntry.MediaType;
 
 /**
  * Implements the background service which logs the location at regular
@@ -28,14 +29,15 @@ public class BackgroundLocationService extends Service implements
 		LocationListener {
 
 	private LocationManager mLocationManager;
+	private String mLocationCurrentProvider;
 	private TripStorageManager mStorageManager;
 	private Location mLastUpdatedLocation;
 	private Location mLastKnownLocation;
 	private boolean mIsBound;
 	private long mLastBindTime;
 
-	private final float minUpdateDistanceMetres = 100.0f;
-	private final long minUpdateIntervalMillis = 120000l;
+	private final float minUpdateDistanceMetres = 10.0f;
+	private final long minUpdateIntervalMillis = 60000l;
 
 	private Queue<QueueItem> mEntryQueue = null;
 
@@ -78,6 +80,13 @@ public class BackgroundLocationService extends Service implements
 				.getTripStorageManager(getBaseContext());
 		// create the entry queue
 		mEntryQueue = new ConcurrentLinkedQueue<QueueItem>();
+		
+		// init the location provider
+		if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			mLocationCurrentProvider = LocationManager.GPS_PROVIDER;
+		} else {
+			mLocationCurrentProvider = LocationManager.NETWORK_PROVIDER;
+		}
 
 		// do this to get at least the first fix
 		requestLocationUpdates();
@@ -156,17 +165,29 @@ public class BackgroundLocationService extends Service implements
 		if (mLastKnownLocation == null
 				|| System.currentTimeMillis() - mLastKnownLocation.getTime() >= TOO_OLD_A_LOCATION_INTERVAL) {
 			// get location ASAP as we don't have a good one
-			mLocationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 0, 0, this);
-//			mLocationManager.requestLocationUpdates(
-//					LocationManager.NETWORK_PROVIDER, 0, 0, this);
+			if (mLocationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+				mLocationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, 0, 0, this);
+			}
+			if (mLocationManager
+					.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+				mLocationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, 0, 0, this);
+			}
 		} else {
-			mLocationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, minUpdateIntervalMillis,
-					minUpdateDistanceMetres, this);
-//			mLocationManager.requestLocationUpdates(
-//					LocationManager.NETWORK_PROVIDER, minUpdateIntervalMillis,
-//					minUpdateDistanceMetres, this);
+			if (mLocationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+				mLocationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, minUpdateIntervalMillis,
+						minUpdateDistanceMetres, this);
+			}
+			if (mLocationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+				mLocationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER,
+						minUpdateIntervalMillis, minUpdateDistanceMetres, this);
+			}
 		}
 	}
 
@@ -193,7 +214,8 @@ public class BackgroundLocationService extends Service implements
 						AppDataUtil.getCurrentTripId(getApplicationContext()))
 						.isTraceRouteEnabled()) {
 			TripDiaryLogger
-					.logDebug("BackgroundLocationService - Stopping Self. Entry queue has " + mEntryQueue.size() + " items.");
+					.logDebug("BackgroundLocationService - Stopping Self. Entry queue has "
+							+ mEntryQueue.size() + " items.");
 			stopSelf();
 		}
 	}
@@ -208,6 +230,12 @@ public class BackgroundLocationService extends Service implements
 	public void onLocationChanged(Location location) {
 		TripDiaryLogger.logDebug(String.format("Location changed lat: "
 				+ location.getLatitude() + " lon: " + location.getLongitude()));
+		
+		// if gps is available, let's ignore locations from network
+		if (mLocationCurrentProvider.equals(LocationManager.GPS_PROVIDER)
+				&& !location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+			return;
+		}
 
 		// use it if it's better than the last known
 		if (isBetterLocation(location, mLastKnownLocation)) {
@@ -271,18 +299,70 @@ public class BackgroundLocationService extends Service implements
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		// nothing for now
+		if (provider.equals(LocationManager.GPS_PROVIDER)) {
+			String warn = "GPS got disabled. Locations may not be accurate!";
+			TripDiaryLogger.logWarning(warn);
+			// let's switch to using network
+			mLocationCurrentProvider = LocationManager.NETWORK_PROVIDER;
+
+			// unregister & register for location updates
+			mLocationManager.removeUpdates(this);
+			requestLocationUpdates();
+		} else {
+			if (mLocationCurrentProvider.equals(provider)) {
+				String warn = "Location provider got disabled. Location information will be inaccurate.";
+				TripDiaryLogger.logWarning(warn);
+			}
+		}
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		// nothing for now
-
+		if (provider.equals(LocationManager.GPS_PROVIDER)) {
+			TripDiaryLogger.logInfo("Switching to GPS!");
+			// great! let's switch to using GPS
+			switchToRequestUpdates(LocationManager.GPS_PROVIDER);
+		}
+		// we don't care if other providers are enabled.
+		// as long as GPS is available, we'll use it
+	}
+	
+	private void switchToRequestUpdates(String locationProvider) {
+		// switch
+		mLocationCurrentProvider = LocationManager.GPS_PROVIDER;
+		// unregister & register for location updates
+		mLocationManager.removeUpdates(this);
+		requestLocationUpdates();
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// nothing for now
+		if (mLocationCurrentProvider.equals(provider)) {
+			switch (status) {
+			case LocationProvider.AVAILABLE:
+				if(provider.equals(LocationManager.GPS_PROVIDER)) {
+					// let's switch to using GPS
+					switchToRequestUpdates(LocationManager.GPS_PROVIDER);
+				} else if(mLocationCurrentProvider.equals(LocationManager.NETWORK_PROVIDER)){
+					requestLocationUpdates();
+				}
+				break;
+			case LocationProvider.OUT_OF_SERVICE:
+			case LocationProvider.TEMPORARILY_UNAVAILABLE:
+				TripDiaryLogger
+						.logWarning("Location provider ("
+								+ provider
+								+ ") out of service or temporarily unavailable. Locations may not be accurate.");
+
+				// no switching/updating because:
+				// if gps: 
+				//	this may be temporary until (say in a tunnel) it's available again
+				//	this may not be temporary (say in a building) - but then we should already have a fair last known location
+				// if network:
+				//	gps is likely disabled (as that is our first choice anyway)
+				// let's revisit this if needed
+			}
+		}
 
 	}
 
@@ -301,8 +381,7 @@ public class BackgroundLocationService extends Service implements
 		}
 	}
 
-	public void addEntryWithBestCurrentLocation(long tripId,
-			TripEntry tripEntry) {
+	public void addEntryWithBestCurrentLocation(long tripId, TripEntry tripEntry) {
 		boolean hasLastKnownLocation = false;
 		if (mLastKnownLocation != null) {
 			tripEntry.lat = mLastKnownLocation.getLatitude();
