@@ -24,6 +24,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 import com.google.code.p.tripdiary.TripEntry.MediaType;
@@ -41,7 +42,8 @@ public class TripMapActivity extends MapActivity {
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 	private TripStorageManager mStorageMgr;
 	private Cursor mTripEntries;
-	private TripOverlay mItemizedoverlay;
+	private TripEntriesOverlay mMediaItemizedoverlay;
+	private TripTrackOverlay mTrackOverlay;
 	private MyLocationOverlay mMyLocationOverlay;
 
 	/** Called when the activity is first created. */
@@ -83,9 +85,11 @@ public class TripMapActivity extends MapActivity {
 		mEndMarker = getResources().getDrawable(R.drawable.marker_end);
 		mMarker = getResources().getDrawable(R.drawable.marker);
 
-		// create and add overlay to map
-		mItemizedoverlay = new TripOverlay(mMarker, this);
-		mapView.getOverlays().add(mItemizedoverlay);
+		// create and add overlays to map
+		mTrackOverlay = new TripTrackOverlay();
+		mapView.getOverlays().add(mTrackOverlay);
+		mMediaItemizedoverlay = new TripEntriesOverlay(mMarker, this);
+		mapView.getOverlays().add(mMediaItemizedoverlay);
 
 		// add the my location overlay and add to map
 		mMyLocationOverlay = new MyLocationOverlay(getBaseContext(), mapView);
@@ -160,7 +164,8 @@ public class TripMapActivity extends MapActivity {
 	private void refreshMap() {
 		mTripEntries.requery();
 		mTripEntries.moveToFirst();
-		mItemizedoverlay.clear();
+		mTrackOverlay.clear();
+		mMediaItemizedoverlay.clear();
 		mIsInited = false;
 		while (mTripEntries.getCount() > 0 && !mTripEntries.isAfterLast()) {
 			double lat = mTripEntries.getDouble(mTripEntries
@@ -193,12 +198,16 @@ public class TripMapActivity extends MapActivity {
 			String snippet = mTripEntries.getString(mTripEntries
 					.getColumnIndex(DbDefs.TripDetailCols._ID));
 			GeoPoint point = new GeoPoint((int) (lat * 1e6), (int) (lon * 1e6));
-			TripDiaryLogger.logDebug("Point: " + point.getLatitudeE6() + ", "
-					+ point.getLongitudeE6());
+
+			// all points go to the track
+			mTrackOverlay.addTrackItem(point);
+
+			// now for the overlay items
 			OverlayItem o = new OverlayItem(point, title == null ? "" : title,
 					snippet == null ? "" : snippet);
 
-			// don't draw marker for non media points
+			// don't draw marker for non media points except for the start and
+			// end
 			boolean drawMarker = mediaType.equals(TripEntry.MediaType.NONE
 					.name()) ? false : true;
 			if (mTripEntries.isFirst()) {
@@ -208,7 +217,10 @@ public class TripMapActivity extends MapActivity {
 				o.setMarker(mEndMarker);
 				drawMarker = true; // draw anyway
 			}
-			mItemizedoverlay.addOverlay(o, drawMarker);
+
+			if (drawMarker) {
+				mMediaItemizedoverlay.addOverlayItem(o, drawMarker);
+			}
 			mTripEntries.moveToNext();
 		}
 	}
@@ -218,30 +230,25 @@ public class TripMapActivity extends MapActivity {
 	private Drawable mMarker;
 	static final private int PATH_COLOR = Color.rgb(139, 69, 19);
 
-	class TripOverlay extends ItemizedOverlay<OverlayItem> {
+	class TripEntriesOverlay extends ItemizedOverlay<OverlayItem> {
 
 		Context mContext = null;
 
-		public TripOverlay(Drawable drawable, Context context) {
+		public TripEntriesOverlay(Drawable drawable, Context context) {
 			super(boundCenterBottom(drawable));
 			boundCenterBottom(mStartMarker);
 			boundCenterBottom(mEndMarker);
 			mContext = context;
 		}
 
-		private List<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 		private List<OverlayItem> mOverlaysMarkers = new ArrayList<OverlayItem>();
 
-		public void addOverlay(OverlayItem overlay, boolean drawMarker) {
-			mOverlays.add(overlay);
-			if (drawMarker) {
-				mOverlaysMarkers.add(overlay);
-			}
+		public void addOverlayItem(OverlayItem overlay, boolean drawMarker) {
+			mOverlaysMarkers.add(overlay);
 			populate();
 		}
 
 		public void clear() {
-			mOverlays.clear();
 			mOverlaysMarkers.clear();
 			populate();
 		}
@@ -257,10 +264,44 @@ public class TripMapActivity extends MapActivity {
 		}
 
 		@Override
-		public boolean draw(Canvas canvas, MapView mapView, boolean shadow,
-				long when) {
+		protected boolean onTap(int index) {
+			OverlayItem item = mOverlaysMarkers.get(index);
+			TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item
+					.getSnippet()));
+			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
+					TripMapActivity.this);
+			dialogBuilder.setMessage(te.toStringMultiline());
+			if (te.mediaType == MediaType.NONE) {
+				dialogBuilder.setTitle("Location");
+			} else {
+				dialogBuilder.setTitle(te.mediaType.name());
+			}
+			dialogBuilder.show();
+			return true;
+		}
+	}
 
-			// draw the track first...
+	class TripTrackOverlay extends Overlay {
+
+		private List<GeoPoint> mOverlayItems = new ArrayList<GeoPoint>();
+
+		public void addTrackItem(GeoPoint point) {
+			mOverlayItems.add(point);
+		}
+
+		public void clear() {
+			mOverlayItems.clear();
+		}
+
+		@Override
+		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+
+			// skip shadow
+			if (shadow) {
+				return;
+			}
+
+			// draw the track...
 			Paint paint;
 			paint = new Paint();
 			paint.setColor(PATH_COLOR);
@@ -269,14 +310,14 @@ public class TripMapActivity extends MapActivity {
 			paint.setStrokeWidth(2);
 			GeoPoint lastGp = null;
 			GeoPoint currGp = null;
-			for (OverlayItem item : mOverlays) {
+			for (GeoPoint point : mOverlayItems) {
 				if (currGp == null) {
 					// this is the first point, so save and skip
-					currGp = item.getPoint();
+					currGp = point;
 					continue;
 				}
 				lastGp = currGp;
-				currGp = item.getPoint();
+				currGp = point;
 				Point pt1 = new Point();
 				Point pt2 = new Point();
 				Projection projection = mapView.getProjection();
@@ -284,27 +325,6 @@ public class TripMapActivity extends MapActivity {
 				projection.toPixels(currGp, pt2);
 				canvas.drawLine(pt1.x, pt1.y, pt2.x, pt2.y, paint);
 			}
-
-			// ... and now draw the markers (default behavior)
-			super.draw(canvas, mapView, shadow);
-
-			return false;
-		}
-
-		@Override
-		protected boolean onTap(int index) {
-			OverlayItem item = mOverlays.get(index);
-			TripEntry te = mStorageMgr.getTripEntry(Long.parseLong(item
-					.getSnippet()));
-			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
-					TripMapActivity.this);
-			dialogBuilder.setMessage(te.toStringMultiline());
-			if (te.mediaType == MediaType.NONE)
-				dialogBuilder.setTitle("Location");
-			else
-				dialogBuilder.setTitle(te.mediaType.name());
-			dialogBuilder.show();
-			return true;
 		}
 	}
 
