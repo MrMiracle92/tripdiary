@@ -42,6 +42,8 @@ public class TripListActivity extends ListActivity {
 	private Cursor mTripCursor;
 	private TripAdapter mTripAdapter;
 
+	private boolean mHaveAskedGPSQuestion;
+
 	private final int SETTINGS_CREATE_NEW_TRIP = 1;
 	private final int VIEW_TRIP = 2;
 
@@ -55,9 +57,13 @@ public class TripListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
-		// check for GPS
-		checkForGPS();
+
+		mHaveAskedGPSQuestion = savedInstanceState == null ? false
+				: savedInstanceState
+						.getBoolean(AppDataDefs.KEY_HAVE_ASKED_FOR_GPS);
+		if (!mHaveAskedGPSQuestion) {
+			checkForGPS();
+		}
 
 		// start location logging
 		LocationController.startLocationLogging(getApplicationContext());
@@ -127,17 +133,18 @@ public class TripListActivity extends ListActivity {
 				mPrefListener);
 	}
 
-	// private long getCurrentTripId() {
-	// return getApplicationContext().getSharedPreferences(
-	// AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-	// AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-	// }
-
 	@Override
 	protected void onResume() {
 		super.onResume();
 		mTripCursor.requery();
 		mTripAdapter.notifyDataSetInvalidated();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putBoolean(AppDataDefs.KEY_HAVE_ASKED_FOR_GPS,
+				mHaveAskedGPSQuestion);
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -354,7 +361,7 @@ public class TripListActivity extends ListActivity {
 
 		return true;
 	}
-	
+
 	private void checkForGPS() {
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -369,6 +376,7 @@ public class TripListActivity extends ListActivity {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									launchGPSSettings();
+									mHaveAskedGPSQuestion = true;
 								}
 							})
 					.setNegativeButton("No",
@@ -376,6 +384,7 @@ public class TripListActivity extends ListActivity {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									dialog.cancel();
+									mHaveAskedGPSQuestion = true;
 								}
 							});
 			AlertDialog alert = builder.create();
