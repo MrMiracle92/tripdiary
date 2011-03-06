@@ -202,7 +202,7 @@ public class BackgroundLocationService extends Service implements
 	 * We'll not update the entry location the request to update was earlier
 	 * than this much time ago
 	 */
-	private static int TOO_LATE_TO_UPDATE_INTERVAL = 1000 * 60 * 5; // 5 mins
+	private static int TOO_LATE_TO_UPDATE_INTERVAL = 1000 * 60 * 2; // 2 mins
 
 	@Override
 	public void onLocationChanged(Location location) {
