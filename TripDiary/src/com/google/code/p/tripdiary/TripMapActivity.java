@@ -42,7 +42,7 @@ public class TripMapActivity extends MapActivity {
 	private long thisTripId = AppDataDefs.NO_CURRENT_TRIP;
 	private TripStorageManager mStorageMgr;
 	private Cursor mTripEntries;
-	private TripEntriesOverlay mMediaItemizedoverlay;
+	private TripEntriesOverlay mMediaItemizedOverlay;
 	private TripTrackOverlay mTrackOverlay;
 	private MyLocationOverlay mMyLocationOverlay;
 
@@ -88,17 +88,24 @@ public class TripMapActivity extends MapActivity {
 		// create and add overlays to map
 		mTrackOverlay = new TripTrackOverlay();
 		mapView.getOverlays().add(mTrackOverlay);
-		mMediaItemizedoverlay = new TripEntriesOverlay(mMarker, this);
-		mapView.getOverlays().add(mMediaItemizedoverlay);
+		mMediaItemizedOverlay = new TripEntriesOverlay(mMarker, this);
+		mapView.getOverlays().add(mMediaItemizedOverlay);
 
 		// add the my location overlay and add to map
 		mMyLocationOverlay = new MyLocationOverlay(getBaseContext(), mapView);
 		mapView.getOverlays().add(mMyLocationOverlay);
 
 		// buttons
+		ImageButton btnToggleTrack = ((ImageButton) findViewById(R.id.btnToggleTrack));
+		btnToggleTrack.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showOrHideTrack();
+			}
+		});
+
 		ImageButton btnCurrLoc = ((ImageButton) findViewById(R.id.btnCurrLoc));
 		btnCurrLoc.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				toggleOrShowCurrentLocation();
@@ -165,7 +172,7 @@ public class TripMapActivity extends MapActivity {
 		mTripEntries.requery();
 		mTripEntries.moveToFirst();
 		mTrackOverlay.clear();
-		mMediaItemizedoverlay.clear();
+		mMediaItemizedOverlay.clear();
 		mIsInited = false;
 		while (mTripEntries.getCount() > 0 && !mTripEntries.isAfterLast()) {
 			double lat = mTripEntries.getDouble(mTripEntries
@@ -219,7 +226,7 @@ public class TripMapActivity extends MapActivity {
 			}
 
 			if (drawMarker) {
-				mMediaItemizedoverlay.addOverlayItem(o, drawMarker);
+				mMediaItemizedOverlay.addOverlayItem(o, drawMarker);
 			}
 			mTripEntries.moveToNext();
 		}
@@ -374,6 +381,18 @@ public class TripMapActivity extends MapActivity {
 				}
 			});
 		}
+	}
 
+	private void showOrHideTrack() {
+		List<Overlay> overlays = mapView.getOverlays();
+		if (overlays.contains(mTrackOverlay)) {
+			overlays.remove(mTrackOverlay);
+		} else {
+			overlays.remove(mMediaItemizedOverlay); // remove and add to ensure
+													// it is drawn over track
+			overlays.add(mTrackOverlay);
+			overlays.add(mMediaItemizedOverlay);
+		}
+		mapView.invalidate();
 	}
 }
