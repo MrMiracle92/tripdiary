@@ -194,14 +194,15 @@ public class TripExport extends Activity {
 		TripDiaryLogger.logDebug("KML dir is : " + folderNameFromPref);
 
 		// Create the default file storage path
-		File kmlDir = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/" + folderNameFromPref);
+		String filePath = Environment.getExternalStorageDirectory()
+				.getAbsolutePath() + "/" + folderNameFromPref;
+		File kmlDir = new File(filePath);
 		if (!kmlDir.exists()) // first time
 		{
 			kmlDir.mkdir();
 		}
 		fileName = Util.tripDiaryFileName() + DEFAULT_FILE_EXTENSION;
-		returnKey = folderNameFromPref + "/" + fileName;
+		returnKey = filePath + "/" + fileName;
 		File kmlFile = new File(kmlDir, fileName);
 
 		// Write to disk
