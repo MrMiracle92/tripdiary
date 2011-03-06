@@ -179,20 +179,6 @@ public class TripViewActivity extends TabActivity {
 		}
 	}
 
-	// private long getCurrentTripId() {
-	// return getApplicationContext().getSharedPreferences(
-	// AppDataDefs.APPDATA_FILE, MODE_PRIVATE).getLong(
-	// AppDataDefs.CURRENT_TRIP_ID_KEY, AppDataDefs.NO_CURRENT_TRIP);
-	// }
-
-	// private void setCurrentTripId(long tripId) {
-	// SharedPreferences.Editor editPref = getApplicationContext()
-	// .getSharedPreferences(AppDataDefs.APPDATA_FILE, MODE_PRIVATE)
-	// .edit();
-	// editPref.putLong(AppDataDefs.CURRENT_TRIP_ID_KEY, tripId);
-	// editPref.commit();
-	// }
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -568,8 +554,12 @@ public class TripViewActivity extends TabActivity {
 		if (locationServiceIsBound && (locationService != null)) {
 			TripDiaryLogger
 					.logDebug("addEntryToTrip - updateEntryWithBestCurrentLocation");
-			locationService.updateEntryWithBestCurrentLocation(thisTripId,
+			locationService.addEntryWithBestCurrentLocation(thisTripId,
 					tripEntry);
+			
+			// let's also ask the controller to start the service explicitly
+			// this will prevent the service from stopping when unbinding happens
+			LocationController.startLocationLogging(getApplicationContext());
 		} else {
 			// let's add the trip entry anyway (we don't need to lose this
 			// entry if Location is not available etc.)
