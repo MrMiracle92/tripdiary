@@ -81,6 +81,7 @@ public class BackgroundLocationService extends Service implements
 		return locationBinder;
 	}
 
+	@Override
 	public boolean onUnbind(Intent intent) {
 		mIsBound = false;
 		return super.onUnbind(intent);
@@ -195,6 +196,13 @@ public class BackgroundLocationService extends Service implements
 	 */
 	private static int TOO_OLD_A_LOCATION_INTERVAL = 1000 * 60 * 60; // 1 hr
 
+	/**
+	 * This method interfaces with the location manager to subscribe to the
+	 * appropriate location provider. It may ask for an immediate update (if
+	 * last known location is not available or update at the preferred
+	 * time/distance (if last known location is available.) It falls back to
+	 * network provider if GPS is not enabled.
+	 */
 	private void requestLocationUpdates() {
 		if (mLastKnownLocation == null
 				|| System.currentTimeMillis() - mLastKnownLocation.getTime() >= TOO_OLD_A_LOCATION_INTERVAL) {
@@ -363,9 +371,10 @@ public class BackgroundLocationService extends Service implements
 		// as long as GPS is available, we'll use it
 	}
 
+	/** This method switches to the given location provider */
 	private void switchToRequestUpdates(String locationProvider) {
 		// switch
-		mLocationCurrentProvider = LocationManager.GPS_PROVIDER;
+		mLocationCurrentProvider = locationProvider;
 		// unregister & register for location updates
 		mLocationManager.removeUpdates(this);
 		requestLocationUpdates();
@@ -405,6 +414,7 @@ public class BackgroundLocationService extends Service implements
 
 	}
 
+	/** Represents a queue item queued for location update */
 	private class QueueItem {
 		long tripId;
 		TripEntry tripEntry;
@@ -420,6 +430,7 @@ public class BackgroundLocationService extends Service implements
 		}
 	}
 
+	/** Adds the best current location to the given trip entry */
 	public void addEntryWithBestCurrentLocation(long tripId, TripEntry tripEntry) {
 		boolean hasLastKnownLocation = false;
 		if (mLastKnownLocation != null) {
@@ -451,6 +462,7 @@ public class BackgroundLocationService extends Service implements
 		mEntryQueue.add(new QueueItem(tripId, tripEntry, hasLastKnownLocation));
 	}
 
+	/** Reads the track preference for the current trip */
 	private void readTrackPreference() {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
