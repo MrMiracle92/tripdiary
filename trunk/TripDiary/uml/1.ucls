@@ -1,0 +1,128 @@
+<class-diagram version="1.0.1" icons="true" automaticImage="JPEG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripListActivity.TripAdapter" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripListActivity.java" binary="false">    
+    <position x="910" y="492" width="243" height="179"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripListActivity" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripListActivity.java" binary="false">    
+    <position x="910" y="145" width="275" height="307"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripDiaryInfo" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripDiaryInfo.java" binary="false">    
+    <position x="1330" y="200" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripHomePreference" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripHomePreference.java" binary="false">    
+    <position x="1343" y="345" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripStorageManagerFactory" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripStorageManagerFactory.java" binary="false">    
+    <position x="278" y="158" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripStorageManagerImpl" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripStorageManagerImpl.java" binary="false">    
+    <position x="46" y="249" width="459" height="543"/>    
+    <display autosize="false" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripStorageManagerImpl.DbHelper" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripStorageManagerImpl.java" binary="false">    
+    <position x="647" y="611" width="123" height="45"/>    
+    <display autosize="false" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="8" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripStorageManager" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripStorageManager.java" binary="false">    
+    <position x="704" y="158" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <association>    
+    <end type="SOURCE" nodeId="6" navigable="false">      
+      <attribute name="dbHelper"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency>    
+    <end type="SOURCE" nodeId="5"/>    
+    <end type="TARGET" nodeId="6"/>  
+  </dependency>  
+  <nesting>    
+    <end type="SOURCE" nodeId="6"/>    
+    <end type="TARGET" nodeId="7"/>  
+  </nesting>  
+  <association>    
+    <end type="SOURCE" nodeId="5" navigable="false">      
+      <attribute name="storageManagerInstance"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association>    
+    <end type="SOURCE" nodeId="2" navigable="false">      
+      <attribute name="mStorageMgr"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="4"/>  
+  </dependency>  
+  <association>    
+    <end type="SOURCE" nodeId="2" navigable="false">      
+      <attribute name="mTripAdapter"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="1"/>  
+  </nesting>  
+  <realization>    
+    <end type="SOURCE" nodeId="6"/>    
+    <end type="TARGET" nodeId="8"/>  
+  </realization>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="3"/>  
+  </dependency>  
+  <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

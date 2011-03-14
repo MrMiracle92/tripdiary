@@ -1,0 +1,124 @@
+<class-diagram version="1.0.1" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <interface id="1" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripStorageManager" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripStorageManager.java" binary="false">    
+    <position x="366" y="124" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" 
+    name="com.google.code.p.tripdiary.TripMapActivity.TripTrackOverlay" project="TripDiary" 
+    file="/TripDiary/src/com/google/code/p/tripdiary/TripMapActivity.java" binary="false">    
+    <position x="1048" y="114" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" 
+    name="com.google.code.p.tripdiary.TripMapActivity.TripEntriesOverlay" project="TripDiary" 
+    file="/TripDiary/src/com/google/code/p/tripdiary/TripMapActivity.java" binary="false">    
+    <position x="1055" y="382" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.TripMapActivity" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/TripMapActivity.java" binary="false">    
+    <position x="620" y="27" width="223" height="403"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" 
+    name="com.google.code.p.tripdiary.BackgroundLocationService.QueueItem" project="TripDiary" 
+    file="/TripDiary/src/com/google/code/p/tripdiary/BackgroundLocationService.java" binary="false">    
+    <position x="741" y="663" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="com.google.code.p.tripdiary.BackgroundLocationService" 
+    project="TripDiary" file="/TripDiary/src/com/google/code/p/tripdiary/BackgroundLocationService.java" binary="false">    
+    <position x="360" y="591" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" 
+    name="com.google.code.p.tripdiary.BackgroundLocationService.LocationBinder" project="TripDiary" 
+    file="/TripDiary/src/com/google/code/p/tripdiary/BackgroundLocationService.java" binary="false">    
+    <position x="761" y="526" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <association>    
+    <end type="SOURCE" nodeId="6" navigable="false">      
+      <attribute name="mEntryQueue"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" nodeId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association>    
+    <end type="SOURCE" nodeId="6" navigable="false">      
+      <attribute name="mStorageManager"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting>    
+    <end type="SOURCE" nodeId="6"/>    
+    <end type="TARGET" nodeId="7"/>  
+  </nesting>  
+  <nesting>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="2"/>  
+  </nesting>  
+  <nesting>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="3"/>  
+  </nesting>  
+  <association>    
+    <end type="SOURCE" nodeId="4" navigable="false">      
+      <attribute name="mTrackOverlay"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association>    
+    <end type="SOURCE" nodeId="4" navigable="false">      
+      <attribute name="mStorageMgr"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting>    
+    <end type="SOURCE" nodeId="6"/>    
+    <end type="TARGET" nodeId="5"/>  
+  </nesting>  
+  <association>    
+    <end type="SOURCE" nodeId="4" navigable="false">      
+      <attribute name="mMediaItemizedOverlay"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
