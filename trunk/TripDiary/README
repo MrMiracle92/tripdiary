@@ -1,0 +1,65 @@
+README - for the The Trip Diary Project (http://code.google.com/p/tripdiary/)
+=============================================================================
+The latest code for the Trip Diary project (tripdiary) can be found at: http://code.google.com/p/tripdiary/
+
+If you are reading this file, you must also have the accompanying source code. This file provides a general overview of the various directories and files of the source.
+
+Most of the files are arranged as per a typical Android project.The following are the key components of the trip diary source:
+
+/res
+ - This directory contains the resources used in the project. These include images, strings, xml resources describing layouts and menus etc. These are contained as per standard Android coding conventions and requirements.
+ 
+/src
+ - This is where the the java source code resides. Here are some of the classes:
+ (1) Activity classes: These classes are children of the Android Activity class.
+     - TripListActivity, TripViewActivity, TripGalleryActivity, TripMapActivity
+     	* These activities interact with the user for the 4 major screens of the application.
+     - TripNoteEditor, AudioRecorder
+     	* These activities come into picture when recording notes and audio.
+     - TripSettingsActivity, TripHomePreference
+     	* These activities take care editing and updating trip settings and application preferences.
+     - TripExport
+     	* This activity takes care of exporting the trip details into KML format.
+     - TripDiaryInfo
+     	* This activity provides a small info screen.
+     - DbTestActivity
+     	* This activity is used for unit testing the database classes and methods.
+ 
+ (2) BackgroundLocationService
+ 		* This is a subclass of Android Service which runs in the background (even when the application is not in focus) and stores track information if route is being tracked for the current trip.
+ 		* This service is also responsible for adding location details for each trip entry (media recorded) even when route is not being tracked.
+ 
+ (3) Utility Classes
+ 	- LocationController
+ 		* This class is used to control and access the background location service.
+ 	- ImageCache
+ 		* This class is used to cache and create image bitmaps as and when needed.
+ 		* It also provides a way to create image bitmaps in a separate thread and add into the UI when ready.
+
+ (4) Data Access Classes
+ 	- TripStorageManager
+ 		* This is the data access interface used by various classes to read/write trip related data from/into the database.
+ 	- TripStorageManagerImpl
+ 		* This is the storage manager implementation that is actually used, and has the code to connect and work with the SQLLite database.
+ 	- TripStorageManagerFactory
+ 		* This is a factory class that instantiates an appropriate TripStorageManager (in this case, the TripStorageManagerImpl.)
+ 		* Any class that needs a TripStorageManager can get it from this class.
+ 	- TripDetail, TripEntry
+ 		* These are the trip related data objects (and also correspond to the tables in the databbase.)
+
+ (5) Other Utility Classes
+ 	- DbDefs.java, AppDataDefs
+ 		* Some common definitions that are used across the application.
+	- AppDataUtil, Util
+		* Utility classes that provide some common methods.
+	- TripDiaryLogger
+		* A common logging class used for logging errors, warning, etc.
+ 
+/uml
+ - This directory contains some of the UML diagrams that we created as part of the application design.
+
+/key
+ - This contains the debug key for access to the Google Map API.
+ 
+ 
+
