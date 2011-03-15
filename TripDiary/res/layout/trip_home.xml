@@ -15,7 +15,7 @@
         android:paddingLeft="10dp" 
         android:paddingRight="10dp" 
         android:background="@android:color/transparent"
-		android:text="About TripDiary - "
+		android:text="About TripDiary - Tripdiary is a free application. It allows you to manage different medias like photos, video, audio, text from one location. You can find a demonstration of the application on http://www.youtube.com/watch?v=Vz8wyaKWKh0/"
 		android:textSize="15sp"
 		android:textColor="#ffffffff"
 		android:layout_x="53px"
