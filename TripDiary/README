@@ -12,22 +12,22 @@ Most of the files are arranged as per a typical Android project.The following ar
 /src
  - This is where the the java source code resides. Here are some of the classes:
  (1) Activity classes: These classes are children of the Android Activity class.
-     - TripListActivity, TripViewActivity, TripGalleryActivity, TripMapActivity
-     	* These activities interact with the user for the 4 major screens of the application.
-     - TripNoteEditor, AudioRecorder
-     	* These activities come into picture when recording notes and audio.
-     - TripSettingsActivity, TripHomePreference
-     	* These activities take care editing and updating trip settings and application preferences.
-     - TripExport
-     	* This activity takes care of exporting the trip details into KML format.
-     - TripDiaryInfo
-     	* This activity provides a small info screen.
-     - DbTestActivity
-     	* This activity is used for unit testing the database classes and methods.
+	- TripListActivity, TripViewActivity, TripGalleryActivity, TripMapActivity
+		* These activities interact with the user for the 4 major screens of the application.
+	- TripNoteEditor, AudioRecorder
+		* These activities come into picture when recording notes and audio.
+	- TripSettingsActivity, TripHomePreference
+		* These activities take care editing and updating trip settings and application preferences.
+	- TripExport
+		* This activity takes care of exporting the trip details into KML format.
+	- TripDiaryInfo
+		* This activity provides a small info screen.
+	- DbTestActivity
+		* This activity is used for unit testing the database classes and methods.
  
  (2) BackgroundLocationService
- 		* This is a subclass of Android Service which runs in the background (even when the application is not in focus) and stores track information if route is being tracked for the current trip.
- 		* This service is also responsible for adding location details for each trip entry (media recorded) even when route is not being tracked.
+		* This is a subclass of Android Service which runs in the background (even when the application is not in focus) and stores track information if route is being tracked for the current trip.
+		* This service is also responsible for adding location details for each trip entry (media recorded) even when route is not being tracked.
  
  (3) Utility Classes
  	- LocationController
